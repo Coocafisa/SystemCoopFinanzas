@@ -15,5 +15,13 @@ module.exports = {
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_DATABASE,
+    },
+
+    apiEmail: {
+        client: process.env.EMAIL_CLIENT_ID,
+        email_user: process.env.EMAIL_USER,
+        client_secret: process.env.EMAIL_CLIENT_SECRET,
+        refresh_token: process.env.EMAIL_REFRESH_TOKEN,
+
     }
 };

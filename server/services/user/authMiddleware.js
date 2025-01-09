@@ -28,7 +28,7 @@ async function verifyToken (req, res, next) {
             const newToken = generateTokenValidation(user);
             res.setHeader('Authorization', `Bearer ${newToken}`);
         }
-        req.user = decoded;
+        req.auth = decoded;
         next();
     } catch (error) {
         return res.status(401).json({message: 'Token invalido o expirado'});

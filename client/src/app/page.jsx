@@ -11,11 +11,11 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     const [errores, setErrores] = useState({
-        nit: false,
+        user: false,
         password: false,
     });
     const [formData, setFormData] = useState({
-        nit: "",
+        user: "",
         password: "",
     });
 
@@ -28,11 +28,11 @@ export default function Login() {
         setLoading(true);
         event.preventDefault();
         let formularioValido = true;
-    let newErrors = { nit: false, password: false };
+    let newErrors = { user: false, password: false };
 
-    if (formData.nit.trim() === "") {
+    if (formData.user.trim() === "") {
         formularioValido = false;
-        newErrors.nit = true;
+        newErrors.user = true;
     }
 
     if (formData.password.trim() === "") {
@@ -65,19 +65,19 @@ export default function Login() {
             </header>
             <form onSubmit={handleSubmit} className="space-y-4 mt-6" noValidate>
                 <div className="flex flex-col stlvar">
-                    <label htmlFor="nit" className="text-sm font-medium text-gray-700">
-                        Nit
+                    <label htmlFor="user" className="text-sm font-medium text-gray-700">
+                        Usuario
                     </label>
                     <input
                     
                         type="number"
-                        id="nit"
-                        name="nit"
-                        value={formData.nit}
+                        id="user"
+                        name="user"
+                        value={formData.user}
                         onChange={handleChange}
                         required
                         className="mt-1 p-2 border rounded-md focus:ring-foreground focus:border-foreground"
-                        style={{borderColor: errores.nit ? 'red' : ''}}
+                        style={{borderColor: errores.user ? 'red' : ''}}
                     />
                 </div>
 

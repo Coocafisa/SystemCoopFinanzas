@@ -2,10 +2,12 @@ const express = require('express');
 
 const request = require('../../red/request');
 const controller = require('./index');
+const { verifyToken } = require('../../middleware/authMiddleware');
 
 const router = express.Router();
+router.use(verifyToken);
 
-router.get('/', consult);
+router.get('/', controller.user);
 
 async function consult(req, res, next) {
     try {

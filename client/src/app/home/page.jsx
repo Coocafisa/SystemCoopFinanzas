@@ -2,7 +2,7 @@
 import { ProtectedRoute } from "../../components/middleware";
 import ResultTable from "@/components/common/result_table";
 import { useState, useEffect } from "react";
-import { getPaymentsSuppliers } from "../../api/authenticated/adminService";
+import { getPaymentsSuppliers } from "../../api/requestAdmin/querysAdmin";
 export default function Homepage() {
     const [paymentsSuppliers, setPaymentsSuppliers] = useState([]);
     const [alert, setAlert] = useState("");

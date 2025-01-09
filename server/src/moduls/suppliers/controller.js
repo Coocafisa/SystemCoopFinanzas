@@ -1,4 +1,4 @@
-var table = 'proveedor';
+var table = 'entities';
 
 module.exports = function (dbInsert) {
     let db = dbInsert;

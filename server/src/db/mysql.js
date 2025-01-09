@@ -32,7 +32,7 @@ function connectMysql() {
 }
 connectMysql();
 
-function query(table, fields, params = '1=1') {
+function query(table, fields = '*', params = '1=1') {
     return new Promise((resolve, reject) => {
         connection.query(`SELECT ${fields} FROM ${table} WHERE ${params}`, (err, result) => {
             return err ? reject(err) : resolve(result);
@@ -50,7 +50,7 @@ function insert(table, data) {
 
 function update(table, data, params) {
     return new Promise((resolve, reject) => {
-        connection.query(`UPDATE ${table} SET ? WHERE ${params}`, data, (err, result) => {
+        connection.query(`UPDATE ${table} SET ${data} WHERE ${params}`, (err, result) => {
             return err ? reject(err) : resolve(result);
         });
     });

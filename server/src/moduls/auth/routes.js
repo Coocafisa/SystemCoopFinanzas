@@ -5,15 +5,12 @@ const controller = require('./index');
 
 const router = express.Router();
 
-router.get('/prueba', consult);
+router.post('/', Auth);
 
-async function consult(req, res, next) {
-    try {
-        const items = await controller.consultUser();
-        request.success(req, res, items, 200);
-    } catch (err) {
-        next(err);
-    }
+async function Auth(req, res, next) {
+    const data = { user, password } = req.body;
+        const items = await controller.auth(req, res, data);
+        return items;
 };
 
 module.exports = router;

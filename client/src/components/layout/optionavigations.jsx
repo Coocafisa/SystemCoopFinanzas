@@ -31,7 +31,8 @@ const routeToIndices = {
     "/home/suppliers/invoices/payments": [4, 5, 6],
     "/home/suppliers/invoices/pending": [4, 5, 6],
     "/users": [0, 1, 2, 3, 7],
-    "/home/administrator/email": [0, 1, 2, 3, 7, 8]
+    "/home/administrator/email": [0, 1, 2, 3, 7, 8],
+    "/pruebas": [5, 6, 7, 8],
 }
 
 const menuOptions = [

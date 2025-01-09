@@ -1,9 +1,9 @@
 "use client";
-import IndexLayout from "../home/layout";
+import IndexLayout from "../layout";
 import { useState, useEffect } from "react";
 import ResultTable from "@/components/common/result_table";
 import { queryUsers } from "@/api/authenticated/queryService";
-import { ProtectedRoute } from "../../components/middleware";
+import { ProtectedRoute } from "../../../components/middleware";
 
 export default function Users() {
     const [users, setUsers] = useState([]);

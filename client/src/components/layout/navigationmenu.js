@@ -6,14 +6,9 @@ import { logout } from "@/api/auth/authService";
 import { Loader } from "@/components/common/preloader";
 
 export default function Menu({ menuOptions }) {
-  const [menuVisible, setMenuVisible] = useState(false);
   const [alert, setAlert] = useState(null);
   const [type, setType] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const toggleMenu = () => {
-    setMenuVisible((prev) => !prev);
-  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -24,32 +19,24 @@ export default function Menu({ menuOptions }) {
   return (
     <>
     {loading && <Loader alert={alert} type={type}/>}
-    <div className="menu-container">
-      <button className="menu-toggle" onClick={toggleMenu} aria-expanded={menuVisible}>
-        <i className="bi bi-list"></i>
-      </button>
-      {menuVisible && (
-        <nav className={`menu ${menuVisible ? "visible" : ""}`}>
-          <button className="menu-close" onClick={toggleMenu}>
-            <i className="bi bi-x-lg"></i>
-          </button>
+    <div className="menu">
+        <nav className='menu-container'>
           <ul className="menu-list">
             {menuOptions.map((option) => (
               <li key={option.id} className="menu-item">
                 <a href={option.link} className="menu-link">
                   <i className={`menu-icon ${option.icon}`}></i>
-                  {option.label}
+                  <span className="menu-label">{option.label}</span>
                 </a>
               </li>
             ))}
-            <li className="menu-item">
+             <li className="menu-item">
               <form onSubmit={handleSubmit}>
                 <button type="submit" className="logout-button">Cerrar Sesión</button>
               </form>
             </li>
           </ul>
         </nav>
-      )}
     </div>
     </>
   );

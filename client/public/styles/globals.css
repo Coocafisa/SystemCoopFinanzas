@@ -23,27 +23,9 @@ body {
   flex-direction: column;
 }
 
-.principal{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: linear-gradient(135deg, #2c3e50, #bdc3c7);
-  transition: all 0.3s ease;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background-color: white;
-  z-index: 1000;
-}
-
-.principal.scrolled {
-  padding: 2px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
 main {
   flex: 1;
-  padding: 20px;
+  padding: 20px 80px 20px 80px;
 }
 
 footer {
@@ -73,12 +55,6 @@ button {
     transition: background 0.3s ease;
 }
 
-.imglogoindex {
-  width: 8vw;
-  height: auto;
-  padding-left: 20px;
-}
-
 .error-message {
   color: red;
 }
@@ -87,24 +63,6 @@ input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
-}
-
-
-@media (min-width: 350px) {
-   .imglogoindex {
-     width: 100px;
-   }
-
-   .text-header {
-     font-size: 1.5rem;
-     text-align: center;
-   }
-}
-
-@media (min-width: 350px) {
-  .text-header {
-    font-size: 2rem;
-  }
 }
 
 .btn-resend {

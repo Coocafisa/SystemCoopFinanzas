@@ -7,6 +7,12 @@ const cookieParser = require('cookie-parser');
 const error = require('./red/error');
 const users = require('./moduls/users/routes');
 const suppliers = require('./moduls/suppliers/routes');
+const auth = require('./moduls/auth/routes');
+const contractors = require('./moduls/contractors/routes');
+const employees = require('./moduls/employees/routes');
+const emails = require('./moduls/emails/routes');
+const session = require('./moduls/sessions/routes');
+const admin = require('./moduls/admin/routes');
 
 const app = express();
 
@@ -17,18 +23,28 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(cors({
-    origin: app.get('origin'),
+    origin: config.app.origin,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
 
 app.set('port', config.app.port);
-app.set('origin', config.app.origin);
-
+app.set('emailConfig', {
+    client: config.apiEmail.client,
+    email_user: config.apiEmail.email_user,
+    client_secret: config.apiEmail.client_secret,
+    refresh_token: config.apiEmail.refresh_token
+});
 app.set('trust proxy', 1);
 
+app.use('/auth', auth);
+app.use('/session', session);
 app.use('/users', users);
 app.use('/supplier', suppliers);
+app.use('/contractor', contractors);
+app.use('/employees', employees);
+app.use('/emails', emails);
+app.use('/admin', admin)
 app.use(error);
 
 module.exports = app;
