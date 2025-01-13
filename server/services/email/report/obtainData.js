@@ -1,17 +1,14 @@
-const { formatDate } = require("../../functions/helpers");
+const { formatDate, formatPesos } = require("../../functions/helpers");
 const { emailSend, sendNotificationEmail } = require("../emailService");
 const { generarReportePDF, generarResumenPDF } = require("./generatepdf");
 const pool = require("../../../connectionBD/db");
-const { json } = require("express");
-const { formatPesos } = require("../../functions/helpers");
 
-const obtainData = async (query) => {
-
+async function obtainData (query) {
   try {
-    const [results] = query
-    if (results.length > 0) {
-      var actualDate = new Date();
-      const formattedResults = results.map((result) => ({
+    const [rows] = query;
+    if (rows.length > 0) {
+      const actualDate = new Date();
+      const formattedResults = rows.map((result) => ({
         ...result,
         fecpago: formatDate(result.fecpago),
         total: formatPesos(result.total),
@@ -29,43 +26,40 @@ const obtainData = async (query) => {
       }, {});
 
       const emailsSent = [];
-
-      await Promise.all(
-        Object.keys(groupedResults).map(async (nit) => {
-          const data = groupedResults[nit];
-          try {
+      const emailPromises = Object.keys(groupedResults).map(async (nit) => {
+        const data = groupedResults[nit];
+        try {
           const pdfPath = await generarReportePDF(data);
           await emailSend(data, pdfPath);
           emailsSent.push(...data);
-          await addStatusEmails(nit);
-          console.debug("Correo enviado con éxito.");
-          } catch (error) {
-            console.error(`Error al enviar correo para NIT ${nit}:`, error);
-          }
-        })
-      );
+          await addStatusEmails(nit, data.map(record => record.fechas));
+          console.log('Datos de la consulta: ', data);
+        } catch (error) {
+          throw new Error("Error al enviar correo para NIT " + nit);
+        }
+      });
+
+      await Promise.all(emailPromises);
 
       if (emailsSent.length > 0) {
-      const summaryPdfBuffer = await generarResumenPDF(emailsSent);
-      await sendNotificationEmail(emailsSent.length, summaryPdfBuffer);
+        const summaryPdfBuffer = await generarResumenPDF(emailsSent);
+        await sendNotificationEmail(emailsSent.length, summaryPdfBuffer);
       }
-    } else {
-      return json({ message: "No hay datos para el reporte." });
     }
   } catch (error) {
-    return json({ message: "Error al obtener los datos." });
+    console.error("Error al obtener los datos:", error);
+    throw new Error("Error al obtener los datos.");
   }
-};
+}
 
-function addStatusEmails (nit)  {
-  const query = `UPDATE pagopro SET send_email = true WHERE nit = ?`;
-  const result = pool.query(query, [nit]);
-  if (result.affectedRows === 0) {
-      return json({menssage: "No se actualizó el estado de los correos pendientes."});
-  } else {
-      return json({menssage: "Correos pendientes actualizados con éxito."});
+async function addStatusEmails(nit, fecha) {
+  const query = `UPDATE pagopro SET send_email = true WHERE nit = ? AND fecpago IN (?)`;
+  try {
+    await pool.query(query, [nit, fecha]);
+  } catch (error) {
+    console.error("Error al ejecutar la consulta:", error);
+    throw new Error("Hubo un error al actualizar el estado de los correos.");
   }
-
 }
 
 module.exports = { obtainData };

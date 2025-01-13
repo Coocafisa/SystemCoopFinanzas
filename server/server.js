@@ -64,8 +64,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Error inesperado en el servidor.' });
 });
 
-
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3002;
 app.listen(port, () => {
   console.log('Servidor en ejecución.');
 });

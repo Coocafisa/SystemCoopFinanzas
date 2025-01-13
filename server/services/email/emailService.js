@@ -37,22 +37,26 @@ const transporter = async () => {
 const emailSend = async (data, pdfBuffer) => {
   try {
     const transport = await transporter();
-    const { nit, razonsoc, fecpago, correo } = data[0];
-
+    const { razonsoc, fecpago, correo } = data[0];
+    console.log("Datos del correo: ", data[0]);
     const mailOptions = {
       from: "contacto@coocafisa.com",
       to: correo,
-      subject: "Informe diario",
-      text: "El presente correo contiene un informe PDF de sus registros que tienen por fecha de pago el día de hoy.",
+      subject: "Compendio de Pagos Realizados por la Cooperativa de Caficultores de Salgar",
+      text: `Estimado ${razonsoc}, 
+      Por medio del presente correo, se les comparte un compendio detallado de todos
+      los pagos efectuados por la cooperativa hasta la fecha actual. Este documento ha
+      sido elaborado con el propósito de proporcionar un resumen claro y transparente de
+      las transacciones realizadas, facilitando su consulta y análisis. 
+      Quedamos atentos a cualquier duda o información adicional que puedan requerir.`,
       attachments: [
         {
-          filename: `${nit}_${razonsoc}_${fecpago}.pdf`,
+          filename: `Reporte de Pagos Realizados Coocafisa ${fecpago}.pdf`,
           content: pdfBuffer,
           contentType: 'application/pdf',
         },
       ],
     };
-
     await transport.sendMail(mailOptions);
   } catch (error) {
     return error;
@@ -77,25 +81,10 @@ const sendNotificationEmail = async (count, pdfBuffer) => {
     };
 
     await transport.sendMail(notificationOptions);
-
   } catch (error) {
     return error;
   }
 };
 
-async function resendEmails () {
-  const query = `SELECT pagopro.nit, razonsoc, factura, fecfac, fecvcto, total, retencion, tot,
-        pagfac, pagtot, str_to_Date(fecpago, '%e-%b-%y') AS fecpago, correo 
-        FROM proveedor INNER JOIN pagopro ON proveedor.nit = pagopro.nit 
-        WHERE send_email = false AND proveedor.nit = pagopro.nit;`;
-  const results = await pool.query(query);
-  if (results.length > 0) {
-      await obtainData(results);
-      return "Correos enviados con éxito.";
-  } else {
-      return "No hay correos pendientes.";
-  }
-}
-
-module.exports = { emailSend, sendNotificationEmail, transporter, resendEmails };
+module.exports = { emailSend, sendNotificationEmail, transporter };
 

@@ -19,13 +19,11 @@ export default function Header({ menuOptions }) {
 
   return (
     <header className={`principal ${isScrolled ? "scrolled" : ""}`}>
-      <a href="/home">
         <img
           src="/images/Logo.cooperativa.png"
           alt="logo"
           className="imglogoindex"
         />
-      </a>
       
       <h1 className="text-header">Bienvenido a CoopFinanzas</h1>
       <Menu menuOptions={menuOptions} /> 

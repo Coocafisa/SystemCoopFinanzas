@@ -242,7 +242,7 @@ const generarReportePDF = async (data) => {
 </html>`;
 
   await page.setContent(htmlContent, {
-    waitUntil: "Reporte de Pagos Coocafisa-"`${data[0].fecemi}`,
+    waitUntil: "load",
   });
   const pdfBuffer = await page.pdf({
     format: "A4",
@@ -441,7 +441,7 @@ const generarResumenPDF = async (data) => {
 </html>`;
 
   await page.setContent(htmlContent, {
-    waitUntil: "Reporte de Pagos a Proveedores-"`${data[0].fecemi}`,
+    waitUntil: "load",
   });
   const pdfBuffer = await page.pdf({
     format: "A4",
