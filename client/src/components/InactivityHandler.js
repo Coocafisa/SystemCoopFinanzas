@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import { logout } from "@/api/auth/authService";
+import { logout } from "@/api/auth/logout";
 import { getSession } from "@/api/authenticated/sessionService";
 import AlertPopup from "./common/alert";
 import { Loader } from "./common/preloader";

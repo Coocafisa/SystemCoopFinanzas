@@ -1,4 +1,5 @@
 const request = require('../../red/request');
+const { obtainData } = require("./funtions.email/report/obtainData");
 
 module.exports = function (dbInsert) {
     let db = dbInsert;
@@ -28,8 +29,19 @@ module.exports = function (dbInsert) {
         }
     }
 
+    async function resendEmails () {
+        const results = await pendingEmails();
+        if (results.length > 0) {
+            await obtainData(results);
+            request.success(req, res, { message: "Correos enviados con éxito." }, 200);
+        } else {
+            request.error(req, res, "No hay correos pendientes.", 400);
+        }
+      }
+
     return {
         Emails,
         pendingEmails,
+        resendEmails,
     }
 }

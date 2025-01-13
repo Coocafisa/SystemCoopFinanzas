@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import ResultTable from "@/components/common/result_table";
-import { queryEmails } from "@/api/authenticated/adminService";
+import { queryEmails } from "@/api/requestAdmin/querysAdmin";
 import HoraForm from "@/components/layout/formhouremail";
 import { ProtectedRoute } from "../../../../components/middleware";
 

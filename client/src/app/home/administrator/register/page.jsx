@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { ProtectedRoute } from "@/components/middleware";
 import { Loader } from "@/components/common/preloader";
 import AlertPopup from "@/components/common/alert";
+import Link from "next/link";
 
 export default function Registerusers() {
   const [showAlert, setShowAlert] = useState(true);
@@ -155,8 +156,6 @@ export default function Registerusers() {
     <p>Los campos con * son obligatorios.</p>
   </div>
 )}
-
-
         <div className="btn_butones">
           <a href="/home">
             <button type="button" className="btn_cancelar">

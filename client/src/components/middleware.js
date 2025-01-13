@@ -8,9 +8,9 @@ export function ProtectedRoute({ children, allowedRoles = []}) {
     useEffect(() => {
         if (!loading) {
             if (!user) {
-                /* window.location.href = '/'; */
+                window.location.href = '/'; 
             } else if (allowedRoles.length > 0 && !allowedRoles.includes(role)) {
-                /* window.location.href = '/'; */
+                window.location.href = '/';
             }
         }
     }, [user, loading, role, allowedRoles]);

@@ -1,5 +1,4 @@
 import "@public/styles/globals.css";
-import { AuthProvider } from "../api/auth/authContext";
 export const metadata = {
   icon: "/favicon.ico",
   title: "Cooperativa de Caficultores de Salgar-CoopFinanzas",

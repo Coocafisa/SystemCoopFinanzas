@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
 const { request } = require("@/red/request");
+const app = require("@/app");
 
 const transporter = async (next) => {
     const emailConfig = app.get("emailConfig");

@@ -1,5 +1,4 @@
 "use client";
-import IndexLayout from "../layout";
 import { useState, useEffect } from "react";
 import ResultTable from "@/components/common/result_table";
 import { queryUsers } from "@/api/authenticated/queryService";
@@ -36,7 +35,7 @@ export default function Users() {
         "fecha_reg"
     ];
     return (
-        <IndexLayout>
+        <>
             if (error) return <p style={{ color: "red" }}>{error}</p>;
             <ProtectedRoute/>
                 <ResultTable
@@ -47,6 +46,6 @@ export default function Users() {
                     fields={fields}
                     error={error}
                 />
-        </IndexLayout>
+        </>
     );
 }

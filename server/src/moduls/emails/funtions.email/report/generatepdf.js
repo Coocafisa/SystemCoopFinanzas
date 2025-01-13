@@ -191,7 +191,7 @@ const generarReportePDF = async (data) => {
       </div>
 
       <!-- Generación de facturas con su propia sección -->
-      ${data .map( (item) => `
+      ${data.map( (item) => `
       <div class="factura-container">
         <div class="factura-header">
           <h3>Factura: ${item.factura}</h3>
@@ -242,7 +242,7 @@ const generarReportePDF = async (data) => {
 </html>`;
 
   await page.setContent(htmlContent, {
-    waitUntil: "Reporte de Pagos Coocafisa-"`${data[0].fecemi}`,
+    waitUntil: "load",
   });
   const pdfBuffer = await page.pdf({
     format: "A4",
@@ -255,7 +255,6 @@ const generarReportePDF = async (data) => {
     },
     scale: 0.8,
   });
-
   await browser.close();
   return pdfBuffer;
 };
@@ -441,7 +440,7 @@ const generarResumenPDF = async (data) => {
 </html>`;
 
   await page.setContent(htmlContent, {
-    waitUntil: "Reporte de Pagos a Proveedores-"`${data[0].fecemi}`,
+    waitUntil: "Reporte de Pagos Realizados-"`${data[0].fecemi}`,
   });
   const pdfBuffer = await page.pdf({
     format: "A4",
@@ -454,7 +453,6 @@ const generarResumenPDF = async (data) => {
     },
     scale: 0.8,
   });
-
   await browser.close();
   return pdfBuffer;
 };

@@ -35,6 +35,12 @@ app.set('emailConfig', {
     client_secret: config.apiEmail.client_secret,
     refresh_token: config.apiEmail.refresh_token
 });
+app.set('MYSQL', {
+    host: config.mysql.host,
+    user: config.mysql.user,
+    password: config.mysql.password,
+    database: config.mysql.database
+});
 app.set('trust proxy', 1);
 
 app.use('/auth', auth);

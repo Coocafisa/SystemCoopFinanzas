@@ -1,7 +1,7 @@
 "use client";
 import ResultTable from "@/components/common/result_table";
 import { useState, useEffect } from "react";
-import { getEmailsPending } from "@/api/authenticated/adminService";
+import { queryEmailsPending } from "@/api/requestAdmin/querysAdmin";
 import HoraForm from "@/components/layout/formhouremail";
 import { ProtectedRoute } from "../../../../components/middleware";
 import { resendEmails } from "@/api/authenticated/adminService";
@@ -16,7 +16,7 @@ export default function PendingEmails() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const pendingEmailsData = await getEmailsPending(setAlert);
+            const pendingEmailsData = await queryEmailsPending(setAlert);
             setPendingEmails(pendingEmailsData);
         }
         fetchData();

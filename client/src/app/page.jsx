@@ -70,7 +70,7 @@ export default function Login() {
                     </label>
                     <input
                     
-                        type="number"
+                        type="text"
                         id="user"
                         name="user"
                         value={formData.user}

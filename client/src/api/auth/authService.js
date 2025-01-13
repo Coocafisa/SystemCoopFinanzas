@@ -1,4 +1,4 @@
-import { api } from "../serverApi";
+import { api } from "../apiRest";
 
 export const auth = async (event, setAlert, setLoading, setType) => {
   event.preventDefault();
@@ -41,29 +41,3 @@ export const auth = async (event, setAlert, setLoading, setType) => {
   }, 2000);
 }
 };
-
-export const logout = async (event,setAlert, setType, setLoading) => {
-  event.preventDefault();
-  try {
-    const response = await api.post('/session/logout');
-    const data = response.data;
-    if (response.status === 200) {
-      setType("success");
-      setAlert(data.body.message);
-      setTimeout(() => {
-        setAlert("");
-        window.location.href = data.body.redirect;
-        sessionStorage.removeItem("Token");
-        setLoading(false);
-      }, 1000);
-    } 
-  } catch (error) {
-    setAlert("Error al cerrar sesión.");
-    setTimeout(() => {
-      setType("error");
-      setAlert("");
-      setLoading(false);
-    }, 3000);
-  }
-}
-

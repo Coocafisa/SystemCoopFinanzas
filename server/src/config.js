@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: require('path').resolve(__dirname, '../env/.env') });
 module.exports = {
     app: {
         port: process.env.PORT,
@@ -7,7 +7,7 @@ module.exports = {
 
     jwt: {
         secret: process.env.JWT_SECRET || 'secret',
-        expiresIn: process.env.JWT_EXPIRES_IN || '1h',
+        expiresIn: process.env.JWT_EXPIRES_IN || '15m',
     },
 
     mysql: {

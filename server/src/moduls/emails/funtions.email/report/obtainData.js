@@ -1,9 +1,9 @@
-const { formatDate } = require("../../functions/helpers");
-const { emailSend, sendNotificationEmail } = require("../emailService");
+const { formatDate } = require("../../../../../services/functions/helpers");
+const { emailSend, sendNotificationEmail } = require("../../../../../services/email/emailService");
 const { generarReportePDF, generarResumenPDF } = require("./generatepdf");
-const pool = require("../../../connectionBD/db");
+const pool = require("../../../../../connectionBD/db");
 const { json } = require("express");
-const { formatPesos } = require("../../functions/helpers");
+const { formatPesos } = require("../../../../../services/functions/helpers");
 
 const obtainData = async (query) => {
 
@@ -53,7 +53,7 @@ const obtainData = async (query) => {
       return json({ message: "No hay datos para el reporte." });
     }
   } catch (error) {
-    return json({ message: "Error al obtener los datos." });
+    return json({ message: "Error al obtener los datos." }, error);
   }
 };
 

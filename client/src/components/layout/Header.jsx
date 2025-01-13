@@ -42,16 +42,11 @@ export default function Header({ menuOptions }) {
     } else {
         window.location.href = "/home/suppliers";
     }
-    window.location.href = "/";
   };
 
   const toogleDetalles = () => {
     setIsVisible(!isVisible);
   } 
-
-  useEffect(() => {
-    console.log(isVisible)
-  }, [])
   return (
     <>
     <header className={`principal ${isScrolled ? "scrolled" : ""}`}>
@@ -61,14 +56,11 @@ export default function Header({ menuOptions }) {
           className="imglogoindex"
           onClick={handleClick}
         />
-      <h1 className="text-header">Bienvenido a CoopFinanzas</h1>
+      <h1 className="text-header">CoopFinanzas</h1>
       
       <div className="perfil">
-        <div className="avatar" onClick={toogleDetalles}>
-          <img src="images/Logo.cooperativa.png" alt="avatar" />
-        </div>
         <div className="info">
-          <p className="text_user">{user.nombre}</p>
+          <p className="text_user" onClick={toogleDetalles}>Bienvenido, {user.nombre}</p>
         </div>
         <div className={`detalle-perfil ${isVisible ? 'visible': ''}`}>
           <p className="title-perfil">Perfil</p>
