@@ -1,21 +1,23 @@
-"use client";
+"use client"
+
 import React, { useEffect, useState } from "react";
 import Table from "@/components/common/table";
-import { queryInvoices } from "@/api/authenticated/invoiceService";
+import { queryinvoicepending } from "@/api/authenticated/invoiceService";
 import { ProtectedRoute } from "@/components/middleware";
-export default function Invoices() {
-  const [data, setInvoices] = useState([]);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchInvoices = async () => {
-      const invoices = await queryInvoices(setError);
-      setInvoices(invoices);
-    };
-    fetchInvoices();
-  }, []);
+export default function InvoicePending() {
+    const [data, setInvoices] = useState([]);
+    const [error, setError] = useState(null);
 
-  const title = "Tus Facturas";
+    useEffect(() => {
+        const fetchInvoices = async () => {
+            const invoices = await queryinvoicepending(setError);
+            setInvoices(invoices);
+        };
+        fetchInvoices();
+    }, []);
+
+    const title = "Tus Facturas Pendientes";
   const headers = [
     "Factura", "Fecha Factura", "Fecha Vencimiento", "Total", "Retencion"
   ];
@@ -35,10 +37,10 @@ export default function Invoices() {
     { label: "Valor Pago", value: data[0]?.pagtot || "0", }
   ];
 
-  return (
-    <>
-    <ProtectedRoute allowedRoles={["User"]}/>
-    <Table
+    return (
+        <>
+        <ProtectedRoute allowedRoles={["Proveedor"]}/>
+        <Table
       data={data}
       title={title}
       fields={fields}
@@ -47,6 +49,6 @@ export default function Invoices() {
       error={error}
       keysToSearch={['factura', 'fecfac', 'fecvcto']}
     />
-    </>
-  );
+        </>
+    );  
 }

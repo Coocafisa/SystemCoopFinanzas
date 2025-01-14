@@ -71,4 +71,5 @@
 .menu-label.logout {
   gap: 10px;
   color: #f3f4f6;
+  cursor: pointer;
 }

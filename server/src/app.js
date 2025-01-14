@@ -6,13 +6,11 @@ const cookieParser = require('cookie-parser');
 
 const error = require('./red/error');
 const users = require('./moduls/users/routes');
-const suppliers = require('./moduls/suppliers/routes');
 const auth = require('./moduls/auth/routes');
-const contractors = require('./moduls/contractors/routes');
-const employees = require('./moduls/employees/routes');
 const emails = require('./moduls/emails/routes');
 const session = require('./moduls/sessions/routes');
 const admin = require('./moduls/admin/routes');
+const entities = require('./moduls/entities/routes');
 
 const app = express();
 
@@ -46,11 +44,9 @@ app.set('trust proxy', 1);
 app.use('/auth', auth);
 app.use('/session', session);
 app.use('/users', users);
-app.use('/supplier', suppliers);
-app.use('/contractor', contractors);
-app.use('/employees', employees);
 app.use('/emails', emails);
 app.use('/admin', admin)
+app.use('/entities', entities)
 app.use(error);
 
 module.exports = app;

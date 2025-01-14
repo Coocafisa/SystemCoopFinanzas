@@ -15,14 +15,12 @@ function connectMysql() {
     connection = mysql.createConnection(dbConfig);
     connection.connect((err) => {
         if (err) {
-            console.error('Error al conectar con la base de datos', err);
             setTimeout(connectMysql, 2000);
         } else {
             return console.log('Conectado a la base de datos');
         }
     });
     connection.on('error', (err) => {
-        console.error('Error de conexión a la base de datos', err);
         if (err.code === 'PROTOCOL_CONNECTION_LOST') {
             connectMysql();
         } else {

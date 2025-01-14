@@ -1,5 +1,6 @@
 const request = require('../../red/request');
 const { obtainData } = require("./funtions.email/report/obtainData");
+const obtainTimer = require("./funtions.email/report/hourprogram.json");
 
 module.exports = function (dbInsert) {
     let db = dbInsert;
@@ -39,9 +40,18 @@ module.exports = function (dbInsert) {
         }
       }
 
+    async function timerEmails(req, res) {
+        if (!obtainTimer) {
+            request.error(req, res, "No se encontró la hora programada.", 400);
+        }
+        const { hour, minute } = obtainTimer;
+        request.success(req, res, { hour, minute }, 200);
+        }
+
     return {
         Emails,
         pendingEmails,
         resendEmails,
+        timerEmails,
     }
 }

@@ -3,10 +3,8 @@ import axios from "axios";
 export const sessionToken = async () => {
   try {
     const token = sessionStorage.getItem("Token");
-    console.log("Token actualizado:", token);
     return token ? token : null;
   } catch (error) {
-    console.error("Error al obtener el token de sesión:", error);
     return null;
   }
 };
@@ -31,7 +29,6 @@ export const api = axios.create({
 api.interceptors.request.use(
   async (config) => {
     const token = await sessionToken();
-    console.log("Token actualizado54:", token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

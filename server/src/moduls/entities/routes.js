@@ -7,7 +7,6 @@ const { verifyToken } = require('../../middleware/authMiddleware');
 const router = express.Router();
 router.use(verifyToken);
 
-router.get('/', controller.perfilUser);
-router.get('/queryUsers', controller.queryUsers);
+router.get('/', controller.queryEntities);
 
 module.exports = router;

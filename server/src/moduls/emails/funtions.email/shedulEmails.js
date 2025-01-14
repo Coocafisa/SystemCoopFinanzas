@@ -28,7 +28,6 @@ const controller = require("../index");
       job = schedule.scheduleJob(`${minute} ${hour} * * *`, async() => {
         try {
           const results = await controller.Emails();
-          console.log('Consulta de envio de correos: ',results);
           if (results.length > 0) {
             await obtainData(results);
           } else {

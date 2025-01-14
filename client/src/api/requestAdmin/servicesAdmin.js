@@ -3,9 +3,9 @@ import { api } from "../apiRest";
 export const programmatEmails = async (hora, minuto, setAlert, setType, setLoading) => {
     try {
         setType('success');
-        const response = await api.post("/emails/sheduleMailings", {
-            hour: hora,
-            minute: minuto,
+        const response = await api.post("/emails/scheduleMailings", {
+            hour: Number(hora),
+            minute: Number(minuto),
         });
         const data = response.data;
         setAlert(data.body.message);

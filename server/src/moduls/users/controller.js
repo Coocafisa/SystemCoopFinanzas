@@ -1,16 +1,11 @@
-var table = 'usuario';
+const request  = require('../../red/request.js');
+
+var table = 'users';
 
 module.exports = function (dbInsert) {
     let db = dbInsert;
     if (!db) {
         db = require('../../db/mysql.js');
-    }
-
-    async function consultUser() {
-        const selecTable = table + ' INNER JOIN usuario ON proveedor.proveedor_id = usuario.proveedor_id';
-        const fields = 'rol, proveedor.nit, razonsoc, correo';
-        const params = 'nit = 1033646987';
-        return await db.query(selecTable, fields, params);
     }
 
     async function validateUser(user) {
@@ -26,7 +21,7 @@ module.exports = function (dbInsert) {
         }
     }
 
-    async function user (req, res) {
+    async function perfilUser (req, res) {
         if (req.auth && req.auth.name) {
             const dateUser = await validateUser(req.auth.name);
             return res.json({ 
@@ -41,8 +36,20 @@ module.exports = function (dbInsert) {
         }
     }
 
+    async function queryUsers(req, res) {
+        const table = 'entities INNER JOIN users ON entities.entidad_id = users.entidad_id';
+        const fields = 'identificacion, rol, nombre, entities.fech_reg, correo'
+        try {
+            const data = await db.query(table, fields);
+            request.success(req, res, data, 200);
+        } catch (error) {
+            request.error(req, res, error, 404);
+        }        
+    }
+
     return {
         validateUser,
-        user,
+        perfilUser,
+        queryUsers
     }
 };

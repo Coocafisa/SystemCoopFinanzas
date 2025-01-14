@@ -48,15 +48,14 @@ module.exports = function(dbInsert) {
                 const isMatch = await bcrypt.compare(data.password, usuario.pasword);
                 if (!isMatch) {
                     const updatedIntentos = usuario.intentos_fallidos + 1;
-                    console.log(updatedIntentos);
                     await db.update('auth', `intentos_fallidos = ${updatedIntentos}`, ` usuario_id = '${usuario.usuario_id}'`);
                     return request.error(req, res, 'Credenciales incorrectas.', 400);
                 }
 
-                await db.update('auth', 'intentos_fallidos = 0', ` usuario_id = '${usuario.usuario_id}'`);	
+                await db.update('auth', `intentos_fallidos = 0, actividad = CURRENT_TIMESTAMP`, ` usuario_id = '${usuario.usuario_id}'`);	
                 const token = tokenAuth(usuario);
                 const redirectPath = usuario.rol === 'Administrador' 
-                ? '/home' : '/home/suppliers/invoices';
+                ? '/home' : '/home/user/suppliers/invoices';
                 if (!token) {
                     return request.error(req, res, 'No se econtró el token.', 500);
                 }

@@ -13,4 +13,9 @@ async function Auth(req, res, next) {
         return items;
 };
 
+router.get('/actividad', (req, res) => {
+    const hora = new Date();
+    request.success(req, res, { hora }, 200);
+});
+
 module.exports = router;

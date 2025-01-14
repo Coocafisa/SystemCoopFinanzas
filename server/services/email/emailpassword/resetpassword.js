@@ -64,7 +64,6 @@ router.post('/emailresetpass', async (req, res) => {
             });
         }
     } catch (error) {
-        console.error(error);
         return res.status(400).json({
             message: "Ocurrió un error interno. Inténtalo más tarde.",
         });

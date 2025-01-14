@@ -37,7 +37,7 @@ export default function Invoices() {
 
   return (
     <>
-    <ProtectedRoute allowedRoles={["User"]}/>
+    <ProtectedRoute allowedRoles={["Proveedor"]}/>
     <Table
       data={data}
       title={title}

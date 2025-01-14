@@ -57,11 +57,6 @@ export default function InactivityHandler() {
     await logout(event, setAlert, setType, setLoading);
   };
 
-  useEffect(() => {
-    console.log("Expiration: ", timer);
-    console.log("SessionState: ", sessionState);
-  }, [timer, sessionState]);
-
   return (
     <>
     { sessionState === "inactive" && (

@@ -1,21 +1,21 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Table from "@/components/common/table";
-import { queryInvoices } from "@/api/authenticated/invoiceService";
+import { queryinvoicepayment } from "@/api/authenticated/invoiceService";
 import { ProtectedRoute } from "@/components/middleware";
-export default function Invoices() {
+export default function Invoicepayments() {
   const [data, setInvoices] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchInvoices = async () => {
-      const invoices = await queryInvoices(setError);
+      const invoices = await queryinvoicepayment(setError);
       setInvoices(invoices);
     };
     fetchInvoices();
   }, []);
 
-  const title = "Tus Facturas";
+  const title = "Tus Facturas Pagadas";
   const headers = [
     "Factura", "Fecha Factura", "Fecha Vencimiento", "Total", "Retencion"
   ];
@@ -37,7 +37,7 @@ export default function Invoices() {
 
   return (
     <>
-    <ProtectedRoute allowedRoles={["User"]}/>
+    <ProtectedRoute allowedRoles={["Proveedor"]}/>
     <Table
       data={data}
       title={title}

@@ -1,6 +1,6 @@
 import { api } from "../apiRest"
 
-export const consultPaymentEntities = async () => {
+export const consultPaymentEntities = async (setAlert) => {
     try {
         const response = await api.get('/admin');
         const data = response.data;
@@ -82,6 +82,29 @@ export const timerEmails = async (setAlert) => {
         } else {
             setAlert("Ocurrió un error al enviar la solicitud.");
             return { hour: 0, minute: 0 };
+        }
+    }
+};
+
+export const getSuppliers = async (setAlert) => {
+    try {
+        const response = await api.get("/users/queryUsers");
+        const data = response.data;
+        if (response.status === 200) {
+            return data;
+        } else {
+            return [];
+        }
+    } catch (error) {
+        if (error.response) {
+            setAlert(error.response.data.error);
+            return [];
+        } else if (error.request) {
+            setAlert(`Nuestro servidor está temporalmente fuera de servicio. Inténtalo mas tarde.`);
+            return [];
+        } else {
+            setAlert("Ocurrió un error al enviar la solicitud.");
+            return [];
         }
     }
 }

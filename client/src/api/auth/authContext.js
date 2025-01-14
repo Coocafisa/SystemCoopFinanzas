@@ -22,7 +22,6 @@ export function AuthProvider({ children }) {
             try {
                 
                 const { isAuthenticated, user, role, expiration } = await getSession();
-                console.log( isAuthenticated, user, role, expiration);
 
                 if (isAuthenticated) {
                     setUser(user);

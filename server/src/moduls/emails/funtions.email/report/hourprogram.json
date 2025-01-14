@@ -1,1 +1,5 @@
-{"selectHour":"16:00","hour":"16","minute":"00"}
+{
+  "selectHour": "10:00",
+  "hour": 10,
+  "minute": "00"
+}
