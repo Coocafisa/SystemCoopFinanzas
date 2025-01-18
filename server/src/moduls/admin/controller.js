@@ -8,8 +8,8 @@ module.exports = function(dbInsert) {
         db = require('../../db/mysql');
     }
     async function queryInvoices(req, res, next) {
-        const fields = `nit, factura, fecfac, fecvcto, total, retencion, tot,
-	        fecpago, pagfac, pagtot`
+        const fields = [`nit, factura, fecfac, fecvcto, total, retencion, tot,
+	        fecpago, pagfac, pagtot`];
         const params = `fecpago IS NOT NULL`;
         try {
             const results = await db.query(table, fields, params);

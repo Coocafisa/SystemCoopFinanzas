@@ -9,5 +9,6 @@ router.use(verifyToken);
 
 router.get('/', controller.perfilUser);
 router.get('/queryUsers', controller.queryUsers);
+router.get('/entities', controller.queryEntities); 
 
 module.exports = router;

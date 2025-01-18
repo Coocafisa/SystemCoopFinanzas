@@ -1,12 +1,13 @@
 const express = require('express');
 
-const request = require('../../red/request');
 const controller = require('./index');
 const { verifyToken } = require('../../middleware/authMiddleware');
 
 const router = express.Router();
 router.use(verifyToken);
 
-router.get('/', controller.queryEntities);
+router.get('/', controller.queryInvoicesUserId);
+router.get('/invoicesPayment', controller.queryInvoicesPaymentUserdId);
+router.get('/invoicesPending', controller.queryInvoicesPendingUserId);
 
 module.exports = router;

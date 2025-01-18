@@ -8,11 +8,12 @@ module.exports = function (dbInsert) {
         db = require('../../db/mysql');
     }
 
-    async function  Emails(req, res) {
+    async function Emails(req, res) {
         try {
         const table = `pagopro INNER JOIN entities ON pagopro.nit = entities.identificacion`;
         const fields = '*';
-        const params = `send_email = false AND entities.identificacion = pagopro.nit AND str_to_Date(fecpago, '%e-%b-%y') = curdate()`;
+        const params = `send_email = false AND entities.identificacion = pagopro.nit AND
+        str_to_Date(fecpago, '%e-%b-%y') = curdate() GROUP BY pagopro.nit`;
         return await db.query(table, fields, params);
         } catch (error) {
             request.error(req, res, error, 404);
@@ -23,7 +24,7 @@ module.exports = function (dbInsert) {
         try {
             const table = `pagopro INNER JOIN entities ON pagopro.nit = entities.identificacion`;
             const fields = '*';
-            const params = 'send_email = false AND entities.identificacion = pagopro.nit';
+            const params = 'send_email = false AND entities.identificacion = pagopro.nit GROUP BY pagopro.nit';  
             return await db.query(table, fields, params);
         } catch (error) {
             request.error(req, res, error, 404);

@@ -1,3 +1,4 @@
+const request = require("../../red/request");
 module.exports = function(dbInsert) {
     let db = dbInsert;
     if (!db) {
@@ -25,7 +26,17 @@ module.exports = function(dbInsert) {
         
     }
 
+     async function logout(req, res) {
+        res.clearCookie('token', { path: '/' });
+        const data = await db.query(`entities INNER JOIN users ON entities.entidad_id = users.entidad_id
+            INNER JOIN auth ON auth.usuario_id = users.usuario_id`, 'identificacion, usuario_id',
+            `identificacion = ${req.auth.name}`);
+        await db.update('auth', 'sesion = 0', `${data[0].usuario_id}`);
+        return request.success(req, res, { message: 'Serrando sesión...' }, 200);
+    }
+
     return {
         session,
+        logout,
     };
 }

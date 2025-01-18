@@ -10,7 +10,8 @@ const auth = require('./moduls/auth/routes');
 const emails = require('./moduls/emails/routes');
 const session = require('./moduls/sessions/routes');
 const admin = require('./moduls/admin/routes');
-const entities = require('./moduls/entities/routes');
+const invoices = require('./moduls/invoices/routes');
+const userManagement = require('./moduls/userManagement/routes');
 
 const app = express();
 
@@ -46,7 +47,8 @@ app.use('/session', session);
 app.use('/users', users);
 app.use('/emails', emails);
 app.use('/admin', admin)
-app.use('/entities', entities)
+app.use('/invoices', invoices)
+app.use('/userManagement', userManagement)
 app.use(error);
 
 module.exports = app;

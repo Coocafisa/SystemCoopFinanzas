@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { ProtectedRoute } from "@/components/middleware";
 import { Loader } from "@/components/common/preloader";
 import AlertPopup from "@/components/common/alert";
-import Link from "next/link";
 
 export default function Registerusers() {
   const [showAlert, setShowAlert] = useState(true);
@@ -14,7 +13,7 @@ export default function Registerusers() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [formValues, setFormValues] = useState({
-    nit: "",
+    identificacion: "",
     rol: "",
     pass: "",
     passcon: ""
@@ -31,7 +30,7 @@ export default function Registerusers() {
 
   const validateField = (name, value) => {
     let error = "";
-    if (value.trim() === "" && ["nit", "rol", "pass", "passcon"].includes(name)) {
+    if (value.trim() === "" && ["identificacion", "rol", "pass", "passcon"].includes(name)) {
       error = "Este campo es obligatorio";
     } else if (name === "pass" && value.length < 8) {
       error = "La contraseña debe ser mínimo de 8 caracteres";
@@ -45,7 +44,7 @@ export default function Registerusers() {
     const { name, value } = event.target;
     setFormValues({ ...formValues, [name]: value });
 
-    if (value || ["nit", "rol", "pass", "passcon"].includes(name)) {
+    if (value || ["identificacion", "rol", "pass", "passcon"].includes(name)) {
       setErrors({ ...errors, [name]: validateField(name, value) });
     } else {
       setErrors({ ...errors, [name]: "" });
@@ -106,21 +105,21 @@ export default function Registerusers() {
               className={errors.rol}
             >
               <option value="Select">Seleccionar</option>
-              <option value="Proveedor">Proveedor</option>
+              <option value="Usuario">Usuario</option>
               <option value="Administrador">Administrador</option>
             </select>
           </div>
           
           <div className="stlvar">
-            <label htmlFor="nit">Nit*</label>
+            <label htmlFor="identificacion">Identificación*</label>
             <input 
               type="number" 
-              name="nit" 
-              id="nit" 
-              value={formValues.nit}
+              name="identificacion" 
+              id="identificacion" 
+              value={formValues.identificacion}
               onChange={handleChange}
               onFocus={handleFocus}
-              className={errors.nit}
+              className={errors.identificacion}
             />
           </div>
 

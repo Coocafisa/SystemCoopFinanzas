@@ -5,8 +5,8 @@ const api =  require('../apiRest');
 export const logout = async (event,setAlert, setType, setLoading) => {
     event.preventDefault();
     try {
-        /* const response = await api.post('/session/logout');
-        const data = response.data; */
+        const response = await api.post('/session/logout');
+        const data = response.data;
         const session = sessionToken();
       if (session > 0 ) {
         setType("success");

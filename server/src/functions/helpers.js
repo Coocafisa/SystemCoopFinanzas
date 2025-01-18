@@ -25,4 +25,5 @@ function formatPesos (number) {
     }).format(number);
 }
 
-module.exports = { formatDate, generarToken, formatPesos };
+
+module.exports = { formatDate, generarToken, formatPesos};

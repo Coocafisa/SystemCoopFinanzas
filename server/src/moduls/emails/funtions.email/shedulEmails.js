@@ -43,13 +43,4 @@ const controller = require("../index");
     }
   }
 
-  router.post('/resendEmails', async (req, res) => {
-    try {
-      const results = await resendEmails();
-      return res.status(200).json({ message: results });
-    } catch (error) {
-      return res.status(500).json({ message: "Error al enviar correos." });
-    }
-  });
-
 module.exports = { scheduleJob };

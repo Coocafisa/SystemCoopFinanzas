@@ -10,12 +10,9 @@ router.use(verifyToken)
 
 router.get('/', controller.session);
 router.post('/logout', (req, res, next) => {
-  if (req.auth && req.auth.name) {
     res.clearCookie('token', { path: '/' });
+    controller.logout
     request.success(req, res, { message: 'Serrando sesión...' }, 200);
-  } 
-  request.error(req, res, 'No hay sessiones activas.', 400);
-
   });
 
 module.exports = router;

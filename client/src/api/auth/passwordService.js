@@ -1,157 +1,157 @@
 import { api } from "../apiRest";
 
+const handleApiError = (error, setAlert) => {
+  if (error.response) {
+    const message = error.response.data?.message || `Error desconocido (Código: ${error.response.status}).`;
+    setAlert(message);
+  } else if (error.request) {
+    setAlert("Nuestro servidor está temporalmente fuera de servicio. Intenta más tarde.");
+  } else {
+    setAlert("Ocurrió un error al procesar la solicitud. Por favor, inténtalo nuevamente.");
+  }
+};
+
+
+const redirectTo = (url, delay = 2000) => {
+  setTimeout(() => {
+    window.location.href = url;
+  }, delay);
+};
+
 export const emailValidate = async (event, setAlert, setType, setLoading) => {
   event.preventDefault();
   const nit = event.target.nit.value.trim();
-  if (nit === "") {
+
+  if (!nit) {
     setAlert("Nit es requerido");
     setType("alertMessage");
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
+    setLoading(false);
     return;
   }
 
   try {
-    const response = await api.post("/recoverypass/emailresetpass", { nit });
-    const { data } = response;
-    if (response.status === 200) {
+    const { data, status } = await api.post("/recoverypass/emailresetpass", { nit });
+    if (status === 200) {
       setType("success");
       setAlert(data.message);
       event.target.nit.value = "";
-      setTimeout(() => {
-        window.location.href = data.redirect;
-        setLoading(false);
-      }, 3000);
+      redirectTo(data.redirect, 3000);
     }
   } catch (error) {
     setType("error");
-    if (error.response) {
-      const errorData = error.response.data.message;
-      setAlert(errorData);
-      if ([400, 401, 404].includes(error.response.status)) {
-        setAlert(errorData);
-      } else {
-        setAlert("Error en el servidor. Intenta nuevamente más tarde.");
-      }
-    } else if (error.request) {
-      setAlert(`Nuestro servidor está temporalmente fuera de servicio.
-              Estamos haciendo todo lo posible para restablecer el servicio.
-              Por favor, intenta más tarde.`);
-    } else {
-      setAlert("Ocurrió un error al enviar la solicitud.");
-    }
-    setTimeout(() => {
-      event.target.nit.value = "";
-      setLoading(false);
-    }, 5000);
+    handleApiError(error, setAlert);
   } finally {
-    setTimeout(() => {
-      event.target.nit.value = "";
-      setLoading(false);
-    }, 3000);
+    setLoading(false);
   }
 };
 
 export const resetpass = async (event, setAlert, token, setLoading, setType) => {
+  event.preventDefault();
   const newpass = event.target.newpass.value.trim();
   const confpass = event.target.confpass.value.trim();
+
   try {
-    const response = await api.post(`/recoverypass/resetpass`, {
+    const { data, status } = await api.post("/recoverypass/resetpass", {
       newpass,
       confpass,
       token,
     });
-    const { data } = response;
-    if (response.status === 201) {
+
+    if (status === 201) {
       setAlert(data.message);
+      redirectTo("/", 3000);
     }
-    event.target.newpass.value = "";
-    event.target.confpass.value = "";
-    setTimeout(() => {
-      window.location.href = "/";
-    }, 3000);
   } catch (error) {
     setType("error");
-    if (error.response) {
-      const errorData =
-        error.response.data.errors || error.response.data.message;
-      setAlert(errorData);
-      if ([400, 401, 404].includes(error.response.status)) {
-        setAlert(errorData);
-      } else {
-        setAlert("Error en el servidor. Intenta nuevamente más tarde.");
-      }
-      setTimeout(() => {
-        event.target.newpass.value = "";
-        event.target.confpass.value = ""; 
-        setLoading(false);
-        setAlert("");
-      }, 2000);
-    } else if (error.request) {
-      setAlert(`Nuestro servidor está temporalmente fuera de servicio.
-              Estamos haciendo todo lo posible para restablecer el servicio.
-              Por favor, intenta más tarde.`);
-    } else {
-      setAlert("Ocurrió un error al enviar la solicitud.");
-    }
-    setTimeout(() => {
-      event.target.newpass.value = "";
-      event.target.confpass.value = "";
-      setLoading(false);
-      setAlert("");
-    }, 5000);
+    handleApiError(error, setAlert);
+  } finally {
+    event.target.newpass.value = "";
+    event.target.confpass.value = "";
+    setLoading(false);
   }
 };
 
 export const getToken = async (setToken, setError, setType, setLoading) => {
   const token = new URLSearchParams(window.location.search).get("token");
+
   if (!token) {
     setType("error");
     setError("Token no proporcionado.");
-    setTimeout(() => {
-      window.location.href = "/";
-      setLoading(false);
-    }, 3000);
+    redirectTo("/");
     return;
   }
-  try {
-    const response = await api.get(`/recoverypass/getToken?token=${token}`);
-    const { data } = response;
 
-    if (response.status === 200) {
+  try {
+    const { data, status } = await api.get(`/recoverypass/getToken?token=${token}`);
+    if (status === 200) {
       setType("success");
       setError(data.message);
       setToken(token);
-      setTimeout(() => {
-        setLoading(false);
-      }, 3000);
-      return true;
     }
   } catch (error) {
     setType("error");
-    if (error.response) {
-      if ([400].includes(response.status)) {
-        const errorMessage =
-          error.response?.data?.message || "Error de conexión";
-        setError(errorMessage);
-        setTimeout(() => {
-          setLoading(false);
-          window.location.href = "/";
-        }, 3000);
-      } else {
-        setError("Error en la solicitud al servidor.");
-      }
-    } else if (error.request) {
-      setError(`Nuestro servidor está temporalmente fuera de servicio.
-              Estamos haciendo todo lo posible para restablecer el servicio.
-              Por favor, intenta más tarde.`);
-    } else {
-      setError("Error en la solicitud al servidor.");
+    handleApiError(error, setError);
+    redirectTo("/", 3000);
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const automaticRegistration = async (event, payload, setAlert, setType, setLoading) => {
+  event.preventDefault();
+  const { identificacion, rol, newpass, ter_cond } = payload;
+
+  try {
+    const { data, status } = await api.post("/userManagement/automaticRegistration", {
+      identificacion,
+      rol,
+      pasword: newpass,
+      ter_cond,
+    });
+
+    if (status === 200) {
+      setType("success");
+      setAlert(data.message);
+      redirectTo(data.redirect, 3000);
     }
-    setTimeout(() => {
-      setLoading(false);
-      setError("");
-    }, 5000);
+  } catch (error) {
+    setType("error");
+    handleApiError(error, setAlert);
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const verifyTokenAutoregister = async (setType, setAlert, setTokenValid, setData, setLoading) => {
+  const token = new URLSearchParams(window.location.search).get("token");
+
+  if (!token) {
+    redirectTo("/");
+    return;
+  }
+
+  try {
+    const { data, status } = await api.get(`/userManagement/verifyTokenAutoregister?token=${token}`);
+    if (status === 200) {
+      const { body } = data;
+
+      if (!body.name && !body.rol) {
+        setType("error");
+        setAlert("Token inválido, no se puede verificar la información.");
+        setTokenValid(false);
+        redirectTo("/");
+        return;
+      }
+
+      setType("success");
+      setTokenValid(true);
+      setData(body);
+      setAlert(body.message);
+    }
+  } catch (error) {
+    setType("error");
+    handleApiError(error, setAlert);
+  } finally {
+    setLoading(false);
   }
 };

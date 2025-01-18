@@ -51,5 +51,5 @@ export const adduser = async (event, setAlert, setType, setLoading) => {
             setLoading(false);
         }, 3000);
     }
-    
-}
+};
+

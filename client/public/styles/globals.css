@@ -57,6 +57,7 @@ button {
 
 .error-message {
   color: red;
+  font-size: 0.9rem;
 }
 
 input[type="number"]::-webkit-inner-spin-button,

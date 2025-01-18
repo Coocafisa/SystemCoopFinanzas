@@ -31,9 +31,13 @@ function connectMysql() {
 }
 connectMysql();
 
-function query(table, fields = '*', params = '1=1') {
+function query(table, fields = '*', params = '', values = []) {
     return new Promise((resolve, reject) => {
-        connection.query(`SELECT ${fields} FROM ${table} WHERE ${params}`, (err, result) => {
+        let sql = `SELECT ${fields} FROM ${table}`;
+        if (params) {
+            sql += ` WHERE ${params}`;
+        }
+        connection.query(sql, values, (err, result) => {
             return err ? reject(err) : resolve(result);
         });
     });
