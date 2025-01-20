@@ -1,5 +1,5 @@
 "use client";
-import { ProtectedRoute } from "../../components/middleware";
+import { ProtectedRoute } from "../../components/middleware/middleware";
 import ResultTable from "@/components/common/result_table";
 import { useState, useEffect } from "react";
 import { consultPaymentEntities } from "../../api/requestAdmin/querysAdmin";

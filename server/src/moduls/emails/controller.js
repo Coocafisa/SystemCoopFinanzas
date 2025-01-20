@@ -39,7 +39,7 @@ module.exports = function (dbInsert) {
         } else {
             request.error(req, res, "No hay correos pendientes.", 400);
         }
-      }
+    }
 
     async function timerEmails(req, res) {
         if (!obtainTimer) {
@@ -47,8 +47,8 @@ module.exports = function (dbInsert) {
         }
         const { hour, minute } = obtainTimer;
         request.success(req, res, { hour, minute }, 200);
-        }
-
+        };
+    
     return {
         Emails,
         pendingEmails,

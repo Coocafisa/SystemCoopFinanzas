@@ -1,6 +1,5 @@
+import { api } from '../apiRest';
 import { sessionToken } from '../authenticated/sessionService';
-
-const api =  require('../apiRest');
 
 export const logout = async (event,setAlert, setType, setLoading) => {
     event.preventDefault();
@@ -26,7 +25,8 @@ export const logout = async (event,setAlert, setType, setLoading) => {
       }
 
     } catch (error) {
-      setAlert("Error al cerrar sesión.");
+      console.log("Cierre: ",error);
+      setAlert("Error al cerrar sesión.", error);
       setTimeout(() => {
         setType("error");
         setAlert("");

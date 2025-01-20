@@ -1,7 +1,7 @@
+const bcrypt = require("bcrypt")
 const request = require("../../red/request.js");
 const { validateUser } = require("../users/index.js");
 const { createUserId, confirmToken } = require("../../functions/utils.js");
-const { verifyToken } = require("../../middleware/authMiddleware.js");
 
 const table = "users";
 
@@ -9,7 +9,7 @@ module.exports = function (dbInsert) {
   let db = dbInsert || require("../../db/mysql");
 
   async function addUsers(data) {
-    const { identificacion, usuario, password, ter_cond, rol } = data;
+    const { identificacion, password, ter_cond, rol } = data;
 
     if (!identificacion || !ter_cond || !password || !rol) {
       return {
@@ -40,14 +40,14 @@ module.exports = function (dbInsert) {
       const userResult = await db.insert(table, {
         usuario_id,
         entidad_id: queryEntities.entidad_id,
-        usuario,
         rol
       });
 
       if (userResult.affectedRows > 0) {
+        const hashedPassword = await bcrypt.hash(password, 10);
         await db.insert("auth", {
           usuario_id,
-          pasword: password,
+          pasword: hashedPassword,
           ter_cond,
         });
 
@@ -64,10 +64,9 @@ module.exports = function (dbInsert) {
   }
 
   async function automaticRegistration(req, res, data) {
-    const { password, ter_cond } = data;
-    const token = req
+    const { identificacion, rol, password, ter_cond } = data;
 
-    if (!token || !password || !ter_cond) {
+    if (!identificacion || !rol || !password || !ter_cond) {
       return request.error(
         req,
         res,
@@ -77,18 +76,16 @@ module.exports = function (dbInsert) {
     }
 
     try {
-      const uncryptInformation = jwt.verify(token, config.jwt.secret);
-        if(!uncryptInformation) {
-          return uncryptInformation;
-        }
       const dataUser = {
-        identificacion: uncryptInformation.name,
-        rol: uncryptInformation.role,
+        identificacion,
+        rol,
         password,
         ter_cond,
       };
+      console.log("Datos para realizar el registro automático: ", dataUser);
 
      const register = await addUsers(dataUser);
+     console.log("Resultado del registro automático: ", register);
       return register.status === 200
         ? request.success(req, res, register.message, register.status)
         : request.error(req, res, register.message, register.status);

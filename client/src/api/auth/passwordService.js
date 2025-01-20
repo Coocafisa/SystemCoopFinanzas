@@ -2,13 +2,16 @@ import { api } from "../apiRest";
 
 const handleApiError = (error, setAlert) => {
   if (error.response) {
-    const message = error.response.data?.message || `Error desconocido (Código: ${error.response.status}).`;
+    const message = error.response.body || `Error desconocido (Código: ${error.response.status}).`;
     setAlert(message);
   } else if (error.request) {
     setAlert("Nuestro servidor está temporalmente fuera de servicio. Intenta más tarde.");
   } else {
     setAlert("Ocurrió un error al procesar la solicitud. Por favor, inténtalo nuevamente.");
   }
+  setTimeout(()=> {
+    setAlert("");
+  }, 2000);
 };
 
 
@@ -99,20 +102,20 @@ export const getToken = async (setToken, setError, setType, setLoading) => {
 
 export const automaticRegistration = async (event, payload, setAlert, setType, setLoading) => {
   event.preventDefault();
-  const { identificacion, rol, newpass, ter_cond } = payload;
+  const { identificacion, rol, password, ter_cond } = payload;
 
   try {
     const { data, status } = await api.post("/userManagement/automaticRegistration", {
       identificacion,
       rol,
-      pasword: newpass,
+      password,
       ter_cond,
     });
-
+    console.log("Respuesta del servidor: ", data);
     if (status === 200) {
       setType("success");
       setAlert(data.message);
-      redirectTo(data.redirect, 3000);
+      redirectTo("/");
     }
   } catch (error) {
     setType("error");
@@ -124,7 +127,6 @@ export const automaticRegistration = async (event, payload, setAlert, setType, s
 
 export const verifyTokenAutoregister = async (setType, setAlert, setTokenValid, setData, setLoading) => {
   const token = new URLSearchParams(window.location.search).get("token");
-
   if (!token) {
     redirectTo("/");
     return;
@@ -134,7 +136,6 @@ export const verifyTokenAutoregister = async (setType, setAlert, setTokenValid, 
     const { data, status } = await api.get(`/userManagement/verifyTokenAutoregister?token=${token}`);
     if (status === 200) {
       const { body } = data;
-
       if (!body.name && !body.rol) {
         setType("error");
         setAlert("Token inválido, no se puede verificar la información.");

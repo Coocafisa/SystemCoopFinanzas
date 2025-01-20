@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Table from "@/components/common/table";
 import { queryinvoicepayment } from "@/api/authenticated/invoiceService";
-import { ProtectedRoute } from "@/components/middleware";
+import { ProtectedRoute } from "@/components/middleware/middleware";
 export default function Invoicepayments() {
   const [data, setInvoices] = useState([]);
   const [error, setError] = useState(null);
@@ -37,7 +37,7 @@ export default function Invoicepayments() {
 
   return (
     <>
-    <ProtectedRoute allowedRoles={["Proveedor"]}/>
+    <ProtectedRoute allowedRoles={["Usuario"]}/>
     <Table
       data={data}
       title={title}

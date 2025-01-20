@@ -45,7 +45,13 @@ export default function AutoRegister() {
   const handleSubmit = async (event) => {
     setLoading(true);
     event.preventDefault();
-    console.log("Datos para la solicitud: ",formData, "Datos del token: ", data);
+    const payload = {
+      identificacion: data.identificacion,
+      rol: data.rol,
+      password: formData.newpass,
+      ter_cond: formData.ter_cond
+    }
+    await automaticRegistration(event, payload, setAlert, setType, setLoading)
   };
 
   useEffect(() => {

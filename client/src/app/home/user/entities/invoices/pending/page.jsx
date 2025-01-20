@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Table from "@/components/common/table";
 import { queryinvoicepending } from "@/api/authenticated/invoiceService";
-import { ProtectedRoute } from "@/components/middleware";
+import { ProtectedRoute } from "@/components/middleware/middleware";
 
 export default function InvoicePending() {
     const [data, setInvoices] = useState([]);
@@ -39,7 +39,7 @@ export default function InvoicePending() {
 
     return (
         <>
-        <ProtectedRoute allowedRoles={["Proveedor"]}/>
+        <ProtectedRoute allowedRoles={["Usuario"]}/>
         <Table
       data={data}
       title={title}

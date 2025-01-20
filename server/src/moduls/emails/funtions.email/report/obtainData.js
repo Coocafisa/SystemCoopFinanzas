@@ -1,10 +1,8 @@
-const { formatDate } = require("../../../../../services/functions/helpers");
-const { emailSend, sendNotificationEmail } = require("../../../../../services/email/emailService");
-const { generarReportePDF, generarResumenPDF } = require("./generatepdf");
-const pool = require("../../../../../connectionBD/db");
+const { emailSend, sendNotificationEmail } = require("../emailService");
+const { generarReportePDF, generarResumenPDF } = require("../report/generatepdf");
 const { json } = require("express");
-const { formatPesos } = require("../../../../../services/functions/helpers");
-
+const { formatPesos, formatDate } = require("../../../../functions/helpers");
+const { addStatusEmails } = require("../../../generalService");
 const obtainData = async (query) => {
 
   try {
@@ -56,16 +54,5 @@ const obtainData = async (query) => {
     return json({ message: "Error al obtener los datos." }, error);
   }
 };
-
-function addStatusEmails (nit)  {
-  const query = `UPDATE pagopro SET send_email = true WHERE nit = ?`;
-  const result = pool.query(query, [nit]);
-  if (result.affectedRows === 0) {
-      return json({menssage: "No se actualizó el estado de los correos pendientes."});
-  } else {
-      return json({menssage: "Correos pendientes actualizados con éxito."});
-  }
-
-}
 
 module.exports = { obtainData };

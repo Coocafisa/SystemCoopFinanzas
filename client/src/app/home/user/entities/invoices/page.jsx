@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Table from "@/components/common/table";
 import { queryInvoices } from "@/api/authenticated/invoiceService";
-import { ProtectedRoute } from "@/components/middleware";
+import { ProtectedRoute } from "@/components/middleware/middleware";
 export default function Invoices() {
   const [data, setInvoices] = useState([]);
   const [error, setError] = useState(null);
@@ -10,6 +10,10 @@ export default function Invoices() {
   useEffect(() => {
     const fetchInvoices = async () => {
       const invoices = await queryInvoices(setError);
+      console.log("Consulta: ",invoices)
+      if (invoices === 0) {
+        setInvoices("0");
+      }
       setInvoices(invoices);
     };
     fetchInvoices();
@@ -29,15 +33,15 @@ export default function Invoices() {
   ];
 
   const expandedData = [
-    { label: "Neto", value: data[0]?.tot || "0", },
-    { label: "Fecha Pago", value: data[0]?.fecpago || "0",},
-    { label: "Pago Factura", value: data[0]?.pagfac || "0",},
-    { label: "Valor Pago", value: data[0]?.pagtot || "0", }
+    { label: "Neto", value: data[0]?.tot || "0" },
+    { label: "Fecha Pago", value: data[0]?.fecpago || "0"},
+    { label: "Pago Factura", value: data[0]?.pagfac || "0"},
+    { label: "Valor Pago", value: data[0]?.pagtot || "0"}
   ];
 
   return (
     <>
-    <ProtectedRoute allowedRoles={["Proveedor"]}/>
+    <ProtectedRoute allowedRoles={["Usuario"]}/>
     <Table
       data={data}
       title={title}

@@ -1,4 +1,4 @@
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 const config = require('../config');
 
 
@@ -7,64 +7,51 @@ const dbConfig = {
     user: config.mysql.user,
     password: config.mysql.password,
     database: config.mysql.database,
+    waitForConnections: true,
+    connectionLimit: 50,
+    queueLimit: 0
 };
 
-let connection;
+const connection = mysql.createPool(dbConfig);
 
-function connectMysql() {
-    connection = mysql.createConnection(dbConfig);
-    connection.connect((err) => {
-        if (err) {
-            setTimeout(connectMysql, 2000);
-        } else {
-            return console.log('Conectado a la base de datos');
-        }
-    });
-    connection.on('error', (err) => {
-        if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-            connectMysql();
-        } else {
-            throw err;
-        }
-
-    });
-}
-connectMysql();
-
-function query(table, fields = '*', params = '', values = []) {
-    return new Promise((resolve, reject) => {
+async function query(table, fields = '*', params = '', values = []) {
+    try {
         let sql = `SELECT ${fields} FROM ${table}`;
         if (params) {
             sql += ` WHERE ${params}`;
         }
-        connection.query(sql, values, (err, result) => {
-            return err ? reject(err) : resolve(result);
-        });
-    });
+        const [result] = await connection.query(sql, values);
+        return result;
+    } catch (error) {
+        throw error;
+    }
 }
 
-function insert(table, data) {
-    return new Promise((resolve, reject) => {
-        connection.query(`INSERT INTO ${table} SET ?`, data, (err, result) => {
-            return err ? reject(err) : resolve(result);
-        });
-    });
+async function insert(table, data) {
+    try {
+    const [result] = await connection.query(`INSERT INTO ${table} SET ?`, data);
+    return result;
+    } catch (error) {
+        throw error;
+    }
 }
 
-function update(table, data, params) {
-    return new Promise((resolve, reject) => {
-        connection.query(`UPDATE ${table} SET ${data} WHERE ${params}`, (err, result) => {
-            return err ? reject(err) : resolve(result);
-        });
-    });
+async function update(table, data, params) {
+    try {
+        const [result] = await connection.query(`UPDATE ${table} SET ${data} WHERE ${params}`);
+        return result;
+    } catch (error) {
+        throw error;
+    }
 }
 
-function remove (table, params) {
-    return new Promise((resolve, reject) => {
-        connection.query(`DELETE FROM ${table} WHERE ${params}`, (err, result) => {
-            return err ? reject(err) : resolve(result);
-        });
-    });
+async function remove (table, params) {
+    try {
+        const [result] = await connection.query(`DELETE FROM ${table} WHERE ${params}`);
+        return result;
+    } catch (error) {
+        throw error;
+    }
 }
 
 module.exports = {

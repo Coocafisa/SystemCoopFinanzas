@@ -1,4 +1,4 @@
-const { formatPesos, formatDate } = require('../../../services/functions/helpers.js');
+const { formatPesos, formatDate } = require('../../functions/helpers.js');
 const request  = require('../../red/request.js');
 
 var table = 'entities';

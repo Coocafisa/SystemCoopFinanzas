@@ -1,6 +1,6 @@
 "use client"
 import Navigations from "@/components/layout/optionavigations";
-import InactivityHandler from "@/components/InactivityHandler";
+import InactivityHandler from "@/components/middleware/InactivityHandler";
 import { AuthProvider } from "@/api/auth/authContext";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";

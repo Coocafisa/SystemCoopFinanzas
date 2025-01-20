@@ -18,4 +18,19 @@ router.get('/actividad', (req, res) => {
     request.success(req, res, { hora }, 200);
 });
 
+router.post('/emailresetpass', (req, res) => {
+    const data = req.body;
+    return controller.emailresetpass(req, res, data);
+});
+
+router.post('/resetpass', (req, res) => {
+    const data = req.body;
+    return controller.resetpass(req, res, data);
+});
+
+router.get('/getToken', (req, res) => {
+    const data = req.query;
+    return controller.getToken(req, res, data);
+});
+
 module.exports = router;

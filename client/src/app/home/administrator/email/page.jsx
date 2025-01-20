@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import ResultTable from "@/components/common/result_table";
 import { queryEmails } from "@/api/requestAdmin/querysAdmin";
 import HoraForm from "@/components/layout/formhouremail";
-import { ProtectedRoute } from "../../../../components/middleware";
+import { ProtectedRoute } from "../../../../components/middleware/middleware";
 
 export default function Emails() {
     const [email, setEmail] = useState([]);

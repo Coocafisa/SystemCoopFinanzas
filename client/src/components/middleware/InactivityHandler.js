@@ -2,11 +2,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { logout } from "@/api/auth/logout";
 import { getSession } from "@/api/authenticated/sessionService";
-import AlertPopup from "./common/alert";
-import { Loader } from "./common/preloader";
+import AlertPopup from "../common/alert";
+import { Loader } from "../common/preloader";
 import "@public/styles/alertInativity.css";
-import { calculateCountdown } from "./utils/timerUtils";
-import { useAlertState } from "./utils/alertState";
+import { calculateCountdown } from "../utils/timerUtils";
+import { useAlertState } from "../utils/alertState";
 
 export default function InactivityHandler() {
   const [sessionState, setSessionState] = useState("active");

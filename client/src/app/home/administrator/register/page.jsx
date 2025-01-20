@@ -2,7 +2,7 @@
 import { adduser } from "@/api/auth/registerService";
 import "@public/styles/formusers.css";
 import { useEffect, useState } from "react";
-import { ProtectedRoute } from "@/components/middleware";
+import { ProtectedRoute } from "@/components/middleware/middleware";
 import { Loader } from "@/components/common/preloader";
 import AlertPopup from "@/components/common/alert";
 

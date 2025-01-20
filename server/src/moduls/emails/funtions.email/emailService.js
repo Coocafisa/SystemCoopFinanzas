@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
-const { request } = require("@/red/request");
-const app = require("@/app");
+const { request } = require("../../../red/request");
+const app = require("../../../app");
 
 const transporter = async (next) => {
     const emailConfig = app.get("emailConfig");
@@ -78,8 +78,26 @@ const sendNotificationEmail = async (count, pdfBuffer, next) => {
     }
 };
 
+const resetEmail = async (email, enlace) => {
+    const transport = await transporter();
+    try {
+        const mailOptions = {
+            from: 'contacto@coocafisa.com',
+            to: email,
+            subject: 'Restablecimiento de Contraseña',
+            html: `<p>Hola, <br /> para completar el restablecimiento de tu contraseña, haz click en el siguiente enlace: <a href="${enlace}">${enlace}</a></p>`,
+        };
+
+        await transport.sendMail(mailOptions);
+        return true;
+    } catch (error) {
+        return false;
+    }
+};
+
 module.exports = {
     transporter,
     emailSend,
     sendNotificationEmail,
+    resetEmail,
 };

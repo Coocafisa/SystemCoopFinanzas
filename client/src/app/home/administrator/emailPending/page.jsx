@@ -3,7 +3,7 @@ import ResultTable from "@/components/common/result_table";
 import { useState, useEffect } from "react";
 import { queryEmailsPending } from "@/api/requestAdmin/querysAdmin";
 import HoraForm from "@/components/layout/formhouremail";
-import { ProtectedRoute } from "../../../../components/middleware";
+import { ProtectedRoute } from "../../../../components/middleware/middleware";
 import { resendEmails } from "@/api/authenticated/adminService";
 import { Loader } from "@/components/common/preloader";
 
