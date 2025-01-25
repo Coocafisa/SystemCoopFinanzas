@@ -2,17 +2,17 @@
 
 import React, { useEffect, useState } from "react";
 import Table from "@/components/common/table";
-import { queryinvoicepending } from "@/api/authenticated/invoiceService";
+import { queryinvoicepending } from "@/api/requestUsers/invoiceService";
 import { ProtectedRoute } from "@/components/middleware/middleware";
 
 export default function InvoicePending() {
     const [data, setInvoices] = useState([]);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchInvoices = async () => {
-            const invoices = await queryinvoicepending(setError);
-            setInvoices(invoices);
+            const invoices = await queryinvoicepending();
+            setInvoices(invoices.formatedResults);
+            console.log("Consulta pendientes: ",invoices);
         };
         fetchInvoices();
     }, []);
@@ -39,14 +39,12 @@ export default function InvoicePending() {
 
     return (
         <>
-        <ProtectedRoute allowedRoles={["Usuario"]}/>
         <Table
       data={data}
       title={title}
       fields={fields}
       headers={headers}
       expandedData={expandedData}
-      error={error}
       keysToSearch={['factura', 'fecfac', 'fecvcto']}
     />
         </>

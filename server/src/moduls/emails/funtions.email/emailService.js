@@ -1,17 +1,16 @@
 const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
 const { request } = require("../../../red/request");
-const app = require("../../../app");
+const config = require("../../../config");
 
-const transporter = async (next) => {
-    const emailConfig = app.get("emailConfig");
+const transporter = async () => {
     const oauth2Client = new google.auth.OAuth2(
-        emailConfig.client,
-        emailConfig.client_secret,
+        config.apiEmail.client,
+        config.apiEmail.client_secret,
         "https://developers.google.com/oauthplayground"
     );
     oauth2Client.setCredentials({
-        refresh_token: config.apiEmail.refresh_token,
+        refresh_token: config.apiEmail.refresh_token
     });
     try {
         const accessToken = await oauth2Client.getAccessToken();
@@ -19,16 +18,16 @@ const transporter = async (next) => {
             service: "gmail",
             auth: {
                 type: "OAuth2",
-                user: emailConfig.email_user,
-                clientId: emailConfig.client,
-                clientSecret: emailConfig.client_secret,
-                refreshToken: emailConfig.refresh_token,
+                user: config.apiEmail.email_user,
+                clientId: config.apiEmail.client,
+                clientSecret: config.apiEmail.client_secret,
+                refreshToken: config.apiEmail.refresh_token,
                 accessToken: accessToken.token,
             },
         };
         return nodemailer.createTransport(accountTransport);
     } catch (error) {
-        next(error);
+        throw error;
     }
 };
 
@@ -78,7 +77,7 @@ const sendNotificationEmail = async (count, pdfBuffer, next) => {
     }
 };
 
-const resetEmail = async (email, enlace) => {
+const resetEmail = async ( email, enlace) => {
     const transport = await transporter();
     try {
         const mailOptions = {
@@ -89,9 +88,8 @@ const resetEmail = async (email, enlace) => {
         };
 
         await transport.sendMail(mailOptions);
-        return true;
     } catch (error) {
-        return false;
+        throw error;
     }
 };
 

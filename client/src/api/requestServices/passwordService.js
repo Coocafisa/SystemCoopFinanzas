@@ -14,7 +14,6 @@ const handleApiError = (error, setAlert) => {
   }, 2000);
 };
 
-
 const redirectTo = (url, delay = 2000) => {
   setTimeout(() => {
     window.location.href = url;
@@ -33,12 +32,12 @@ export const emailValidate = async (event, setAlert, setType, setLoading) => {
   }
 
   try {
-    const { data, status } = await api.post("/recoverypass/emailresetpass", { nit });
+    const { data, status } = await api.post("/auth/emailresetpass", { nit });
     if (status === 200) {
       setType("success");
-      setAlert(data.message);
+      setAlert(data.body.message);
       event.target.nit.value = "";
-      redirectTo(data.redirect, 3000);
+      redirectTo(data.body.redirect, 3000);
     }
   } catch (error) {
     setType("error");
@@ -54,7 +53,7 @@ export const resetpass = async (event, setAlert, token, setLoading, setType) => 
   const confpass = event.target.confpass.value.trim();
 
   try {
-    const { data, status } = await api.post("/recoverypass/resetpass", {
+    const { data, status } = await api.post("/auth/resetpass", {
       newpass,
       confpass,
       token,
@@ -74,7 +73,7 @@ export const resetpass = async (event, setAlert, token, setLoading, setType) => 
   }
 };
 
-export const getToken = async (setToken, setError, setType, setLoading) => {
+export const getToken = async (setError, setType, setLoading) => {
   const token = new URLSearchParams(window.location.search).get("token");
 
   if (!token) {
@@ -85,16 +84,15 @@ export const getToken = async (setToken, setError, setType, setLoading) => {
   }
 
   try {
-    const { data, status } = await api.get(`/recoverypass/getToken?token=${token}`);
+    const { data, status } = await api.get(`/auth/getToken?token=${token}`);
     if (status === 200) {
       setType("success");
-      setError(data.message);
-      setToken(token);
+      setError(data.body);
+      return true;
     }
   } catch (error) {
     setType("error");
     handleApiError(error, setError);
-    redirectTo("/", 3000);
   } finally {
     setLoading(false);
   }

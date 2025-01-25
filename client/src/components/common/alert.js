@@ -1,6 +1,6 @@
 import "@public/styles/alert.css";
 
-const AlertPopup = ({ children, message, type }) => {
+export default function AlertPopup ({ children, message, type }) {
   return (
     <div className={`alert-popup ${type}`}>
       <div className="alert-content">
@@ -10,5 +10,3 @@ const AlertPopup = ({ children, message, type }) => {
     </div>
   );
 };
-
-export default AlertPopup;

@@ -1,18 +1,12 @@
 import { api } from "../apiRest";
 
-export const queryUsers = async (setError) => {
+export const queryUsers = async () => {
     try {
-        const response = await api.get("/queryusers/users");
-        return response.data;
+        const response = await api.get("/users/queryusers");
+        console.log("Usuarios: ", response.data)
+        return response.data.body;
     } catch (error) {
-        if (error.response) {
-            const errorData = error.response.data.errors || error.response.data.error;
-            setError(errorData)
-        } else if (error.request) {
-            setError("Error en la solicitud al servidor.")
-        } else {
-            setError("Error en el servidor.")
-        }
+        console.log("Error en la solicitud al servidor: ", error);
         return[]
     }
 }

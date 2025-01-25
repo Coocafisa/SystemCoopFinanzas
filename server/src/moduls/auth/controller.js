@@ -46,7 +46,7 @@ module.exports = function (dbInsert) {
         );
 
         if (!newUser || String(newUser.identificacion).substring(0, 4) !== String(data.password)) {
-          return request.error(req, res, "Credenciales incorrectas.", 401);
+          return request.error(req, res, "Credenciales incorrectas.", 400);
         }
 
         const credentials = { rol: "Usuario", identificacion: data.user };
@@ -100,7 +100,6 @@ module.exports = function (dbInsert) {
 
       return request.success(req, res, { token, redirect: redirectPath }, 200);
     } catch (error) {
-      console.error("Error en autenticación:", error);
       return request.error(
         req,
         res,
@@ -115,32 +114,30 @@ module.exports = function (dbInsert) {
   if (!data) {
     return request.error(req, res, "Las credenciales son incorrectas.", 400);
   }
-
   try {
     const table = `entities INNER JOIN users ON entities.entidad_id = users.entidad_id
     INNER JOIN auth ON users.usuario_id = auth.usuario_id`;
-    const fields =  'identificacion, correo, usuario_id';
+    const fields =  'identificacion, correo, users.usuario_id';
     const params = 'identificacion = ?'
-    const [userResult] = await db.query(table, fields, params, [data]);
+    const [userResult] = await db.query(table, fields, params, [data.nit]);
     if(!userResult) {
       return request.error(req, res, "Usuario no encontrado.")
     }
     const gmail = userResult.correo;
-    const expirationToken = new Date(Date.now() + 3600000);
-    const registerToken = await db.update('auth', `token_pass = ${token}, expiracion_token_pass = ${expirationToken},
-      usuario_id = ${userResult.usuario_id}`);
+    const registerToken = await db.update('auth', `token_pass = '${token}', expiracion_token_pass = CURRENT_TIMESTAMP`,
+      `usuario_id = '${userResult.usuario_id}'`);
+    if (!registerToken) {
+      return request.error(req, res, "Error al actualizar el token.", 501);
+    }
     const baseUrl = config.app.origin;
     const enlace = `${baseUrl}/resetpassword/formpass?token=${token}`;
-    const emailSent = await resetEmail(gmail, enlace);
-    if (!emailSent) {
-      return request.error(req, res, "Error al enviar el correo.", 400);
-    }
+    await resetEmail(gmail, enlace);
     return request.success(req, res, { message: "Correo enviado con éxito." }, 200);
   } catch (error) {
     return request.error(
       req,
       res,
-      "Error al enviar el correo. Inténtalo de nuevo más tarde.",
+      {message:"Error al enviar el correo. Inténtalo de nuevo más tarde.", error},
       500
     );
   }
@@ -157,22 +154,22 @@ module.exports = function (dbInsert) {
       }
       const [tokenQuery] = await db.query('auth', 'token_pass, expiracion_token_pass', 'token_pass = ?', [token]);
       if(!tokenQuery){
-        return request.error(req, res, 'Token no válido o no encontrado.');
+        return request.error(req, res, 'Token no válido o no encontrado.', 400);
       }
       const now = new Date();
       const tokenExpiration = new Date(tokenQuery.expiracion_token_pass);
-      if(now > tokenExpiration) {
+      if(!now > tokenExpiration) {
         return request.error(req, res, 'El token ha expirado. Solicita uno nuevo para restablecer la contraseña.', 403);
       }
       const hashedPassword = await bcrypt.hash(newpass, 10);
-      const updateQuery = db.update('auth', `intentos_fallidos = 0, fech_pass = CURRENT_TIMESTAMP,
-        token_pass = 0, token_expiracion_pass = 0, pasword = ${hashedPassword}`, ` token_pass = ${token}`);
+      const updateQuery = await db.update('auth', `intentos_fallidos = 0, fech_pass = CURRENT_TIMESTAMP,
+        token_pass = 0, expiracion_token_pass = 0, pasword = '${hashedPassword}'`, ` token_pass = '${token}'`);
         if (!updateQuery){
-          return request.error(req, res, 'Error al actualizar la contraseña.', 403);
+          return request.error(req, res, 'Error al actualizar la contraseña.', 501);
         }
         return request.success(req, res, { message: "Tu contraseña ha sido restablecida exitosamente. Inicia sesión con tus nuevas credenciales." }, 200);
       } catch (error) {
-        return request.error(req, res, 'Error al restablecer la contraseña.', 500);
+        return request.error(req, res, {message:'Error al restablecer la contraseña.', error}, 501);
       }
     };
 
@@ -183,7 +180,7 @@ module.exports = function (dbInsert) {
       }
       try {
         const [validateTokenQuery] = await db.query('auth',
-          'token_pass, expiracion_token_pass, TIMESTAMPDIFF(MINUTE, token_expiracion_pass, CURRENT_TIMESTAMP) AS minutos_transcurridos',
+          'token_pass, expiracion_token_pass, TIMESTAMPDIFF(MINUTE, expiracion_token_pass, CURRENT_TIMESTAMP) AS minutos_transcurridos',
           'token_pass = ?', [token]);
           if(!validateTokenQuery){
             return request.error(req, res, 'Token no válido o no encontrado.', 400);
@@ -192,7 +189,7 @@ module.exports = function (dbInsert) {
           if (minutos_transcurridos >= 60) {
             return request.error(req, res, 'El token ha expirado. Por favor, solicite uno nuevo.', 400);
           }
-          return request.success(req, res, { message: "Validación correcta.", }, 200);
+          return request.success(req, res, { message: "Validación correcta."}, 200);
         } catch (error) {
           return request.error(req, res, "Ocurrió un error en la solicitud. Inténtalo de nuevo más tarde.", 500);
         }

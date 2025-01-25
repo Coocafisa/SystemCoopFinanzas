@@ -2,8 +2,8 @@ import { api } from "../apiRest";
 
 export const getSession = async () => {
   try {
-    const response = await api.get('/session');
-    const sessionData = response.data;
+    const res = await api.get('/session');
+    const sessionData = res.data;
     if (sessionData?.expiration) {
         const { minutes, seconds } = sessionData.expiration;
         return {
@@ -25,6 +25,7 @@ export const getSession = async () => {
     };
 
   } catch (error) {
+    console.log("Error de la sesión: ", error);
     return {
       isAuthenticated: false,
       user: null,

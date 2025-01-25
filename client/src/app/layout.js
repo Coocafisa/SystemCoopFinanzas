@@ -1,3 +1,4 @@
+import LoaderWithMessage from "@/components/utils/conponent-message";
 import "@public/styles/globals.css";
 export const metadata = {
   icon: "/favicon.ico",
@@ -18,7 +19,8 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body className="h-full">
-          {children}
+        <LoaderWithMessage/>
+        {children}
         <footer>
           <h5>
             <img src="/images/Drau.png" alt="imgautor" className="imgautors" />

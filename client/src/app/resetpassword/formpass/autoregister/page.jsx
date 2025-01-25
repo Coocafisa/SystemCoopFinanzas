@@ -1,17 +1,16 @@
 "use client";
 import "@public/styles/formusers.css";
 import { useEffect, useState } from "react";
-import { automaticRegistration, verifyTokenAutoregister } from "@/api/auth/passwordService";
+import { automaticRegistration, verifyTokenAutoregister } from "@/api/requestServices/passwordService";
 import AlertPopup from "@/components/common/alert";
 import { Loader } from "@/components/common/preloader";
 import { Message, ValidateInput } from "@/components/utils/helpers";
+import { useAlertState } from "@/components/utils/alertState";
 
 export default function AutoRegister() {
-  const [alert, setAlert] = useState(null);
+  const { alert, setAlert, type, setType, loading, setLoading } = useAlertState();
   const [tokenValid, setTokenValid] = useState(false);
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [type, setType] = useState(null);
   const [formData, setFormData] = useState({
     newpass: "",
     confpass: "",
@@ -77,7 +76,6 @@ export default function AutoRegister() {
             Registro de Credenciales
           </h1>
         </header>
-        <div className="form-container">
           <form onSubmit={handleSubmit}>
             <div className="stlvar">
               <label htmlFor="newpass">Contraseña</label>
@@ -89,7 +87,7 @@ export default function AutoRegister() {
                 onChange={handleChange}
                 aria-required="true"
               />
-              <Message type={"error-message"} text={message.newpass} />
+              <Message type={"error-message"} text={message.newpass}/>
             </div>
             <div className="stlvar">
               <label htmlFor="confpass">Confirmar Contraseña</label>
@@ -129,7 +127,6 @@ export default function AutoRegister() {
             </div>
           </form>
         </div>
-      </div>
       ) : (
         <>
           {loading && <Loader alert={alert} type={type} />}

@@ -1,0 +1,24 @@
+.notification-message {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    align-items: center;
+    background-color: #e9f7fd;
+    color: #0c5460;
+    border: 1px solid #b8daff;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 700px;
+    margin: 120px auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .notification-message h2 {
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .notification-message br {
+    margin-bottom: 12px;
+  }

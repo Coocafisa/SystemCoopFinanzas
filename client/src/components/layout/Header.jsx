@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, use } from "react";
 import Menu from "./navigationmenu";
-import { getSession, dateUser } from "@/api/authenticated/sessionService";
+import { getSession, dateUser } from "@/api/requestServices/sessionService";
 import "@public/styles/header.css"
 
 export default function Header({ menuOptions }) {

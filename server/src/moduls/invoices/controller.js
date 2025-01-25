@@ -12,7 +12,7 @@ module.exports = function (dbInsert) {
     async function queryInvoicesUserId(req, res) {
         const user = req.auth.name;
         const selectTable = table + ' INNER JOIN pagopro ON entities.identificacion = pagopro.nit';
-        const fields = 'nombre, factura, fecfac, fecvcto, tot, retencion, total, fecpago, pagtot, pagfac';
+        const fields = 'nit, nombre, factura, fecfac, fecvcto, tot, retencion, total, fecpago, pagtot, pagfac';
         const params = `nit = ${user}`;
         try {
             const data = await db.query(selectTable, fields, params);
@@ -39,7 +39,7 @@ module.exports = function (dbInsert) {
     async function queryInvoicesPaymentUserdId(req, res) {
         const user = req.auth.name;
         const selectTable = table + ' INNER JOIN pagopro ON entities.identificacion = pagopro.nit';
-        const fields = 'nombre, factura, fecfac, fecvcto, retencion, tot, total, pagtot, fecpago, pagfac';
+        const fields = 'nit, nombre, factura, fecfac, fecvcto, retencion, tot, total, pagtot, fecpago, pagfac';
         const params = `nit = ${user} AND fecpago IS NOT NULL`;
         try {
             const data = await db.query(selectTable, fields, params);
@@ -66,12 +66,12 @@ module.exports = function (dbInsert) {
     async function queryInvoicesPendingUserId(req, res) {
         const user = req.auth.name;
         const selectTable = table + ' INNER JOIN pagopro ON entities.identificacion = pagopro.nit';
-        const fields = 'nombre, factura, fecfac, fecvcto, tot, retencion, total, pagtot, fecpago, pagfac';
+        const fields = 'nit, nombre, factura, fecfac, fecvcto, tot, retencion, total, pagtot, fecpago, pagfac';
         const params = `nit = ${user} AND fecpago IS NULL`;
         try {
             const data = await db.query(selectTable, fields, params);
             if (data.length === 0) {
-                return request.success(req, res, { message: 'No tienes facturas pendientes.' }, 200);
+                return request.success(req, res, { message: 'No tienes facturas pendientes.', formatedResults: [] }, 200);
                 }
                 const formatedResults = data.map(result => ({
                     ...result,

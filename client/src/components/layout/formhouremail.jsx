@@ -5,15 +5,14 @@ import "@public/styles/programhour.css";
 import { timerEmails } from "@/api/requestAdmin/querysAdmin";
 import { programmatEmails } from "@/api/requestAdmin/servicesAdmin";
 import { Loader } from "../common/preloader";
+import { useAlertState } from "../utils/alertState";
 
 const HoraForm = () => {
+  const { alert, setAlert, type, setType, loading, setLoading } = useAlertState();
   const [hora, setHora] = useState("");
   const [minuto, setMinuto] = useState("");
   const [isVisible, setIsVisible] = useState(false);
-  const [alert, setAlert] = useState(null);
   const [timer, setTimer] = useState({ hours: "00", minutes: "00", seconds: "00" });
-  const [loading, setLoading] = useState(false);
-  const [type, setType] = useState(false);
 
   useEffect(() => {
     const getTime = async () => {

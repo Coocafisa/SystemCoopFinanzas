@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from 'react';
-import { useAuth } from '@/api/auth/authContext';
+import { useAuth } from '@/api/requestAuth/authContext';
 
 export function ProtectedRoute({ children, allowedRoles = []}) {
     const auth = useAuth();

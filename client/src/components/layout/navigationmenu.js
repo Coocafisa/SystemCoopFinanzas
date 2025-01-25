@@ -2,14 +2,13 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 import "@public/styles/menu.css";
-import { logout } from "@/api/auth/logout";
+import { logout } from "@/api/requestAuth/logout";
 import { Loader } from "@/components/common/preloader";
 import Link from "next/link";
+import { useAlertState } from "../utils/alertState";
 
 export default function Menu({ menuOptions }) {
-  const [alert, setAlert] = useState(null);
-  const [type, setType] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { alert, setAlert, type, setType, loading, setLoading } = useAlertState();
 
   const handleSubmit = async (event) => {
     event.preventDefault();

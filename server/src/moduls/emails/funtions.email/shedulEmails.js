@@ -1,8 +1,6 @@
-const router = require("express").Router();
 const fs = require("fs");
 const schedule = require("node-schedule");
-const { resendEmails } = require("../../../../services/email/emailsPending");
-const controller = require("../index");
+const {Emails} = require("../index");
   
   let job;
   
@@ -27,7 +25,7 @@ const controller = require("../index");
 
       job = schedule.scheduleJob(`${minute} ${hour} * * *`, async() => {
         try {
-          const results = await controller.Emails();
+          const results = await Emails();
           if (results.length > 0) {
             await obtainData(results);
           } else {

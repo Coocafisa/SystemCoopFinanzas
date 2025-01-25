@@ -1,14 +1,13 @@
 "use client"
 import { useEffect, useState } from "react";
-import { emailValidate } from "@/api/auth/passwordService";
+import { emailValidate } from "@/api/requestServices/passwordService";
 import "@public/styles/formusers.css"
 import AlertPopup from "@/components/common/alert";
 import { Loader } from "@/components/common/preloader";
+import { useAlertState } from "@/components/utils/alertState";
 export default function Formvalidatemail() {
-    const [alert, setAlert] = useState(null);
+    const { alert, setAlert, type, setType, loading, setLoading } = useAlertState();
     const [showAlert, setShowAlert] = useState(true);
-    const [loading, setLoading] = useState(false);
-    const [type, setType] = useState(null);
 
     const handleSubmit =  async (event) => {
         event.preventDefault();
@@ -38,7 +37,7 @@ export default function Formvalidatemail() {
         </header>
         <form onSubmit={handleSubmit}> 
                     <div className="stlvar">
-                        <label htmlFor="nit">Nit*</label>
+                        <label htmlFor="nit">Nit / Identificación*</label>
                         <input type="number" name="nit" id="nit"/>
                     </div>              
                     <div className="btn_butones">
@@ -51,7 +50,7 @@ export default function Formvalidatemail() {
                     </div>                  
                 </form>
                 {loading && <Loader alert={alert} type={type}/>}
-                {showAlert && <AlertPopup message={`Ingresa el nit correspondiente a tu cuenta.`} type="alertMessage"/>}
+                {showAlert && <AlertPopup message={`Ingresar su nit o identificación correspondiente. En el caso de nit sin los digitos de verificación.`} type="alertMessage"/>}
         </div>
     );
 }

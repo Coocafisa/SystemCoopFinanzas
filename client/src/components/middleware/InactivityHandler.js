@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import { logout } from "@/api/auth/logout";
-import { getSession } from "@/api/authenticated/sessionService";
+import { logout } from "@/api/requestAuth/logout";
+import { getSession } from "@/api/requestServices/sessionService";
 import AlertPopup from "../common/alert";
 import { Loader } from "../common/preloader";
 import "@public/styles/alertInativity.css";
@@ -16,6 +16,7 @@ export default function InactivityHandler() {
   const expirationTime = async () => {
     try {
       const sessionData = await getSession();
+      console.log("SessionData: ", sessionData);
       if (sessionData?.timeRemaining ) {
         const { minutes, seconds } = sessionData.timeRemaining;
         setTimer({

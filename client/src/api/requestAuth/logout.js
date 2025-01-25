@@ -1,5 +1,5 @@
 import { api } from '../apiRest';
-import { sessionToken } from '../authenticated/sessionService';
+import { sessionToken } from '../requestServices/sessionService';
 
 export const logout = async (event,setAlert, setType, setLoading) => {
     event.preventDefault();

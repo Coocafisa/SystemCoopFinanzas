@@ -1,12 +1,11 @@
 "use client";
 import { createContext, useContext, useState, useEffect } from 'react';
-import { getSession } from '../authenticated/sessionService';
-import { Loader } from '@/components/common/preloader';
+import { getSession } from '../requestServices/sessionService';
 import { useAlertState } from '@/components/utils/alertState';
 
 const AuthContext = createContext();
 
-export function AuthProvider({ children }) {
+export default function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [role, setRole] = useState(null);
     const [expiration, setExpiration] = useState(null);
@@ -45,7 +44,7 @@ export function AuthProvider({ children }) {
 
     return (
         <AuthContext.Provider value={{ user, role, expiration, loading }}>
-            {loading ? <Loader alert={alert} type={type} /> : children}
+            {children}
         </AuthContext.Provider>
     );
 }

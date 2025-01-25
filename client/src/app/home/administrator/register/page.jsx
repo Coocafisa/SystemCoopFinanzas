@@ -1,87 +1,47 @@
 "use client"
-import { adduser } from "@/api/auth/registerService";
+import { adduser } from "@/api/requestAuth/registerService";
 import "@public/styles/formusers.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ProtectedRoute } from "@/components/middleware/middleware";
 import { Loader } from "@/components/common/preloader";
-import AlertPopup from "@/components/common/alert";
+import { Message, ValidateInput } from "@/components/utils/helpers";
+import { useAlertState } from "@/components/utils/alertState";
 
 export default function Registerusers() {
-  const [showAlert, setShowAlert] = useState(true);
-  const [type, setType] = useState("");
-  const [alert, setAlert] = useState(null);
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({});
   const [formValues, setFormValues] = useState({
-    identificacion: "",
+    nit: "",
     rol: "",
-    pass: "",
-    passcon: ""
+    newpass: "",
+    confpass: "",
+    ter_cond: false,
   });
 
   const isValid = 
   Object.entries(formValues).every(([key, value]) => {
     if (key === "rol") {
-      return value !== "" && value !== "Select" && !errors[key];
+      return value !== "" && value !== "Select" && key !== "ter_cond" && !message[key];
     }
-    return value !== "" && !errors[key];
+    return value !== "" && !message[key];
   });
 
-
-  const validateField = (name, value) => {
-    let error = "";
-    if (value.trim() === "" && ["identificacion", "rol", "pass", "passcon"].includes(name)) {
-      error = "Este campo es obligatorio";
-    } else if (name === "pass" && value.length < 8) {
-      error = "La contraseña debe ser mínimo de 8 caracteres";
-    } else if (name === "pass" && value.length > 16) {
-      error = "La contraseña debe ser máximo de 16 caracteres";
-    }
-    return error;
-  };
-
   const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormValues({ ...formValues, [name]: value });
-
-    if (value || ["identificacion", "rol", "pass", "passcon"].includes(name)) {
-      setErrors({ ...errors, [name]: validateField(name, value) });
-    } else {
-      setErrors({ ...errors, [name]: "" });
-    }
-  };
-
-  const handleFocus = () => {
-    const newErrors = {};
-    Object.keys(formValues).forEach((key) => {
-      const value = formValues[key];
-      newErrors[key] = validateField(key, value);
+    const { name, value, checked, type } = event.target;
+    setFormValues({ 
+      ...formValues,
+       [name]: type === "checkbox" ? checked : value,
     });
-    setErrors(newErrors);
+    ValidateInput(event, setMessage, formValues);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoading(true);
-    await adduser(event, setAlert, setType, setLoading);
+    await adduser(event);
   };
-
-  useEffect(() => {
-    if (showAlert) {
-      const timer = setTimeout(() => {
-        setShowAlert(false);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [showAlert]);
 
   return (
     <>
-    <ProtectedRoute/>
-    {showAlert && <AlertPopup message={`La contraseña debe ser mínimo de 8 caracteres
-     y máximo de 16. Debe contener al menos una mayúscula, un número y un carácter especial.`}
-      type={"alertMessage"} />}
-          <div className="content_register">
+    <div className="content_register">
       <header>
         <img
           src="/images/Logo.cooperativa.png"
@@ -93,7 +53,6 @@ export default function Registerusers() {
 
       <form onSubmit={handleSubmit} noValidate>
         <div className="options">
-
         <div className="stlvar">
             <label htmlFor="rol">Rol*</label>
             <select 
@@ -101,67 +60,76 @@ export default function Registerusers() {
               id="rol"
               value={formValues.rol} 
               onChange={handleChange}
-              onFocus={handleFocus}
-              className={errors.rol}
             >
               <option value="Select">Seleccionar</option>
               <option value="Usuario">Usuario</option>
               <option value="Administrador">Administrador</option>
             </select>
+            <Message type={"error-message"} text={message.rol} />
           </div>
           
           <div className="stlvar">
-            <label htmlFor="identificacion">Identificación*</label>
+            <label htmlFor="nit">Identificación*</label>
             <input 
               type="number" 
-              name="identificacion" 
-              id="identificacion" 
-              value={formValues.identificacion}
+              name="nit" 
+              id="identificacion"
+              value={formValues.nit}
               onChange={handleChange}
-              onFocus={handleFocus}
-              className={errors.identificacion}
+              aria-required="true"              
             />
+            <Message type={"error-message"} text={message.nit} />
           </div>
 
           <div className="stlvar">
-            <label htmlFor="pass">Contraseña*</label>
+            <label htmlFor="newpass">Contraseña*</label>
             <input 
               type="password" 
-              name="pass" 
+              name="newpass" 
               id="pass"
-              value={formValues.pass} 
+              value={formValues.newpass} 
               onChange={handleChange}
-              onFocus={handleFocus}
-              className={errors.pass}
+              aria-required="true"
             />
+            <Message type={"error-message"} text={message.newpass} />
           </div>
 
           <div className="stlvar">
-            <label htmlFor="passcon">Confirmar Contraseña*</label>
+            <label htmlFor="confpass">Confirmar Contraseña*</label>
             <input 
               type="password" 
-              name="passcon" 
+              name="confpass" 
               id="passcon"
-              value={formValues.passcon} 
+              value={formValues.confpass} 
               onChange={handleChange}
-              onFocus={handleFocus}
-              className={errors.passcon}
+              aria-required="true"
             />
+            <Message type={"error-message"} text={message.confpass} />
           </div>
         </div>
-        {loading && <Loader alert={alert} type={type} />}
-        {Object.keys(errors).some((key) => errors[key]) && (
-  <div className="general-error-message">
-    <p>Los campos con * son obligatorios.</p>
-  </div>
-)}
+        <div className="stlvar">
+              <label>
+                <input
+                  type="checkbox"
+                  id="ter_cond"
+                  name="ter_cond"
+                  checked={formValues.ter_cond}
+                  onChange={handleChange}
+                  aria-required="true"
+                />
+                Acepto los
+                <a href="/terminos-y-condiciones" target="_blank">
+                  términos y condiciones
+                </a>
+              </label>
+              <Message type={"error-message"} text={message.ter_cond} />
+            </div>
         <div className="btn_butones">
           <a href="/home">
             <button type="button" className="btn_cancelar">
               Regresar
             </button>
           </a>
-
           <button type="submit" className="btn_registrar" disabled={!isValid}>
             Registrar
           </button>

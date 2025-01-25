@@ -1,19 +1,9 @@
 "use client";
 import { useState } from "react";
 import "@public/styles/formusers.css";
-import { auth } from "@/api/auth/authService";
-import {Loader} from "@/components/common/preloader";
-import { useRouter } from "next/navigation";
+import { auth } from "@/api/requestAuth/authService";
 
 export default function Login() {
-    const [type, setType] = useState(false);
-    const [alert, setAlert] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const router = useRouter();
-    const [errores, setErrores] = useState({
-        user: false,
-        password: false,
-    });
     const [formData, setFormData] = useState({
         user: "",
         password: "",
@@ -25,7 +15,6 @@ export default function Login() {
     };
 
     const handleSubmit = async (event) => {
-        setLoading(true);
         event.preventDefault();
         let formularioValido = true;
     let newErrors = { user: false, password: false };
@@ -40,17 +29,13 @@ export default function Login() {
         newErrors.password = true;
     }
 
-    setErrores(newErrors);
-
     if (!formularioValido) {
         const error = Object.keys(newErrors).find((camp) => newErrors[camp]);
         document.getElementById(error).focus();
     }
 
     if (formularioValido) {
-        await auth(event, setAlert, setLoading, setType, router);
-    } else {
-        setLoading(false);
+        await auth(event);
     }
 };
     return (
@@ -69,7 +54,6 @@ export default function Login() {
                         Usuario
                     </label>
                     <input
-                    
                         type="text"
                         id="user"
                         name="user"
@@ -77,7 +61,6 @@ export default function Login() {
                         onChange={handleChange}
                         required
                         className="mt-1 p-2 border rounded-md focus:ring-foreground focus:border-foreground"
-                        style={{borderColor: errores.user ? 'red' : ''}}
                     />
                 </div>
 
@@ -93,7 +76,6 @@ export default function Login() {
                         onChange={handleChange}
                         required
                         className="mt-1 p-2 border rounded-md focus:ring-foreground focus:border-foreground"
-                        style={{borderColor: errores.password ? 'red' : ''}}
                     />
                 </div>
                 <div className="btn">
@@ -111,7 +93,7 @@ export default function Login() {
                     </div>
                 </div>
                </form>
-               {loading && <Loader alert={alert} type={type}/>}
+               {/* <Loader type={"success"} message={"Iniciando session."} isLoading={loading}/> */}
         </div>
     );
 }

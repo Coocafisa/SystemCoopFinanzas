@@ -6,12 +6,13 @@ import { ProtectedRoute } from "../../../components/middleware/middleware";
 
 export default function Users() {
     const [users, setUsers] = useState([]);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
-            const usersData = await queryUsers(setError)
+            const usersData = await queryUsers();
+            console.log("Consulta de usuarios34: ", usersData);
             setUsers(usersData)
+            console.log("Consulta de usuarios: ", users);
             }
         fetchData();
     }, []);
@@ -35,17 +36,14 @@ export default function Users() {
         "fecha_reg"
     ];
     return (
-        <>
-            if (error) return <p style={{ color: "red" }}>{error}</p>;
-            <ProtectedRoute/>
-                <ResultTable
-                    title={title}
-                    headers={headers}
-                    data={users}
-                    keysToSearch={['nit', 'rol', 'razonsoc', 'correo', 'fecha_reg']}
-                    fields={fields}
-                    error={error}
-                />
+    <>
+    <ProtectedRoute allowedRoles={["Administrador"]}/>
+    <ResultTable
+        title={title}
+        headers={headers}
+        data={users}
+        keysToSearch={['nit', 'rol', 'razonsoc', 'correo', 'fecha_reg']}
+        fields={fields} />
         </>
     );
 }

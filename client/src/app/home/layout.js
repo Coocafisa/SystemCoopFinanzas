@@ -1,9 +1,9 @@
 "use client"
 import Navigations from "@/components/layout/optionavigations";
 import InactivityHandler from "@/components/middleware/InactivityHandler";
-import { AuthProvider } from "@/api/auth/authContext";
+import AuthProvider from "@/api/requestAuth/authContext";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+
 export default function IndexLayout({ children }) {
   const pathname = usePathname();
   const SpecificPage = ["/home/administrator/register"]
@@ -18,5 +18,3 @@ export default function IndexLayout({ children }) {
     </>
   );
 }
-
-  

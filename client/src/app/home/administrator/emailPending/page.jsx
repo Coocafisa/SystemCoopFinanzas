@@ -6,13 +6,12 @@ import HoraForm from "@/components/layout/formhouremail";
 import { ProtectedRoute } from "../../../../components/middleware/middleware";
 import { resendEmails } from "@/api/authenticated/adminService";
 import { Loader } from "@/components/common/preloader";
+import { useAlertState } from "@/components/utils/alertState";
 
 export default function PendingEmails() {
     const [pendingEmails, setPendingEmails] = useState([]);
-    const [alert, setAlert] = useState("");
-    const [type, setType] = useState("");
+    const { alert, setAlert, type, setType, loading, setLoading } = useAlertState();
     const [message, setMessage] = useState("");
-    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -47,6 +46,7 @@ export default function PendingEmails() {
 
     return (
         <>
+        <ProtectedRoute allowedRoles={["Administrador"]}/>
         <button onClick={handleSubmit} className="btn-resend"> Enviar Emails </button>
         <HoraForm/>
         <ResultTable data={pendingEmails} title={title} headers={headers} fields={fields} error={alert} />
