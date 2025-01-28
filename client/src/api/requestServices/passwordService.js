@@ -1,156 +1,65 @@
 import { api } from "../apiRest";
 
-const handleApiError = (error, setAlert) => {
-  if (error.response) {
-    const message = error.response.body || `Error desconocido (Código: ${error.response.status}).`;
-    setAlert(message);
-  } else if (error.request) {
-    setAlert("Nuestro servidor está temporalmente fuera de servicio. Intenta más tarde.");
-  } else {
-    setAlert("Ocurrió un error al procesar la solicitud. Por favor, inténtalo nuevamente.");
-  }
-  setTimeout(()=> {
-    setAlert("");
-  }, 2000);
-};
-
-const redirectTo = (url, delay = 2000) => {
-  setTimeout(() => {
-    window.location.href = url;
-  }, delay);
-};
-
-export const emailValidate = async (event, setAlert, setType, setLoading) => {
+export const emailValidate = async (event) => {
   event.preventDefault();
   const nit = event.target.nit.value.trim();
 
-  if (!nit) {
-    setAlert("Nit es requerido");
-    setType("alertMessage");
-    setLoading(false);
-    return;
-  }
-
   try {
-    const { data, status } = await api.post("/auth/emailresetpass", { nit });
-    if (status === 200) {
-      setType("success");
-      setAlert(data.body.message);
-      event.target.nit.value = "";
-      redirectTo(data.body.redirect, 3000);
-    }
+    await api.post("/auth/emailresetpass", { nit });
   } catch (error) {
-    setType("error");
-    handleApiError(error, setAlert);
-  } finally {
-    setLoading(false);
+    console.log("Error en la solicitud al servidor: ", error);
   }
 };
 
-export const resetpass = async (event, setAlert, token, setLoading, setType) => {
+export const resetpass = async (event, token) => {
   event.preventDefault();
   const newpass = event.target.newpass.value.trim();
   const confpass = event.target.confpass.value.trim();
 
   try {
-    const { data, status } = await api.post("/auth/resetpass", {
+    await api.post("/auth/resetpass", {
       newpass,
       confpass,
       token,
     });
-
-    if (status === 201) {
-      setAlert(data.message);
-      redirectTo("/", 3000);
-    }
   } catch (error) {
-    setType("error");
-    handleApiError(error, setAlert);
-  } finally {
-    event.target.newpass.value = "";
-    event.target.confpass.value = "";
-    setLoading(false);
+    console.log("Error en la solicitud al servidor: ", error);
   }
 };
 
-export const getToken = async (setError, setType, setLoading) => {
+export const getToken = async () => {
   const token = new URLSearchParams(window.location.search).get("token");
 
-  if (!token) {
-    setType("error");
-    setError("Token no proporcionado.");
-    redirectTo("/");
-    return;
-  }
-
   try {
-    const { data, status } = await api.get(`/auth/getToken?token=${token}`);
-    if (status === 200) {
-      setType("success");
-      setError(data.body);
-      return true;
-    }
+    await api.get(`/auth/getToken?token=${token}`);
   } catch (error) {
-    setType("error");
-    handleApiError(error, setError);
-  } finally {
-    setLoading(false);
+    console.log("Error en la solicitud al servidor: ", error);
   }
 };
 
-export const automaticRegistration = async (event, payload, setAlert, setType, setLoading) => {
+export const automaticRegistration = async (event, payload) => {
   event.preventDefault();
   const { identificacion, rol, password, ter_cond } = payload;
 
   try {
-    const { data, status } = await api.post("/userManagement/automaticRegistration", {
+    await api.post("/userManagement/automaticRegistration", {
       identificacion,
       rol,
       password,
       ter_cond,
     });
-    console.log("Respuesta del servidor: ", data);
-    if (status === 200) {
-      setType("success");
-      setAlert(data.message);
-      redirectTo("/");
-    }
   } catch (error) {
-    setType("error");
-    handleApiError(error, setAlert);
-  } finally {
-    setLoading(false);
+    console.log("Error en la solicitud al servidor: ", error);
   }
 };
 
-export const verifyTokenAutoregister = async (setType, setAlert, setTokenValid, setData, setLoading) => {
-  const token = new URLSearchParams(window.location.search).get("token");
-  if (!token) {
-    redirectTo("/");
-    return;
-  }
-
+export const verifyTokenAutoregister = async (setData) => {
+  const token = new URLSearchParams(window.location.search).get("token");  
   try {
-    const { data, status } = await api.get(`/userManagement/verifyTokenAutoregister?token=${token}`);
-    if (status === 200) {
-      const { body } = data;
-      if (!body.name && !body.rol) {
-        setType("error");
-        setAlert("Token inválido, no se puede verificar la información.");
-        setTokenValid(false);
-        redirectTo("/");
-        return;
-      }
-
-      setType("success");
-      setTokenValid(true);
-      setData(body);
-      setAlert(body.message);
-    }
+    const response = await api.get(`/userManagement/verifyTokenAutoregister?token=${token}`);
+    const data = response.data.body;
+    setData(data);
   } catch (error) {
-    setType("error");
-    handleApiError(error, setAlert);
-  } finally {
-    setLoading(false);
+    console.log("Error en la solicitud al servidor: ", error); 
   }
 };

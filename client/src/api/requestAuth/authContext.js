@@ -9,7 +9,7 @@ export default function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [role, setRole] = useState(null);
     const [expiration, setExpiration] = useState(null);
-    const { alert, setAlert, type, setType, loading, setLoading } = useAlertState();
+    const { loading, setLoading } = useAlertState();
 
     const resetAuth = () => {
         setUser(null);
@@ -28,12 +28,8 @@ export default function AuthProvider({ children }) {
                     setExpiration(expiration);
                 } else {
                     resetAuth();
-                    setAlert("No has iniciado sesión.");
-                    setType("info");
                 }
             } catch (error){
-                setAlert("Error al iniciar sesión.");
-                setType("error");
                 resetAuth();
             } finally {
                     setLoading(false);

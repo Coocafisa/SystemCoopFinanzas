@@ -1,22 +1,18 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
-import { logout } from "@/api/requestAuth/logout";
+import { useEffect, useState } from "react";
+import { logout } from "@/api/requestServices/logout";
 import { getSession } from "@/api/requestServices/sessionService";
 import AlertPopup from "../common/alert";
-import { Loader } from "../common/preloader";
 import "@public/styles/alertInativity.css";
 import { calculateCountdown } from "../utils/timerUtils";
-import { useAlertState } from "../utils/alertState";
 
 export default function InactivityHandler() {
   const [sessionState, setSessionState] = useState("active");
   const [timer, setTimer] = useState({ minutes: "", seconds: "" });
-  const { alert, setAlert, type, setType, loading, setLoading } = useAlertState();
 
   const expirationTime = async () => {
     try {
       const sessionData = await getSession();
-      console.log("SessionData: ", sessionData);
       if (sessionData?.timeRemaining ) {
         const { minutes, seconds } = sessionData.timeRemaining;
         setTimer({
@@ -33,7 +29,6 @@ export default function InactivityHandler() {
 
   useEffect(() => {
     expirationTime();
-    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -54,8 +49,7 @@ export default function InactivityHandler() {
   const handleLogout = async (event) => {
     event.preventDefault();
     setSessionState(false);
-    setLoading(true);
-    await logout(event, setAlert, setType, setLoading);
+    await logout(event);
   };
 
   return (
@@ -95,7 +89,6 @@ export default function InactivityHandler() {
           </AlertPopup>
       </div>
       )}
-      {loading && <Loader alert={alert} type={type}/>}
     </>
   );
 }

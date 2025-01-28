@@ -1,5 +1,5 @@
 import { api } from "../apiRest";
-export const adduser = async (event, setAlert, setType, setLoading) => {
+export const adduser = async (event) => {
     event.preventDefault();
     const nit = event.target.nit.value;  
     const rol = event.target.rol.value;
@@ -10,14 +10,7 @@ export const adduser = async (event, setAlert, setType, setLoading) => {
             nit, rol,
             pass, passcon
         });
-        const data = response.data;
-        setTimeout(() => {
-            event.target.nit.value = '';
-            event.target.rol.value = '';
-            event.target.pass.value = '';
-            event.target.passcon.value = '';
-            window.location.href = data.redirect;
-        }, 3000);
+        return response.data;
     } catch (error) {
         console.log("Error en la solicitud al servidor: ", error);  
     } 

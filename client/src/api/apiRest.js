@@ -1,10 +1,8 @@
 import axios from "axios";
-import { useRouter } from "next/navigation";
 
 export const sessionToken = async () => {
   try {
     const token = sessionStorage.getItem("Token");
-    console.log("Token de sesión: ", token);
     return token ? token : null;
   } catch (error) {
     return null;
@@ -27,13 +25,55 @@ export const useAxiosWithLoader = (
   setInitAlert,
   timeout = 2000
 ) => {
-  api.interceptors.request.handlers = [];
-  api.interceptors.response.handlers = [];
+  if (!api.interceptors.request.handlers.length) {
+    api.interceptors.request.use(
+      async (config) => {
+        const token = await sessionToken();
+        setLoading(true);
+        setInitAlert(true);
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => {
+        setLoading(false);
+        handleAlert(error.response?.data?.body?.message || "Error en la solicitud.", 'error', timeout);
+        return Promise.reject(error);
+      }
+    );
+  }
+
+  if (!api.interceptors.response.handlers.length) {
+    api.interceptors.response.use(
+      (response) => {
+        setLoading(false);
+        const message = response.data?.body?.message || '';
+        const redirect = response.data?.body?.redirect || '';
+        handleAlert(message, 'success', timeout, redirect);
+        return response;
+      },
+      (error) => {
+        setLoading(false);
+        if (error.message === 'Network Error' && error.code === 'ERR_NETWORK') {
+          handleAlert('Solicitud rechazada. No se puede conectar al servidor.', 'error', timeout);
+        } else if (error.response) {
+          const errorMessage = error.response.data?.body?.message || "Error desconocido";
+          handleAlert(errorMessage, 'error', timeout);
+        } else {
+          handleAlert('Error de red o servidor no disponible', 'error', timeout);
+        }
+        return Promise.reject(error.response?.data || error);
+      }
+    );
+  }
+
   const handleAlert = (message, type, duration, redirect) => {
-    setAlert(message);
-    setType(type);
     setInitAlert(true);
-    
+    if (message) {
+      setType(type);
+      setAlert(message);
+    }
     setTimeout(() => {
       setAlert('');
       setType('');
@@ -43,44 +83,4 @@ export const useAxiosWithLoader = (
       }
     }, duration);
   };
-
-  api.interceptors.request.use(
-    async (config) => {
-      const token = await sessionToken();
-      setLoading(true);
-      setInitAlert(true);
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
-    },
-    (error) => {
-      setLoading(false);
-      handleAlert(error.response.data.body?.message || "Error en la solicitud.", 'error', timeout) ;
-      return Promise.reject(error);
-    }
-  );
-
-  api.interceptors.response.use(
-    (response) => {
-      setTimeout(() => {
-      setLoading(false);
-      }, timeout);
-      handleAlert(response.data.body?.message || '', '', timeout, response.data.body?.redirect);
-      return response;
-    },
-    (error) => {
-      console.log("Error de la solicitud24: ", error.response.data);
-      setLoading(false);
-      if (error.message === 'Network Error' && error.code === 'ECONNREFUSED') {
-        handleAlert('Conexión rechazada. No se puede conectar al servidor.', 'error', timeout);
-      } else if (error.response) {
-        const errorMessage = error.response.data.body?.message || 'Error en la respuesta';
-        handleAlert(errorMessage, 'error', timeout);
-      } else {
-        handleAlert('Error de red o servidor no disponible', 'error', timeout);
-      }
-      return Promise.reject(error.response.data || error);
-    }
-  );
 };

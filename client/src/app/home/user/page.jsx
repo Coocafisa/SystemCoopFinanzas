@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import ResultTable from "@/components/common/result_table";
-import { queryUsers } from "@/api/authenticated/queryService";
+import { queryUsers } from "@/api/requestUsers/queryUsers";
 import { ProtectedRoute } from "../../../components/middleware/middleware";
 
 export default function Users() {
@@ -22,18 +22,18 @@ export default function Users() {
         "#",
         "NIT",
         "Rol",
-        "Razón Social",
+        "Nombre",
         "Correo",
         "Fecha de Registro",
     ];
 
     const fields = [
         "num",
-        "nit",
+        "identificacion",
         "rol",
-        "razonsoc",
+        "nombre",
         "correo",
-        "fecha_reg"
+        "fech_reg"
     ];
     return (
     <>

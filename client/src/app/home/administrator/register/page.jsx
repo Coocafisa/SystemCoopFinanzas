@@ -1,5 +1,5 @@
 "use client"
-import { adduser } from "@/api/requestAuth/registerService";
+import { adduser } from "@/api/requestAdmin/registerService";
 import "@public/styles/formusers.css";
 import { useState } from "react";
 import { ProtectedRoute } from "@/components/middleware/middleware";

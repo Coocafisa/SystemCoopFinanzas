@@ -4,11 +4,8 @@ import "flatpickr/dist/flatpickr.min.css";
 import "@public/styles/programhour.css";
 import { timerEmails } from "@/api/requestAdmin/querysAdmin";
 import { programmatEmails } from "@/api/requestAdmin/servicesAdmin";
-import { Loader } from "../common/preloader";
-import { useAlertState } from "../utils/alertState";
 
 const HoraForm = () => {
-  const { alert, setAlert, type, setType, loading, setLoading } = useAlertState();
   const [hora, setHora] = useState("");
   const [minuto, setMinuto] = useState("");
   const [isVisible, setIsVisible] = useState(false);
@@ -16,7 +13,7 @@ const HoraForm = () => {
 
   useEffect(() => {
     const getTime = async () => {
-      const data = await timerEmails(setAlert);
+      const data = await timerEmails();
       setHora(data.hour);
       setMinuto(data.minute);
     };
@@ -68,8 +65,7 @@ useEffect(() => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoading(true);
-    await programmatEmails(hora, minuto, setAlert, setType, setLoading);
+    await programmatEmails(hora, minuto);
     calculateCountdown(hora, minuto);
   };
 
@@ -115,7 +111,6 @@ useEffect(() => {
           <button type="submit" className="btn-submit">Guardar</button>
         </form>
       </div>
-      {loading && <Loader alert={alert} type={type}/>}
     </div>
   );
 };

@@ -178,15 +178,11 @@ label {
     color: white;
 }
 
-.btn_registrar:hover {
+.btn_registrar:hover, .btn_enviar:hover {
     background-color: #2ecc71;
 }
 
-.btn_enviar:hover {
-    background-color: #2ecc71;
-}
-
-.btn_registrar:disabled {
+.btn_registrar:disabled, .btn_enviar:disabled {
     background-color: #ccc;
     color: #666;
     cursor: not-allowed;
@@ -257,4 +253,4 @@ label {
     .stlvar a {
         font-size: 13px;
     }
-}
+} 

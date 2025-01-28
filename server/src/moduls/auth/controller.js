@@ -111,7 +111,7 @@ module.exports = function (dbInsert) {
 
   async function emailresetpass (req, res, data) {
   const token = generarToken();
-  if (!data) {
+  if (!data.nit) {
     return request.error(req, res, "Las credenciales son incorrectas.", 400);
   }
   try {

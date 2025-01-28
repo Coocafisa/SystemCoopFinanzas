@@ -1,32 +1,35 @@
 "use client"
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { emailValidate } from "@/api/requestServices/passwordService";
 import "@public/styles/formusers.css"
-import AlertPopup from "@/components/common/alert";
-import { Loader } from "@/components/common/preloader";
-import { useAlertState } from "@/components/utils/alertState";
+import { Message, ValidateInput } from "@/components/utils/helpers";
 export default function Formvalidatemail() {
-    const { alert, setAlert, type, setType, loading, setLoading } = useAlertState();
-    const [showAlert, setShowAlert] = useState(true);
+    const [formValues, setValues] = useState({ nit:"" });
+    const [message, setMessage] = useState({
+        nit: ""
+    });
 
     const handleSubmit =  async (event) => {
         event.preventDefault();
-        setLoading(true);
-        await emailValidate(event, setAlert, setType, setLoading);
+        await emailValidate(event);
     };
 
-    useEffect(() => {
-        if (showAlert) {
-            const timer = setTimeout(() => {
-                setShowAlert(false);
-            }, 6000);
-            return () => clearTimeout(timer);
-        }
-    }, [showAlert]);
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setValues((prevValues) => ({
+            ...prevValues,
+            [name]: value,
+        }));
+        ValidateInput(event, setMessage, formValues);
+    };
 
+    const isValid = Object.keys(formValues).every((key) => {
+        return (
+            message[key] === "" && formValues[key].trim() !== ""
+        );
+        });
     return (
         <div className="content">
-            
             <header className="flex flex-col items-center">
           <img
             src="/images/Logo.cooperativa.png"
@@ -37,20 +40,19 @@ export default function Formvalidatemail() {
         </header>
         <form onSubmit={handleSubmit}> 
                     <div className="stlvar">
-                        <label htmlFor="nit">Nit / Identificación*</label>
-                        <input type="number" name="nit" id="nit"/>
-                    </div>              
+                        <label htmlFor="nit">Nit o Identificación*</label>
+                        <input type="number" name="nit" id="nit" onChange={handleChange} value={formValues.nit}/>
+                    </div>    
+                    <Message text={message.nit} type="error-message"/>          
                     <div className="btn_butones">
                     <div className="btn">
                         <a href="/"><button type="button" className="btn_regresar">Regresar</button></a>
                     </div>
                     <div className="btn">
-                        <button type="submit" className="btn_enviar">Enviar Correo</button>
+                        <button type="submit" className="btn_enviar" disabled={!isValid}>Enviar Correo</button>
                     </div>
                     </div>                  
                 </form>
-                {loading && <Loader alert={alert} type={type}/>}
-                {showAlert && <AlertPopup message={`Ingresar su nit o identificación correspondiente. En el caso de nit sin los digitos de verificación.`} type="alertMessage"/>}
         </div>
     );
 }

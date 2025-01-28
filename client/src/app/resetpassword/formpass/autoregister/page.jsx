@@ -8,8 +8,6 @@ import { Message, ValidateInput } from "@/components/utils/helpers";
 import { useAlertState } from "@/components/utils/alertState";
 
 export default function AutoRegister() {
-  const { alert, setAlert, type, setType, loading, setLoading } = useAlertState();
-  const [tokenValid, setTokenValid] = useState(false);
   const [data, setData] = useState(null);
   const [formData, setFormData] = useState({
     newpass: "",
@@ -24,7 +22,7 @@ export default function AutoRegister() {
   });
 
   const handleChange = (event) => {
-    const { name, value, checked, type } = event.target;
+    const { name, value, checked, type} = event.target;
     setFormData({
       ...formData,
       [name]: type === "checkbox" ? checked : value,
@@ -42,7 +40,6 @@ export default function AutoRegister() {
   });
 
   const handleSubmit = async (event) => {
-    setLoading(true);
     event.preventDefault();
     const payload = {
       identificacion: data.identificacion,
@@ -50,22 +47,19 @@ export default function AutoRegister() {
       password: formData.newpass,
       ter_cond: formData.ter_cond
     }
-    await automaticRegistration(event, payload, setAlert, setType, setLoading)
+    await automaticRegistration(event, payload)
   };
 
   useEffect(() => {
     const validateToken = async () => {
-      setLoading(true);
-      await verifyTokenAutoregister(setType, setAlert, setTokenValid, setData, setLoading);
+      await verifyTokenAutoregister(setData);
     };
     validateToken();
   }, []);
 
   return (
     <>
-      {tokenValid ? (
         <div className="content">
-          {alert && <AlertPopup message={alert} type={type} />}
           <header className="flex flex-col items-center">
           <img
             src="/images/Logo.cooperativa.png"
@@ -127,11 +121,6 @@ export default function AutoRegister() {
             </div>
           </form>
         </div>
-      ) : (
-        <>
-          {loading && <Loader alert={alert} type={type} />}
-        </>
-      )}
     </>
   );
 }

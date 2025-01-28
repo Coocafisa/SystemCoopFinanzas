@@ -23,13 +23,13 @@ export default function Header({ menuOptions }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { nombre, user, rol, estado  } = await dateUser();
+      const { nit,nombre, user, rol, estado  } = await dateUser();
       let estadoUser = 'Activo';
       if (estado === '0') {
         estadoUser = 'Inactivo';
       }
       setUser({
-        'nombre': nombre, 'usuario': user, 'rol': rol, 
+        nit: nit, 'nombre': nombre, 'usuario': user, 'rol': rol, 
         'estado': estadoUser});
     };
     fetchData();
@@ -64,6 +64,7 @@ export default function Header({ menuOptions }) {
         </div>
         <div className={`detalle-perfil ${isVisible ? 'visible': ''}`}>
           <p className="title-perfil">Perfil</p>
+          <p>Nit: {user.nit}</p>
           <p>Usuario: {user.usuario}</p>
           <p>Rol: {user.rol}</p>
           <p>Estado: {user.estado}</p>

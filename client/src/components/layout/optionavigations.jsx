@@ -25,25 +25,27 @@ export default function Navigations() {
 }
 
 const routeToIndices = {
-    "/home": [0, 1, 2, 3, 7],
-    "/home/user": [0, 1, 2, 3, 7],
-    "/home/user/entities/invoices": [0, 4, 5, 6],
-    "/home/user/entities/invoices/payments": [0, 4, 5, 6],
-    "/home/user/entities/invoices/pending": [0, 4, 5, 6],
-    "/home/administrator/email": [0, 1, 2, 3, 7, 8],
-    "/pruebas": [0, 5, 6, 7, 8],
+    "/home": [ 1, 2, 3, 7, 8],
+    "/home/user": [0, 2, 3, 7, 8],
+    "home/user/entities": [0, 1, 2, 3, 7],
+    "/home/user/entities/invoices": [0, 5, 6],
+    "/home/user/entities/invoices/payments": [0, 4, 6],
+    "/home/user/entities/invoices/pending": [0, 4, 5],
+    "/home/administrator/email": [0, 1, 2, 7, 8],
+    "/home/administrator/emailPending": [0, 1, 2, 3, 8],
+    "/pruebas": [0, 5, 6, 7],
 }
 
 const menuOptions = [
-  { id: 1, label: "Inicio", link: "/home", icon: "bi bi-house-door" },
-  { id: 2, label: "Usuarios", link: "/home/user", icon: "bi bi-person-fill" },
-  { id: 3, label: "Registrar Usuario", link: "/home/administrator/register", icon: "bi bi-person-plus-fill" },
-  { id: 4, label: "Gestion de Correos", link: "/home/administrator/email", icon: "bi bi-envelope-paper-fill" },
-  { id: 5, label: "Facturas", link: "/home/user/entities/invoices", icon: "bi bi-receipt" },
-  { id: 6, label: "Facturas Pagas", link: "/home/user/entities/invoices/payments", icon: "bi bi-cash-stack"},
-  { id: 7, label: "Facturas Pendientes", link: "/home/user/entities/invoices/pending", icon: "bi bi-wallet2"},
-  { id: 8, label: "Proveedores", link: "/home/suppliers", icon: "bi bi-building"},
-  { id: 9, label: "Correos Pendientes", link: "/home/administrator/emailPending", icon: "bi bi-envelope-paper-fill"},
+  { id: 0, label: "Inicio", link: "/home", icon: "bi bi-house-door" },
+  { id: 1, label: "Usuarios", link: "/home/user", icon: "bi bi-person-fill" },
+  { id: 2, label: "Registrar Usuario", link: "/home/administrator/register", icon: "bi bi-person-plus-fill" },
+  { id: 3, label: "Gestion de Correos", link: "/home/administrator/email", icon: "bi bi-envelope-paper-fill" },
+  { id: 4, label: "Facturas", link: "/home/user/entities/invoices", icon: "bi bi-receipt" },
+  { id: 5, label: "Facturas Pagas", link: "/home/user/entities/invoices/payments", icon: "bi bi-cash-stack"},
+  { id: 6, label: "Facturas Pendientes", link: "/home/user/entities/invoices/pending", icon: "bi bi-wallet2"},
+  { id: 7, label: "Correos Pendientes", link: "/home/administrator/emailPending", icon: "bi bi-envelope-paper-fill"},
+  { id: 8, label: "Entidades", link: "/home/user/entities", icon: "bi bi-building-fill"},
 ];
 
 

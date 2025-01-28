@@ -1,24 +1,17 @@
 "use client";
 import PropTypes from "prop-types";
-import { useState } from "react";
 import "@public/styles/menu.css";
-import { logout } from "@/api/requestAuth/logout";
-import { Loader } from "@/components/common/preloader";
+import { logout } from "@/api/requestServices/logout";
 import Link from "next/link";
-import { useAlertState } from "../utils/alertState";
 
 export default function Menu({ menuOptions }) {
-  const { alert, setAlert, type, setType, loading, setLoading } = useAlertState();
-
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoading(true);
-    await logout(event, setAlert, setType, setLoading);
+    await logout(event);
   };
 
   return (
     <>
-    {loading && <Loader alert={alert} type={type}/>}
     <div className="menu">
         <nav className='menu-container'>
           <ul className="menu-list">

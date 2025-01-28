@@ -1,3 +1,4 @@
+const { formatDate } = require("../../functions/helpers.js");
 const request = require("../../red/request.js");
 
 const table = "users";
@@ -26,7 +27,8 @@ module.exports = function (dbInsert) {
       const dateUser = await validateUser(req.auth.name);
       return res.json({
         nombre: dateUser.nombre,
-        user: dateUser.usuario || req.auth.name,
+        nit: req.auth.name,
+        user: dateUser.usuario,
         rol: req.auth.role,
         estado: dateUser.activo,
         entidad: dateUser.tipo_entidad,
@@ -42,7 +44,13 @@ module.exports = function (dbInsert) {
     const fields = "identificacion, rol, nombre, entities.fech_reg, correo";
     try {
       const data = await db.query(table, fields);
-      request.success(req, res, data, 200);
+      const formatedData = data.map((user) => {
+        return {
+          ...user,
+          fech_reg: formatDate(user.fech_reg)
+        };
+      });
+      request.success(req, res, formatedData, 200);
     } catch (error) {
       request.error(req, res, error, 404);
     }
@@ -52,8 +60,14 @@ module.exports = function (dbInsert) {
     const fields =
       "identificacion, nombre, tipo_entidad, direcc, correo, telefono, fech_reg";
     try {
-      const data = await db.query(table, fields);
-      request.success(req, res, data, 200);
+      const data = await db.query("entities", fields);
+      const formatedData = data.map((entity) => {
+        return {
+          ...entity,
+          fech_reg: formatDate(entity.fech_reg)
+        };
+      });
+      request.success(req, res, formatedData, 200);
     } catch (error) {
       request.error(req, res, error, 404);
     }
