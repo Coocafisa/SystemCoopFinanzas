@@ -25,5 +25,19 @@ function formatPesos (number) {
     }).format(number);
 }
 
+function validateFields (dataFields, data) {
+    for (let key of Object.keys(dataFields)) {
+      if (!data.has(key)) {
+        return false
+      }
+  }
+  const dataUpdate = Object.keys(dataFields).filter(key => data.has(key)).reduce((acc, key) => {
+    acc[key] = dataFields[key]
+    return acc;
+  }, {});
+  const setClause = Object.keys(dataUpdate).map(field => `${field} = '${dataUpdate[field]}'`).join(', ');
+  return setClause;
+}
 
-module.exports = { formatDate, generarToken, formatPesos};
+
+module.exports = { formatDate, generarToken, formatPesos, validateFields };

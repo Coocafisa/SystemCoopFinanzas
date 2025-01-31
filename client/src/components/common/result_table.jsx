@@ -35,6 +35,8 @@ const ResultTable = ({ data, keysToSearch, title, headers, fields}) => {
     setCurrentPage(1);
   };
 
+  console.log("data", data);
+
   const handlePrevGroup = () => {
     const newPage = Math.max(1, currentPage - maxVisiblePages);
     setCurrentPage(newPage);

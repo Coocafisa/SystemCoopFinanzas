@@ -44,7 +44,7 @@ export default function Entities() {
         title={title}
         headers={headers}
         data={entities}
-        keysToSearch={['nit', 'rol', 'razonsoc', 'correo', 'fecha_reg']}
+        keysToSearch={['identificacion', 'tipo_entidad', 'nombre', 'correo', 'fech_reg']}
         fields={fields} />
         </>
     );

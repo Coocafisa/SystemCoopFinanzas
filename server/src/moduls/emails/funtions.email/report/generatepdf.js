@@ -7,7 +7,7 @@ const generarReportePDF = async (data) => {
   const page = await browser.newPage();
 
   const imgTag = `<img src="data:image/png;base64,${fs
-    .readFileSync(path.resolve("public/images/Logo.cooperativa.png"))
+    .readFileSync(path.resolve("src/public/images/Logo.cooperativa.png"))
     .toString("base64")}" alt="Logo" />`;
 
   const htmlContent = `
@@ -186,7 +186,7 @@ const generarReportePDF = async (data) => {
     <div class="table-container">
       <div class="table-header-info">
         <div>NIT: ${data[0].nit}</div>
-        <div>Razón Social: ${data[0].razonsoc}</div>
+        <div>Razón Social: ${data[0].nombre}</div>
         <div>Fecha Emisión: ${data[0].fecemi}</div>
       </div>
 
@@ -264,7 +264,7 @@ const generarResumenPDF = async (data) => {
   const page = await browser.newPage();
 
   const imgTag = `<img src="data:image/png;base64,${fs
-    .readFileSync(path.resolve("public/images/Logo.cooperativa.png"))
+    .readFileSync(path.resolve("src/public/images/Logo.cooperativa.png"))
     .toString("base64")}" alt="Logo" />`;
 
   const htmlContent = `
@@ -273,7 +273,7 @@ const generarResumenPDF = async (data) => {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Reporte de Pagos a Proveedores</title>
+    <title>Reporte de Pagos Realizados</title>
     <style>
       body {
         font-family: "Arial", sans-serif;
@@ -440,7 +440,7 @@ const generarResumenPDF = async (data) => {
 </html>`;
 
   await page.setContent(htmlContent, {
-    waitUntil: "Reporte de Pagos Realizados-"`${data[0].fecemi}`,
+    waitUntil: "load",
   });
   const pdfBuffer = await page.pdf({
     format: "A4",

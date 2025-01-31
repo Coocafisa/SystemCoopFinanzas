@@ -1,23 +1,22 @@
 "use client";
 import { useEffect } from 'react';
 import { useAuth } from '@/api/requestAuth/authContext';
+import { useRouter } from 'next/navigation';
 
-export function ProtectedRoute({ children, allowedRoles = []}) {
-    const auth = useAuth();
-    const { user, loading, role } = auth;
+export function ProtectedRoute({ children, allowedRoles = [] }) {
+    const router = useRouter();
+    const { dataUser, loading, dataRole } = useAuth();
+
     useEffect(() => {
         if (!loading) {
-            if (!user) {
-                window.location.href = '/'; 
-            } else if (allowedRoles.length > 0 && !allowedRoles.includes(role)) {
-                window.location.href = '/';
+            if (!dataUser) {
+                window.location.href = ("/")
+            } else if (allowedRoles.length > 0 && !allowedRoles.includes(dataRole)) {
+                window.location.href = ("/");
             }
         }
-    }, [user, loading, role, allowedRoles]);
-  
-    if (loading) {
-        return null;
-    }   
+    }, [dataUser, loading, dataRole, allowedRoles, router]);
 
-    return user && (!allowedRoles.length === 0 || allowedRoles.includes(role)) ? children : null;
+    return dataUser && (!allowedRoles.length === 0 || allowedRoles.includes(dataRole)) ? children : null;
 }
+

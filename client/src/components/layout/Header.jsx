@@ -7,7 +7,7 @@ import "@public/styles/header.css"
 export default function Header({ menuOptions }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [user, setUser] = useState({'usuario': 'Sin Asignar', 'rol': 'Sin Asignar', 'estado': 'Activo'});
+  const [user, setUser] = useState({'nit': 'Nit','usuario': 'Sin Asignar', 'rol': 'Sin Asignar', 'estado': 'Activo'});
 
   const handleScroll = () => {
     const scrollY = window.scrollY;
@@ -29,7 +29,7 @@ export default function Header({ menuOptions }) {
         estadoUser = 'Inactivo';
       }
       setUser({
-        nit: nit, 'nombre': nombre, 'usuario': user, 'rol': rol, 
+        'nit': nit, 'nombre': nombre, 'usuario': user, 'rol': rol, 
         'estado': estadoUser});
     };
     fetchData();

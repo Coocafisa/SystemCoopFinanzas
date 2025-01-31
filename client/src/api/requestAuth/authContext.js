@@ -1,46 +1,44 @@
 "use client";
-import { createContext, useContext, useState, useEffect } from 'react';
-import { getSession } from '../requestServices/sessionService';
-import { useAlertState } from '@/components/utils/alertState';
+import { createContext, useContext, useState, useEffect } from "react";
+import { getSession } from "../requestServices/sessionService";
 
 const AuthContext = createContext();
 
 export default function AuthProvider({ children }) {
-    const [user, setUser] = useState(null);
-    const [role, setRole] = useState(null);
-    const [expiration, setExpiration] = useState(null);
-    const { loading, setLoading } = useAlertState();
+    const [dataUser, setDataUser] = useState(null);
+    const [dataRole, setDataRole] = useState(null);
+    const [timeExpiration, setTimeExpiration] = useState(null);
+    const [ loading, setLoading ] = useState(true);
 
     const resetAuth = () => {
-        setUser(null);
-        setRole(null);
+        setDataUser(null);
+        setDataRole(null);
+        setTimeExpiration(null);
     };
 
     useEffect(() => {
         const checkSession = async () => {
             try {
-                
-                const { isAuthenticated, user, role, expiration } = await getSession();
-
-                if (isAuthenticated) {
-                    setUser(user);
-                    setRole(role);
-                    setExpiration(expiration);
+                const session = await getSession();
+                if (session.isAuthenticated) {
+                    setDataUser(session.user);
+                    setDataRole(session.role);
+                    setTimeExpiration(session.expiration);
                 } else {
                     resetAuth();
                 }
-            } catch (error){
+            } catch (error) {
                 resetAuth();
             } finally {
-                    setLoading(false);
+                setLoading(false);
             }
         };
         checkSession();
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, role, expiration, loading }}>
-            {children}
+        <AuthContext.Provider value={{ dataUser, dataRole, timeExpiration, loading}}>
+           {children}
         </AuthContext.Provider>
     );
 }

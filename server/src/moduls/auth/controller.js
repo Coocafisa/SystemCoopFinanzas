@@ -149,7 +149,7 @@ module.exports = function (dbInsert) {
     try {
       if (!validatepass.test(newpass)) {
         return request.error(req, res, 
-          { errors: "La contraseña no es segura. Debe contener al menos una mayúscula, dos números, y no puede tener espacios." },
+          { message: "La contraseña no es segura. Debe contener al menos una mayúscula, dos números, y no puede tener espacios." },
           400);
       }
       const [tokenQuery] = await db.query('auth', 'token_pass, expiracion_token_pass', 'token_pass = ?', [token]);
@@ -167,9 +167,11 @@ module.exports = function (dbInsert) {
         if (!updateQuery){
           return request.error(req, res, 'Error al actualizar la contraseña.', 501);
         }
-        return request.success(req, res, { message: "Tu contraseña ha sido restablecida exitosamente. Inicia sesión con tus nuevas credenciales." }, 200);
+        return request.success(req, res, { 
+          message: "Tu contraseña ha sido restablecida exitosamente. Inicia sesión con tus nuevas credenciales.",
+        redirect: "/" }, 200);
       } catch (error) {
-        return request.error(req, res, {message:'Error al restablecer la contraseña.', error}, 501);
+        return request.error(req, res, {message:'Error al restablecer la contraseña.'}, 501);
       }
     };
 
@@ -183,13 +185,14 @@ module.exports = function (dbInsert) {
           'token_pass, expiracion_token_pass, TIMESTAMPDIFF(MINUTE, expiracion_token_pass, CURRENT_TIMESTAMP) AS minutos_transcurridos',
           'token_pass = ?', [token]);
           if(!validateTokenQuery){
-            return request.error(req, res, 'Token no válido o no encontrado.', 400);
+            return request.error(req, res, { message:'Token no válido o no encontrado.', redirect: "/" }, 400);
           }
           const { minutos_transcurridos } = validateTokenQuery;
           if (minutos_transcurridos >= 60) {
-            return request.error(req, res, 'El token ha expirado. Por favor, solicite uno nuevo.', 400);
+            return request.error(req, res, { message: 'El token ha expirado. Por favor, solicite uno nuevo.',
+              redirect: "/" }, 400);
           }
-          return request.success(req, res, { message: "Validación correcta."}, 200);
+          return request.success(req, res, "Validación correcta.", 200);
         } catch (error) {
           return request.error(req, res, "Ocurrió un error en la solicitud. Inténtalo de nuevo más tarde.", 500);
         }

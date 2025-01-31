@@ -5,8 +5,9 @@ const controller = require('./index');
 
 router.get ('/timer', controller.timerEmails);
 router.get('/sheduledEmails', queryEmails);
-router.get('/pruebas', (req, res) => {
-    request.success(req, res, { message: 'Prueba de conexión.' }, 200);
+router.post('/pruebas', async (req, res) => {
+    await controller.resendEmails(req, res);
+
 });
 
 async function queryEmails(req, res, next) {

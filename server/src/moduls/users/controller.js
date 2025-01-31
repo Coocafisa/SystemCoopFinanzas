@@ -12,13 +12,13 @@ module.exports = function (dbInsert) {
   async function validateUser(user) {
     const SelectTable = `entities INNER JOIN ${table} ON entities.entidad_id = ${table}.entidad_id
          INNER JOIN auth ON auth.usuario_id = ${table}.usuario_id`;
-    const fields = "nombre, tipo_entidad, identificacion, usuario, rol, activo";
+    const fields = "nombre, tipo_entidad, users.usuario_id, identificacion, usuario, rol, activo";
     const params = `identificacion = ${user} OR usuario = ${user}`;
     try {
       const [usuario] = await db.query(SelectTable, fields, params);
       return usuario;
     } catch (error) {
-      return error;
+      throw new Error("Error en la consulta: ", error);
     }
   }
 

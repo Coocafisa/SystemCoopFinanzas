@@ -31,16 +31,13 @@ module.exports = function (dbInsert) {
         }
     }
 
-    async function resendEmails () {
-        const results = await pendingEmails();
+    async function resendEmails (req, res) {
+        const results = await pendingEmails(req, res);
         if (results.length > 0) {
-            await obtainData(results);
-            request.success(req, res, { message: "Correos enviados con éxito." }, 200);
-        } else {
-            request.error(req, res, "No hay correos pendientes.", 400);
+            return await obtainData(req, res, results);
         }
+        return request.error(req, res, "No hay correos pendientes.", 400);
     }
-
     async function timerEmails(req, res) {
         if (!obtainTimer) {
             request.error(req, res, "No se encontró la hora programada.", 400);

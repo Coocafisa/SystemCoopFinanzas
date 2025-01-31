@@ -93,7 +93,6 @@ export default function Login() {
                     </div>
                 </div>
                </form>
-               {/* <Loader type={"success"} message={"Iniciando session."} isLoading={loading}/> */}
         </div>
     );
 }

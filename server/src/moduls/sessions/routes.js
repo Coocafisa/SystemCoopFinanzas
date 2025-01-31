@@ -6,7 +6,7 @@ const controller = require('./index');
 const {verifyToken} = require('../../middleware/authMiddleware');
 const router = express.Router();
 
-router.get('/', verifyToken,controller.session);
+router.get('/', verifyToken, controller.session);
 router.post('/logout', (req, res, next) => {
     res.clearCookie('token', { path: '/' });
     controller.logout

@@ -38,7 +38,7 @@ export const useAxiosWithLoader = (
       },
       (error) => {
         setLoading(false);
-        handleAlert(error.response?.data?.body?.message || "Error en la solicitud.", 'error', timeout);
+        handleAlert(error.response?.data?.body?.message || error || "Error en la solicitud.", 'error', timeout);
         return Promise.reject(error);
       }
     );

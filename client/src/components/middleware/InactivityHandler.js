@@ -13,6 +13,7 @@ export default function InactivityHandler() {
   const expirationTime = async () => {
     try {
       const sessionData = await getSession();
+      console.log("Tiempo de session: ", sessionData?.timeRemaining)
       if (sessionData?.timeRemaining ) {
         const { minutes, seconds } = sessionData.timeRemaining;
         setTimer({

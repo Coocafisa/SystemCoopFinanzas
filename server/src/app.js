@@ -12,6 +12,7 @@ const session = require('./moduls/sessions/routes');
 const admin = require('./moduls/admin/routes');
 const invoices = require('./moduls/invoices/routes');
 const userManagement = require('./moduls/userManagement/routes');
+const generalService = require('./moduls/generalService/routes');
 
 const app = express();
 
@@ -49,6 +50,7 @@ app.use('/emails', emails);
 app.use('/admin', admin)
 app.use('/invoices', invoices)
 app.use('/userManagement', userManagement)
+app.use('/generalService', generalService)
 app.use(error);
 
 module.exports = app;

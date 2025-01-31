@@ -31,14 +31,14 @@ async function verifyToken(req, res, next) {
                 return request.error(req, res, 'Usuario no autorizado.', 401);
             }
 
-            if (remainingTime < 120) {
+            /* if (remainingTime < 120) {
                 const newToken = tokenAuth(user);
                 res.setHeader('Authorization', `Bearer ${newToken}`);
                 res.cookie('token', newToken, { httpOnly: true });
             }
             const newToken = tokenAuth(user);
                 res.setHeader('Authorization', `Bearer ${newToken}`);
-                res.cookie('token', newToken, { httpOnly: true });
+                res.cookie('token', newToken, { httpOnly: true }); */
             req.auth = decoded;
             next();          
         }
