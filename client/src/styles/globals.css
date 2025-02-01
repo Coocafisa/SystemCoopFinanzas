@@ -1,4 +1,8 @@
-:root {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {  
   --background: linear-gradient(135deg, #2c3e50, #bdc3c7);
   --foreground: #116b33;
 }

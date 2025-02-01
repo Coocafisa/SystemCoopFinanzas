@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import '@public/styles/preloader.css';
+import '@styles/preloader.css';
 
 export const Loader = ({ type, message, isLoading }) => {
 

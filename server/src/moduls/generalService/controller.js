@@ -41,12 +41,10 @@ module.exports = function (dbInsert) {
       "tipo_entidad",
       "identificacion",
       "correo",
-      "direccion",
-      "telefono",
       "estado",
     ]);
 
-    const updateForUser = new Set(["usuario", "nombre", "telefono"]);
+    const updateForUser = new Set(["usuario", "nombre", "telefono", "direcc", "telefono"]);
 
     let allowedFields;
     if (role === "Administrador") {
@@ -74,7 +72,7 @@ module.exports = function (dbInsert) {
         );
       }
       const selectTable = `entities INNER JOIN users ON entities.entidad_id = users.entidad_id
-                        INNER JOIN auth ON auth.usuario_id = users.usuario_id`;
+      INNER JOIN auth ON auth.usuario_id = users.usuario_id`;
       const params = `identificacion = ${nit}`;
       const executionUpdate = await db.update(selectTable, dataFields, params);
       if (executionUpdate.affectedRows === 0) {

@@ -10,9 +10,7 @@ export default function Users() {
     useEffect(() => {
         const fetchData = async () => {
             const usersData = await queryUsers();
-            console.log("Consulta de usuarios34: ", usersData);
             setUsers(usersData)
-            console.log("Consulta de usuarios: ", users);
             }
         fetchData();
     }, []);

@@ -1,5 +1,5 @@
 "use client";
-import "@public/styles/formusers.css";
+import "@styles/formusers.css";
 import { useEffect, useState } from "react";
 import { automaticRegistration, verifyTokenAutoregister } from "@/api/requestServices/passwordService";
 import AlertPopup from "@/components/common/alert";

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
-import "@public/styles/programhour.css";
+import "@styles/programhour.css";
 import { timerEmails } from "@/api/requestAdmin/querysAdmin";
 import { programmatEmails } from "@/api/requestAdmin/servicesAdmin";
 

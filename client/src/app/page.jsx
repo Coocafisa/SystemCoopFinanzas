@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import "@public/styles/formusers.css";
+import "@styles/formusers.css";
 import { auth } from "@/api/requestAuth/authService";
 
 export default function Login() {

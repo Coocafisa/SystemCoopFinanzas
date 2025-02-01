@@ -12,7 +12,7 @@ module.exports = function (dbInsert) {
   async function validateUser(user) {
     const SelectTable = `entities INNER JOIN ${table} ON entities.entidad_id = ${table}.entidad_id
          INNER JOIN auth ON auth.usuario_id = ${table}.usuario_id`;
-    const fields = "nombre, tipo_entidad, users.usuario_id, identificacion, usuario, rol, activo";
+    const fields = "nombre, tipo_entidad, users.usuario_id, identificacion, usuario, rol, activo, correo, telefono, direcc";
     const params = `identificacion = ${user} OR usuario = ${user}`;
     try {
       const [usuario] = await db.query(SelectTable, fields, params);
@@ -26,12 +26,15 @@ module.exports = function (dbInsert) {
     if (req.auth && req.auth.name) {
       const dateUser = await validateUser(req.auth.name);
       return res.json({
-        nombre: dateUser.nombre,
-        nit: req.auth.name,
-        user: dateUser.usuario,
-        rol: req.auth.role,
-        estado: dateUser.activo,
-        entidad: dateUser.tipo_entidad,
+        nombre: dateUser.nombre || "Nombre",
+        nit: req.auth.name || "Nit",
+        user: dateUser.usuario || "Usuario",
+        rol: req.auth.role || "Rol",
+        estado: dateUser.activo || "N/A",
+        entidad: dateUser.tipo_entidad || "N/A",
+        correo: dateUser.correo || "Correo",
+        telefono: dateUser.telefono || "Telefono",
+        direccion: dateUser.direcc || "Dirección",
       });
     } else {
       return res.json({ isAuthenticated: false, user: null });

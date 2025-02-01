@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import "@public/styles/table.css";
+import "@styles/table.css";
 import Search from './search';
 
 const Table = ({ data, keysToSearch, fields, title, headers, expandedData}) => {

@@ -1,4 +1,4 @@
-import "@public/styles/alert.css";
+import "@styles/alert.css";
 
 export default function AlertPopup ({ children, message, type }) {
   return (

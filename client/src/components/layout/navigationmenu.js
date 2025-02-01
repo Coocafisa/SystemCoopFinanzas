@@ -1,6 +1,6 @@
 "use client";
 import PropTypes from "prop-types";
-import "@public/styles/menu.css";
+import "@styles/menu.css";
 import { logout } from "@/api/requestServices/logout";
 import Link from "next/link";
 

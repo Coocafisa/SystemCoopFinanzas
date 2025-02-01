@@ -8,11 +8,9 @@ export default function Homepage() {
     useEffect(() => {
         const fetchData = async () => {
             const paymentsData = await consultPaymentEntities();
-            console.log("Consulta de pagos: ", paymentsData);
             setPayments(paymentsData);
         }
         fetchData();
-        console.log("Consulta de pagos: ", payments);
     }, []);
     return (
         <>

@@ -1,5 +1,5 @@
 import LoaderWithMessage from "@/components/utils/conponent-message";
-import "@public/styles/globals.css";
+import "@styles/globals.css";
 export const metadata = {
   icon: "/favicon.ico",
   title: "Cooperativa de Caficultores de Salgar-CoopFinanzas",

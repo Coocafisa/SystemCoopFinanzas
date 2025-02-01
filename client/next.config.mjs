@@ -7,7 +7,7 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const nextConfig = {
   webpack: (config) => {
-    config.resolve.alias['@public'] = path.resolve(__dirname, 'public');
+    config.resolve.alias['@styles'] = path.resolve(__dirname, 'src/styles');
 
     config.plugins.push(new MiniCssExtractPlugin({
         filename: 'static/css/[name].css',

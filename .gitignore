@@ -178,5 +178,6 @@ yarn-error.log*
 next-env.d.ts
 
 pruebas/
+.pruebas
 .testTable.jsx
 .testTbale.css

@@ -1,5 +1,5 @@
 'use client';
-import "@public/styles/error.css"
+import "@styles/error.css"
 
 export default function Error({ error, reset }) {
   return (

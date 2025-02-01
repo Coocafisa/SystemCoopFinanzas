@@ -1,6 +1,9 @@
 function ValidateInput(event, setMessage, formData) {
-    const { name, value, checked } = event.target;
+    let { name, value, checked } = event.target;
     let message = "";
+    name = String(name);
+    value = value !== undefined && value !== null ? String(value) : "";
+
   
     if (value.trim() === "" && !message) {
       message = "Este campo es obligatorio";
@@ -67,7 +70,7 @@ function ValidateInput(event, setMessage, formData) {
     }));
   
     const hasErrors = Object.values(formData).some((val) => {
-      return val.trim() === "" || val !== message;
+      return typeof val === "string" && val.trim() === "" || val !== message;
     });
   
     if (hasErrors) {

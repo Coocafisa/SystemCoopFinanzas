@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { logout } from "@/api/requestServices/logout";
 import { getSession } from "@/api/requestServices/sessionService";
 import AlertPopup from "../common/alert";
-import "@public/styles/alertInativity.css";
+import "@styles/alertInativity.css";
 import { calculateCountdown } from "../utils/timerUtils";
 
 export default function InactivityHandler() {

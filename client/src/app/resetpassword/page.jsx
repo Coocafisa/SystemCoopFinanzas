@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react";
 import { emailValidate } from "@/api/requestServices/passwordService";
-import "@public/styles/formusers.css"
+import "@styles/formusers.css"
 import { Message, ValidateInput } from "@/components/utils/helpers";
 export default function Formvalidatemail() {
     const [formValues, setValues] = useState({ nit:"" });

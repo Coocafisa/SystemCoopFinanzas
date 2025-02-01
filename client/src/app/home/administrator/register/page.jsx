@@ -1,6 +1,6 @@
 "use client"
 import { adduser } from "@/api/requestAdmin/registerService";
-import "@public/styles/formusers.css";
+import "@styles/formusers.css";
 import { useState } from "react";
 import { ProtectedRoute } from "@/components/middleware/middleware";
 import { Loader } from "@/components/common/preloader";

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import "@public/styles/table.css";
+import "@styles/table.css";
 import Search from "./search";
 
 const ResultTable = ({ data, keysToSearch, title, headers, fields}) => {
@@ -34,8 +34,6 @@ const ResultTable = ({ data, keysToSearch, title, headers, fields}) => {
     setFilteredData(filtered);
     setCurrentPage(1);
   };
-
-  console.log("data", data);
 
   const handlePrevGroup = () => {
     const newPage = Math.max(1, currentPage - maxVisiblePages);

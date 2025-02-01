@@ -1,5 +1,5 @@
 "use client";
-import "@public/styles/formusers.css";
+import "@styles/formusers.css";
 import { useEffect, useState } from "react";
 import { resetpass } from "@/api/requestServices/passwordService";
 import { getToken } from "@/api/requestServices/passwordService";
