@@ -11,8 +11,10 @@ function ValidateInput(event, setMessage, formData) {
   
     if (name === "nit" && value) {
       if (value.toString().length < 6 || value.toString().length > 10) {
-        const text = value.toString().length < 6 ? ' al menos 6 ' : ' máximo 10';
+        const text = value.toString().length < 6 ? ' al menos 6 ' : ' máximo 10 ';
         message = `La credencial debe tener${text}caracteres.`;
+      } else if (!/^\d+$/.test(value)) {
+        message = "Solo se admiten números"
       }
     }
   
@@ -22,7 +24,7 @@ function ValidateInput(event, setMessage, formData) {
       }
     }
   
-    if (name === "email" && value) {
+    if (name === "email" && value || name === "correo" && value) {
       if (!/\S+@\S+\.\S+/.test(value)) {
         message = "El formato del correo electrónico no es válido";
       }
@@ -62,6 +64,42 @@ function ValidateInput(event, setMessage, formData) {
   
     if (name === "ter_cond" && !checked) {
       message = "Debes aceptar los términos y condiciones";
+    }
+
+    if (name === "usuario" && value) {
+      if (value.toString().length < 4 || value.toString().length > 15) {
+        const text = value.toString().length < 4 ? ' al menos 4 ' : ' máximo 15';
+        message = `La credencial debe tener${text}caracteres.`;
+      } else if (!/^[a-zA-Z0-9]+$/.test(value)) {
+        message = "Caracter invalido para este campo";
+      }
+    }
+
+    if (name === "nombre" && value) {
+      if (value.toString().length < 3 || value.toString().length > 30) {
+        const text = value.toString().length < 3 ? ' al menos 3 ' : ' máximo 30';
+        message = `Debe tener${text}caracteres.`;
+      } else if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(value)) {!/^[A-Za-zÁÉÍÓÚáéíóúÑñ]+$/
+        message = "Caracter invalido para este campo";
+      }
+    }
+
+    if (name === "telefono" && value) {
+      if (value.toString().length < 7 || value.toString().length > 10) {
+        const text = value.toString().length < 7 ? ' al menos 7 ' : ' máximo 15';
+        message = `Debe tener ${text}caracteres.`;
+      } else if (!/^\d+$/.test(value)) {
+        message = "Caracter invalido para este campo";
+      }
+    }
+
+    if (name === "direccion" && value) {
+      if (value.toString().length < 6 || value.toString().length > 30) {
+        const text = value.toString().length < 6 ? ' al menos 6 ' : ' máximo 40';
+        message = `Debe tener${text}caracteres.`;
+      } else if (!/^[a-zA-Z0-9-\s]+$/.test(value)) {
+        message = "Caracter invalido para este campo";
+      }
     }
   
     setMessage((prevState) => ({

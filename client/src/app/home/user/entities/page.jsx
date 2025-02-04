@@ -22,7 +22,7 @@ export default function Entities() {
         "Tipo de Entidad",
         "Nombre",
         "Correo",
-        "Dirección",
+        "Direccion",
         "Telefono",
         "Fecha de Registro",
     ];

@@ -5,7 +5,7 @@ module.exports = function(dbInsert) {
         db = require('../../db/mysql');
     }
 
-    async function  session(req, res) {
+    async function session(req, res) {
         if (req.auth && req.auth.name) {
             var expiretoken = new Date(req.auth.exp * 1000);
             var currenttime = new Date();

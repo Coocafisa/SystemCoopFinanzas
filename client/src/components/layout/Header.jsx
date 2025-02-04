@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import Menu from "./navigationmenu";
 import { getSession, dateUser } from "@/api/requestServices/sessionService";
 import "@styles/header.css"
@@ -13,6 +13,7 @@ export default function Header({ menuOptions }) {
   const [message, setMessage] = useState({ nit: "", nombre: "", correo: "", rol: "", estado: "" });
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({ ...user });
+  const [restrictedFields, setRestrictedFields] = useState([]);
 
   const handleScroll = () => {
     const scrollY = window.scrollY;
@@ -41,7 +42,9 @@ export default function Header({ menuOptions }) {
   }, []);
 
   useEffect(() => {
-    setFormData({ ...user });
+    if (JSON.stringify(user) !== JSON.stringify(formData)) {
+      setFormData({ ...user });
+    }
   }, [user]);
 
   const handleClick = async() => {
@@ -57,7 +60,15 @@ export default function Header({ menuOptions }) {
     setIsVisible(!isVisible);
   }
 
+  const rolePermissions = {
+    Administrador: ["rol", "estado"],
+    Supervisor: ["rol", "estado"],
+    Usuario: ["nit", "rol", "nombre", "correo", "estado"]
+  }
+
   const handleEditClick = () => {
+    const fields = rolePermissions[user.rol] || []
+    setRestrictedFields(fields);
     setIsEditing(true);
   };
 
@@ -66,33 +77,37 @@ export default function Header({ menuOptions }) {
     setFormData({ ...user });
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
-    ValidateInput(e, setMessage, formData);
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+    ValidateInput(event, setMessage, formData);
   };
-
-  const handleSaveClick = async (event) => {
-    const updateFields = Object.keys(formData).reduce((acc, key) => {
-      if (formData[key] !== user[key]) {
-        acc[key] = formData[key];
-      }
-      return acc;
-    }, {});
-    if (Object.keys(updateFields).length === 0) {
-      console.log("No hay cambios");
-      setIsEditing(false);
-      return;
+  const updateFields = Object.keys(formData).reduce((acc, key) => {
+    if (String(formData[key]) !== String(user[key])) {
+      acc[key] = formData[key];
     }
-    await updateRegister(event, updateFields, user.nit);
-    console.log("guardando datos: ", updateFields);
+    return acc;
+  }, {});
+
+  const isValid = Object.keys(updateFields).every((key) => {
+    return (
+      message[key] === ""
+    )
+    });
+  const handleSaveClick = async (event) => {
+    const res = await updateRegister(event, updateFields, user.nit);
+    if (res.status === 200) {
+      const updatedUser = { ...user, ...updateFields };
+      updatedUser.estado = updatedUser.estado === '0' ? 'Inactivo' : 'Activo';
+      setUser(updatedUser);
+      setFormData(updatedUser);
+      setIsEditing(false);
+    }
   };
 
   const getFields = () => {
-    return isEditing ? ["nit", "nombre", "usuario", "rol", "estado", "correo", "telefono", "direccion"]:
+    return isEditing ? [
+    "nit", "nombre", "usuario", "rol", "estado", "correo", "telefono", "direccion"] :
     ["nit", "nombre", "rol", "estado"];
   };
   return (
@@ -124,7 +139,7 @@ export default function Header({ menuOptions }) {
                 {isEditing ? (
                   <>
                   <input type="text" name={item} value={formData[item]}
-                  onChange={handleChange} className="input-field"/>
+                  onChange={handleChange} disabled={restrictedFields.includes(item)} className="input-field"/>
                   <Message text={message[item]} type="error-message"/>
                   </>
                 ): (
@@ -136,7 +151,8 @@ export default function Header({ menuOptions }) {
           <div className="modal-footer">
             {isEditing ? (
               <>
-              <button className="save-button" onClick={handleSaveClick}>Guardar</button>
+              <button className="save-button" onClick={handleSaveClick}
+              disabled={ Object.keys(updateFields).length === 0 || !isValid}>Guardar</button>
               <button className="cancel-button" onClick={handleCancelClick} >Cancelar</button>
               </>
             ) : (

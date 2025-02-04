@@ -42,6 +42,10 @@ module.exports = function (dbInsert) {
       "identificacion",
       "correo",
       "estado",
+      "telefono",
+      "direcc",
+      "nombre",
+      "usuario",
     ]);
 
     const updateForUser = new Set(["usuario", "nombre", "telefono", "direcc", "telefono"]);
@@ -61,8 +65,7 @@ module.exports = function (dbInsert) {
     }
 
     try {
-      const dataValues = fields[0];
-      const dataFields = validateFields(dataValues, allowedFields);
+      const dataFields = validateFields(fields, allowedFields);
       if (!dataFields) {
         return request.error(
           req,
@@ -90,15 +93,7 @@ module.exports = function (dbInsert) {
         200
       );
     } catch (error) {
-      return request.error(
-        req,
-        res,
-        {
-          message: "Ocurrió un error al actualizar el registro.",
-          Error: error,
-        },
-        500
-      );
+      return request.error( req, res, { message: "Ocurrió un error al actualizar el registro." }, 500 );
     }
   }
 
