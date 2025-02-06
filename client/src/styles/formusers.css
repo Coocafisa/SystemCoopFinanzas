@@ -182,12 +182,6 @@ label {
     background-color: #2ecc71;
 }
 
-.btn_registrar:disabled, .btn_enviar:disabled {
-    background-color: #ccc;
-    color: #666;
-    cursor: not-allowed;
-}
-
 .btn_cancelar, .btn_regresar {
     background-color: #e74c3c;
     color: white;

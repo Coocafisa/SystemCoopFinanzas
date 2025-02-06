@@ -4,6 +4,7 @@ async function updateRegister(event, updateFields, nit) {
     event.preventDefault();
     const renamedFields = (fields) => {
         const renameFields = {
+            ...fields,
             identificacion: fields.nit,
             nombre: fields.nombre,
             usuario: fields.usuario,
@@ -19,8 +20,9 @@ async function updateRegister(event, updateFields, nit) {
             return acc;
         }, {});
         return newFields;
-    }
-    try {
+    }; 
+    console.log('Actualizando registro con nit: ', {nit, fields:  renamedFields(updateFields)});
+    /* try {
         const response = await api.post("generalService/updateRegister",{
             nit: nit,
             fields: renamedFields(updateFields)
@@ -29,7 +31,7 @@ async function updateRegister(event, updateFields, nit) {
         return data;
     } catch (error) {
         console.log("Error en la solicitud al servidor: ", error);
-    }
+    } */
 }
 
 export { updateRegister };

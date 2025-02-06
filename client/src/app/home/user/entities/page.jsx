@@ -3,14 +3,18 @@ import { useState, useEffect } from "react";
 import ResultTable from "@/components/common/result_table";
 import { ProtectedRoute } from "@/components/middleware/middleware";
 import { queryEntities } from "@/api/requestUsers/queryUsers";
+import { getSession } from "@/api/requestServices/sessionService";
 
 export default function Entities() {
     const [entities, setEntities] = useState([]);
+    const [rol, setRol] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
             const entitiesData = await queryEntities();
             setEntities(entitiesData);
+            const {role} = await getSession();
+            setRol(role);
             }
         fetchData();
     }, []);
@@ -25,6 +29,7 @@ export default function Entities() {
         "Direccion",
         "Telefono",
         "Fecha de Registro",
+        "Acciones"
     ];
 
     const fields = [
@@ -45,7 +50,11 @@ export default function Entities() {
         headers={headers}
         data={entities}
         keysToSearch={['identificacion', 'tipo_entidad', 'nombre', 'correo', 'fech_reg']}
-        fields={fields} />
+        fields={fields}
+        isAction={true}
+        rol={rol}
+        editTitle={"Edicción de Entidad"}
+        />
         </>
     );
 }

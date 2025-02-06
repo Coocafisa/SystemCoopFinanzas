@@ -76,3 +76,9 @@ input[type="number"]::-webkit-outer-spin-button {
   position: absolute;
   margin-left: 1090px;
 }
+
+.btn_registrar:disabled, .btn_enviar:disabled, .save-button:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}

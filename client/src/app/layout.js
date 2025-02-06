@@ -1,4 +1,3 @@
-
 import LoaderWithMessage from "@/components/layout/conponent-message";
 import "@styles/globals.css";
 export const metadata = {

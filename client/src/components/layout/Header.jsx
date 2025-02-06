@@ -5,6 +5,7 @@ import { getSession, dateUser } from "@/api/requestServices/sessionService";
 import "@styles/header.css"
 import { Message, ValidateInput } from "../utils/helpers";
 import { updateRegister } from "@/api/requestServices/generalServices";
+import { CircleUser, X } from "lucide-react";
 
 export default function Header({ menuOptions }) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -122,7 +123,8 @@ export default function Header({ menuOptions }) {
       <h1 className="text-header">CoopFinanzas</h1>      
       <div className="perfil">
         <div className="info">
-          <p className="text_user" onClick={toogleDetalles}>Bienvenido, {user.nombre}</p>
+          <p className="text_user" onClick={toogleDetalles}>Bienvenido, {user.nombre}
+          <CircleUser className="icono-perfil"/></p>
         </div>
         <div className={`modal-overlay ${isEditing ? 'editing' : ''}`}>
         <div className={`detalle-perfil ${isVisible ? 'visible': ''} ${isEditing ? 'editing' : ''}`}>
@@ -130,6 +132,7 @@ export default function Header({ menuOptions }) {
           <div className="modal-title">
           <i className="bi bi-file-person-fill person-perfil"/>
           <h2>Perfil</h2>
+          <X onClick={toogleDetalles} className={`close-button ${isEditing ? 'editing': ''}`}/>
           </div>
           </div>
           <div className={`modal-content ${isEditing ? 'editing': ''}` }>

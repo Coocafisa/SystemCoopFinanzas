@@ -1,0 +1,144 @@
+.modal-container {
+    background: white;
+    color: #2c3e50;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    top: 80px;
+    right: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(-10px);
+    z-index: 999;
+  }
+  
+.modal-container {
+    display: block;
+    position: initial;
+    width: 50vw;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+.title-perfil {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #34495e;
+  }
+
+.close-button-modal {
+    position: fixed;
+    left: 45vw;
+    top: 10px;
+    cursor: pointer;
+}
+  
+.close-button-modal:hover {
+    transform: scale(1.5);
+}
+  
+.modal-container p {
+    position: fixed;
+    margin-left: -200px;
+    margin-top: 14px;
+  }
+
+.modal-overlay.isEditing {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-bottom: 1.5px solid #ddd;
+    margin-bottom: 15px;
+}
+
+.modal-header h2 {
+    font-size: 20px;
+    color: #1c8342;
+}
+
+.card {
+    background: #f9f9f9;
+    padding: 7px;
+    border-radius: 8px;
+    margin-bottom: 7px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: calc(50% - 8px);
+  }
+  
+.modal-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+  
+.label {
+    font-weight: bold;
+    color: #1c8342;
+}
+  
+.data {
+    color: #333;
+}
+  
+.input-field {
+    width: 70%;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+}
+  
+.modal-footer {
+    display: flex;
+    margin-left: auto;
+    gap: 10px;
+}
+  
+.save-button, .cancel-button{
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.save-button {
+    background: #007bff;
+    color: white;
+}
+
+.cancel-button {
+    background: #dc3545;
+    color: white;
+}
+
+.save-button:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+}
+
+.save-button:hover{
+    background: #0056b3;
+}
+
+.cancel-button:hover {
+    background: #a71d2a;
+}

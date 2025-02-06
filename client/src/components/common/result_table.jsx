@@ -2,11 +2,15 @@
 import React, { useState, useEffect } from "react";
 import "@styles/table.css";
 import Search from "./search";
+import { Edit, TrashIcon } from "lucide-react";
+import { EditRecord } from "./elements";
 
-const ResultTable = ({ data, keysToSearch, title, headers, fields}) => {
+const ResultTable = ({ data, keysToSearch, title, headers, fields, isAction, rol, editTitle}) => {
   const [filteredData, setFilteredData] = useState(data);
   const [originalData, setOriginalData] = useState(data);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentRecord, setCurrentRecord] = useState("");
   const itemsPerPage = 10;
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -45,7 +49,20 @@ const ResultTable = ({ data, keysToSearch, title, headers, fields}) => {
     setCurrentPage(newPage);
   };
 
+  const handleEditClick = (record) => {
+    setCurrentRecord(record);
+    setIsEditing(true);
+  }
+
+  const closeModal = () => {
+    setIsEditing(false);
+    setCurrentRecord(null);
+  }
+
   return (
+    <>
+    {isEditing && currentRecord && <EditRecord data={currentRecord} role={rol}
+    state={isEditing} closeModal={closeModal} editTitle={editTitle}/>}
     <div className="container">
       <div className="header">
         <div className="title-search">
@@ -76,6 +93,17 @@ const ResultTable = ({ data, keysToSearch, title, headers, fields}) => {
                     {field === "num" ? rowIndex + 1 : item[field] || "N/A"}
                   </td>
                 ))}
+                { isAction && 
+                <td className="actions">
+                <div className="icon-container">
+                  <Edit className="edit-icon" onClick={() => handleEditClick(item)}/>
+                  <span className="tooltip">Editar</span>
+                </div>
+                <div className="icon-container">
+                  <TrashIcon className="delete-icon"/>
+                  <span className="tooltip">Eliminar</span>
+                </div>
+                </td> }
               </tr>
             ))}
           </tbody>
@@ -103,6 +131,7 @@ const ResultTable = ({ data, keysToSearch, title, headers, fields}) => {
         </button>
       </div>
     </div>
+    </>
   );
 };
 
