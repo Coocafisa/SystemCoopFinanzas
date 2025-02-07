@@ -54,6 +54,7 @@ export default function Entities() {
         isAction={true}
         rol={rol}
         editTitle={"Edicción de Entidad"}
+        selectTable={"entities"}
         />
         </>
     );

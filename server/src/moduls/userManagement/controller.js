@@ -82,10 +82,7 @@ module.exports = function (dbInsert) {
         password,
         ter_cond,
       };
-      console.log("Datos para realizar el registro automático: ", dataUser);
-
      const register = await addUsers(dataUser);
-     console.log("Resultado del registro automático: ", register);
       return register.status === 200
         ? request.success(req, res, register.message, register.status)
         : request.error(req, res, register.message, register.status);
@@ -93,7 +90,7 @@ module.exports = function (dbInsert) {
       return request.error(
         req,
         res,
-        `Error al procesar registro automático: ${error.message}`,
+        {message: `Error al procesar registro automático: ${error.message}`},
         500
       );
     }
@@ -103,7 +100,7 @@ module.exports = function (dbInsert) {
     const token = req.query.token;
     
     if (!token) {
-      return request.error(req, res, "Token no proporcionado.", 400);
+      return request.error(req, res, {message: "Token no proporcionado."}, 400);
     }
     
     try {
@@ -116,7 +113,7 @@ module.exports = function (dbInsert) {
       const { name, role } = dataUser;
       return request.success(req, res, { identificacion: name, rol: role });
     } catch (error) {
-      return request.error(req, res, "Error al validar el token.", 500);
+      return request.error(req, res, {message: "Error al validar el token."}, 500);
     }
   }
   

@@ -9,7 +9,7 @@ const obtainData = async (req, res, query) => {
     const results = query;
 
     if (!results || results.length === 0) {
-      return request.error(req, res, "No hay datos para procesar el reporte.", 400);
+      return request.error(req, res, {message: "No hay datos para procesar el reporte."}, 400);
     }
     const actualDate = new Date();
     const formattedResults = results.map((result) => ({
@@ -44,7 +44,7 @@ const obtainData = async (req, res, query) => {
       return request.success(req, res, { message: "Correos enviados con éxito.", " ": status.message }, 200);
     }
 
-    return request.error(req, res, "Error en el envío del informe.", 400);
+    return request.error(req, res, {message: "Error en el envío del informe."}, 400);
   } catch (error) {
     console.error("Error al enviar correo: ", error);
     return request.error(req, res, { message: "Error al enviar correo.", error }, 500);

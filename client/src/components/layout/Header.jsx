@@ -64,7 +64,7 @@ export default function Header({ menuOptions }) {
   const rolePermissions = {
     Administrador: ["rol", "estado"],
     Supervisor: ["rol", "estado"],
-    Usuario: ["nit", "rol", "nombre", "correo", "estado"]
+    Usuario: ["nit", "rol", "correo", "estado"]
   }
 
   const handleEditClick = () => {

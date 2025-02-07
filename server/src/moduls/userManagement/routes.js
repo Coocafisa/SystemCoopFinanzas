@@ -14,7 +14,7 @@ router.post('/addUsers', verifyToken, async (req, res) => {
             ? request.success(req, res, register.message, register.status)
             : request.error(req, res, register.message, register.status);
   } catch (error) {
-    return request.error(req, res, `Error al procesar la solicitud: ${error.message}`, 500);
+    return request.error(req, res, {message: `Error al procesar la solicitud: ${error.message}`}, 500);
   }
 });
 
@@ -23,7 +23,7 @@ router.post('/automaticRegistration', async (req, res) => {
     const data = req.body;
     await controller.automaticRegistration(req, res, data);
   } catch (error) {
-    return request.error(req, res, `Error al procesar la solicitud: ${error.message}`, 500);
+    return request.error(req, res, {message: `Error al procesar la solicitud: ${error.message}`}, 500);
   }
 });
 

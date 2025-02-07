@@ -10,7 +10,7 @@ router.get('/', verifyToken, controller.session);
 router.post('/logout', (req, res, next) => {
     res.clearCookie('token', { path: '/' });
     controller.logout
-    request.success(req, res,'Serrando sesión...', 200);
+    request.success(req, res, {message: 'Serrando sesión...'}, 200);
   });
 
 module.exports = router;

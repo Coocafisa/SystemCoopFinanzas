@@ -10,9 +10,9 @@ module.exports = function (dbInsert) {
   }
 
   async function validateUser(user) {
-    const SelectTable = `entities INNER JOIN ${table} ON entities.entidad_id = ${table}.entidad_id
-         INNER JOIN auth ON auth.usuario_id = ${table}.usuario_id`;
-    const fields = "nombre, tipo_entidad, users.usuario_id, identificacion, usuario, rol, activo, correo, telefono, direcc";
+    const SelectTable = `entities LEFT JOIN ${table} ON entities.entidad_id = ${table}.entidad_id
+         LEFT JOIN auth ON auth.usuario_id = ${table}.usuario_id`;
+    const fields = "nombre, tipo_entidad, entities.entidad_id, users.usuario_id, identificacion, usuario, rol, activo, correo, telefono, direcc";
     const params = `identificacion = ${user} OR usuario = ${user}`;
     try {
       const [usuario] = await db.query(SelectTable, fields, params);

@@ -78,7 +78,7 @@
 .close-button {
   position: relative;
   cursor: pointer;
-  left: 40px;
+  left: 80px;
   top: -10px;
 }
 
@@ -100,7 +100,6 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   top: 80px;
   right: 20px;
-  width: 200px;
   text-align: center;
   transition: all 0.3s ease;
   opacity: 0;

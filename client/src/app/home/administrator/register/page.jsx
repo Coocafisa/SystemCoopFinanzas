@@ -48,7 +48,7 @@ export default function Registerusers() {
           alt="logo"
           className="w-24 h-24 mb-4 object-contain logoReg"
         />
-        <h1 className="text-2xl font-bold">Registro de Usuarios</h1>
+        <h1 className="text-2xl font-bold">Nuevo Usuario</h1>
       </header>
 
       <form onSubmit={handleSubmit} noValidate>

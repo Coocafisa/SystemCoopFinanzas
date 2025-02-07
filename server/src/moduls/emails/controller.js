@@ -36,11 +36,11 @@ module.exports = function (dbInsert) {
         if (results.length > 0) {
             return await obtainData(req, res, results);
         }
-        return request.error(req, res, "No hay correos pendientes.", 400);
+        return request.error(req, res, {message: "No hay correos pendientes."}, 400);
     }
     async function timerEmails(req, res) {
         if (!obtainTimer) {
-            request.error(req, res, "No se encontró la hora programada.", 400);
+            request.error(req, res, {message: "No se encontró la hora programada."}, 400);
         }
         const { hour, minute } = obtainTimer;
         request.success(req, res, { hour, minute }, 200);

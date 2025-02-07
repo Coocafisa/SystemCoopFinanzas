@@ -21,9 +21,8 @@ async function updateRegister(event, updateFields, nit) {
         }, {});
         return newFields;
     }; 
-    console.log('Actualizando registro con nit: ', {nit, fields:  renamedFields(updateFields)});
-    /* try {
-        const response = await api.post("generalService/updateRegister",{
+    try {
+        const response = await api.post("/generalService/updateRegister",{
             nit: nit,
             fields: renamedFields(updateFields)
         });
@@ -31,7 +30,23 @@ async function updateRegister(event, updateFields, nit) {
         return data;
     } catch (error) {
         console.log("Error en la solicitud al servidor: ", error);
-    } */
+        return [];
+    }
 }
 
-export { updateRegister };
+async function deleteRegister(event, nit, selectTable) {
+    event.preventDefault();
+    try {
+      console.log("Nit: ", nit, "selectTable: ", selectTable);
+      const response = await api.post("/generalService/deleteRegister", {
+        nit: nit,
+        selectTable: selectTable
+      });
+      return response;
+    } catch (error) {
+      return [];
+    }
+  }
+  
+
+export { updateRegister, deleteRegister };

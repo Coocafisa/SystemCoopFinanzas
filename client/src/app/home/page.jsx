@@ -15,11 +15,14 @@ export default function Homepage() {
     return (
         <>
         <ProtectedRoute allowedRoles={["Administrador"]}/>
-        <ResultTable data={payments} keysToSearch={['nit', 'factura', 'fecpago', 'fecfac']} title="Pagos Realizados"
-         headers={["Nit", "Factura", "Fecha Factura", "Fecha Vencimiento", "Total", "Retención",
-                "Neto", "Fecha Pago", "Pago Factura", "Valor Pago",]}
-                fields={['nit', 'factura', 'fecfac', 'fecvcto', 'total', 'retencion', 'tot',
-                    'fecpago', 'pagfac', 'pagtot']} 
+        <ResultTable 
+        data={payments} 
+        keysToSearch={['nit', 'factura', 'fecpago', 'fecfac']} 
+        title="Pagos Realizados"
+        headers={["Nit", "Factura", "Fecha Factura", "Fecha Vencimiento", "Total", "Retención",
+            "Neto", "Fecha Pago", "Pago Factura", "Valor Pago",]}
+        fields={['nit', 'factura', 'fecfac', 'fecvcto', 'total', 'retencion', 'tot',
+            'fecpago', 'pagfac', 'pagtot']} 
         />
         </>
 

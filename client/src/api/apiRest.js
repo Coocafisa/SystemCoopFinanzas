@@ -63,7 +63,7 @@ export const useAxiosWithLoader = (
         } else {
           handleAlert('Error de red o servidor no disponible', 'error', timeout);
         }
-        return Promise.reject(error.response?.data || error);
+        return Promise.reject(error.response || error);
       }
     );
   }

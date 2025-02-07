@@ -16,7 +16,7 @@ async function verifyToken(req, res, next) {
     }
 
     if (!token) {
-        return request.error(req, res, 'No estás autenticado. Token no encontrado.', 403);
+        return request.error(req, res, {message: 'No estás autenticado. Token no encontrado.'}, 403);
     }
 
     try {
@@ -28,7 +28,7 @@ async function verifyToken(req, res, next) {
         if (remainingTime > 0) {
             const user = await validateUser(decoded.name);
             if (!user) {
-                return request.error(req, res, 'Usuario no autorizado.', 401);
+                return request.error(req, res, {message: 'Usuario no autorizado.'}, 401);
             }
 
             /* if (remainingTime < 120) {
@@ -43,7 +43,7 @@ async function verifyToken(req, res, next) {
             next();          
         }
     } catch (error) {
-        request.error(req, res, 'Token invalido o expirado.', 401);
+        request.error(req, res, {message:'Token invalido o expirado.'}, 401);
     }
 }
 

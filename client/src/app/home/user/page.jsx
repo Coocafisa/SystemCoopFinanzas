@@ -44,11 +44,12 @@ export default function Users() {
         title={title}
         headers={headers}
         data={users}
-        keysToSearch={['nit', 'rol', 'razonsoc', 'correo', 'fecha_reg']}
+        keysToSearch={['identificacion', 'rol', 'nombre', 'correo', 'fech_reg']}
         fields={fields}
         isAction={true}
         rol={rol}
         editTitle={"Edicción de Usuario"}
+        selectTable={"users"}
         />
         </>
     );
