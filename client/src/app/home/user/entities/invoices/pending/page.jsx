@@ -12,7 +12,6 @@ export default function InvoicePending() {
         const fetchInvoices = async () => {
             const invoices = await queryinvoicepending();
             setInvoices(invoices.formatedResults);
-            console.log("Consulta pendientes: ",invoices);
         };
         fetchInvoices();
     }, []);

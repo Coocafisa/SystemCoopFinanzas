@@ -28,13 +28,13 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
 
-app.set('port', config.app.port);
-app.set('emailConfig', {
-    client: config.apiEmail.client,
-    email_user: config.apiEmail.email_user,
-    client_secret: config.apiEmail.client_secret,
-    refresh_token: config.apiEmail.refresh_token
+app.use((req, res, next) => {
+    res.header('Access-Control-Expose-Headers', 'Authorization');
+    res.setHeader('Authorization', '');
+    next();
 });
+
+app.set('port', config.app.port);
 app.set('MYSQL', {
     host: config.mysql.host,
     user: config.mysql.user,

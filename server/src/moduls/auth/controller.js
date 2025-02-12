@@ -90,16 +90,17 @@ module.exports = function (dbInsert) {
       if (!token) {
         return request.error(req, res, {message: "No se encontró el token."}, 500);
       }
-
+      console.log("token", token);
       res.cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
-        maxAge: 1000 * 60 * 10,
+        maxAge: 1000 * 10 * 10,
       });
 
       return request.success(req, res, { token, redirect: redirectPath }, 200);
     } catch (error) {
+      console.log("Error: ", error)
       return request.error(
         req,
         res,

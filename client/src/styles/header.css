@@ -4,7 +4,7 @@
   justify-content: space-between;
   background: linear-gradient(135deg, #34495e, #2ecc71);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  padding: 4px 20px;
+  padding: 8px 35px;
   position: fixed;
   top: 0;
   width: 100%;
@@ -13,7 +13,7 @@
 }
 
 .principal.scrolled {
-  padding: 5px 15px;
+  padding: 4px 25px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   background: linear-gradient(135deg, #2c3e50, #27ae60);
 }
@@ -24,24 +24,11 @@
   height: auto;
 }
 
-@media (max-width: 768px) {
-  .imglogoindex {
-      width: 60px;
-  }
-}
-
 .text-header {
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: white;
-  text-align: center;
   font-weight: bold;
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
-}
-
-.perfil {
-  display: flex;
-  align-items: center;
-  gap: 15px;
 }
 
 .text_user {
@@ -52,42 +39,9 @@
   transition: color 0.3s ease;
 }
 
-.icono-perfil {
-  position: relative;
-  top: 5px;
-  left: 6px;
-}
-
 .text_user:hover {
   color: #2ecc71;
   transform: scale(1.1);
-}
-
-.modal-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.person-perfil {
-  font-size: 28px; 
-  color: #1c8342;
-  margin-right: 10px; 
-}
-
-.close-button {
-  position: relative;
-  cursor: pointer;
-  left: 80px;
-  top: -10px;
-}
-
-.close-button.editing {
-  display: none;
-}
-
-.close-button:hover {
-  transform: scale(1.5);
 }
 
 .detalle-perfil {
@@ -107,6 +61,12 @@
   z-index: 999;
 }
 
+.icono-perfil {
+  position: relative;
+  top: 5px;
+  left: 6px;
+}
+
 .detalle-perfil.visible {
   display: block;
   background: white;
@@ -115,9 +75,10 @@
   transform: translateY(0);
 }
 
-.detalle-perfil.editing {
-  position: initial;
-  width: 50vw;
+.person-perfil {
+  font-size: 28px; 
+  color: #1c8342;
+  margin-right: 10px; 
 }
 
 .title-perfil {
@@ -127,10 +88,29 @@
   color: #34495e;
 }
 
-.detalle-perfil p {
-  position: fixed;
-  margin-left: -200px;
-  margin-top: 14px;
+.profile-card {
+  background: #f9f9f9;
+  padding: 7px;
+  border-radius: 8px;
+  margin-bottom: 7px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-content.editing {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.profile-card.editing {
+  width: calc(50% - 8px);
+}
+
+.detalle-perfil.editing {
+  position: initial;
+  width: 50vw;
 }
 
 .modal-overlay.editing {
@@ -145,95 +125,60 @@
   justify-content: center;
 }
 
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 10px;
-  margin-bottom: 15px;
-}
-
-.modal-header h2 {
-  font-size: 20px;
-  color: #1c8342;
-}
-
-.profile-card {
-  background: #f9f9f9;
-  padding: 7px;
-  border-radius: 8px;
-  margin-bottom: 7px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.profile-card.editing {
-  width: calc(50% - 8px);
-}
-
-.modal-content.editing {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.label {
-  font-weight: bold;
-  color: #1c8342;
-}
-
-.data {
-  color: #333;
-}
-
-.input-field {
-  width: 70%;
-  padding: 5px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  outline: none;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-.edit-button, .save-button, .cancel-button{
-  border: none;
-  padding: 10px 15px;
-  border-radius: 6px;
+.close-button {
+  position: relative;
   cursor: pointer;
-  font-weight: bold;
-  font-size: 1rem;
+  left: 80px;
+  top: -10px;
 }
 
-.edit-button {
-  background: #1c8342;
-  color: white;
+.close-button.editing {
+  display: none;
 }
 
-.save-button {
-  background: #007bff;
-  color: white;
+.close-button:hover {
+  transform: scale(1.5);
 }
 
-.cancel-button {
-  background: #dc3545;
-  color: white;
+@media (max-width: 600px) {
+  .edit-button,
+  .save-button,
+  .cancel-button {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
 }
 
-.edit-button:hover {
-  background: #13692f;
+@media (max-width: 768px) {
+  .principal {
+    flex-direction: column;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .imglogoindex {
+    width: 70px;
+  }
+
+  .text-header {
+    font-size: 2rem;
+  }
+
+  .perfil {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .detalle-perfil {
+    top: 70px;
+    right: 10px;
+    width: 80vw;
+  }
 }
 
-.save-button:hover{
-  background: #0056b3;
-}
-
-.cancel-button:hover {
-  background: #a71d2a;
+@media (max-width: 480px) {
+  .detalle-perfil {
+    width: 90vw;
+    right: 5vw;
+  }
 }

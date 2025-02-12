@@ -1,22 +1,16 @@
 import axios from "axios";
 
-export const sessionToken = async () => {
-  try {
-    const token = sessionStorage.getItem("Token");
-    return token ? token : null;
-  } catch (error) {
-    return null;
-  }
-};
-
 export const api = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
   timeout: 10000,
 });
+
+let requestInterceptor;
+let responseInterceptor;
 
 export const useAxiosWithLoader = (
   setLoading,
@@ -25,58 +19,73 @@ export const useAxiosWithLoader = (
   setInitAlert,
   timeout = 2000
 ) => {
-  if (!api.interceptors.request.handlers.length) {
-    api.interceptors.request.use(
-      async (config) => {
-        const token = await sessionToken();
-        setLoading(true);
-        setInitAlert(true);
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-      },
-      (error) => {
-        setLoading(false);
-        handleAlert(error.response?.data?.body?.message || error || "Error en la solicitud.", 'error', timeout);
-        return Promise.reject(error);
+  const removeInterceptors = () => {
+    if (requestInterceptor !== undefined) {
+      api.interceptors.request.eject(requestInterceptor);
+      requestInterceptor = undefined;
+    }
+    if (responseInterceptor !== undefined) {
+      api.interceptors.response.eject(responseInterceptor);
+      responseInterceptor = undefined;
+    }
+  };
+  removeInterceptors();
+  requestInterceptor = api.interceptors.request.use(
+    (config) => {
+      setLoading(true);
+      setInitAlert(true);
+      delete config.headers.Authorization;
+      const token = sessionStorage.getItem("token") || "";
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
       }
-    );
-  }
+      return config;
+    },
+    (error) => {
+      setLoading(false);
+      handleAlert(
+        error.response?.data?.body?.message ||
+          error ||
+          "Error en la solicitud.",
+        "error",
+        timeout
+      );
+      return Promise.reject(error);
+    }
+  );
 
-  if (!api.interceptors.response.handlers.length) {
-    api.interceptors.response.use(
-      (response) => {
-        setLoading(false);
-        const message = response.data?.body?.message || '';
-        const redirect = response.data?.body?.redirect || '';
-        handleAlert(message, 'success', timeout, redirect);
-        return response;
-      },
-      (error) => {
-        setLoading(false);
-        if (error.message === 'Network Error' && error.code === 'ERR_NETWORK') {
-          handleAlert('Solicitud rechazada. No se puede conectar al servidor.', 'error', timeout);
-        } else if (error.response) {
-          const errorMessage = error.response.data?.body?.message || "Error desconocido";
-          handleAlert(errorMessage, 'error', timeout);
-        } else {
-          handleAlert('Error de red o servidor no disponible', 'error', timeout);
-        }
-        return Promise.reject(error.response || error);
+  responseInterceptor = api.interceptors.response.use(
+    (response) => {
+      setLoading(false);
+      const newToken = response.headers["authorization"] || "";
+      if (newToken) {
+        sessionStorage.setItem("token", newToken);
       }
-    );
-  }
+      const message = response.data?.body?.message || "";
+      const redirect = response.data?.body?.redirect || "";
+      handleAlert(message, "success", timeout, redirect);
+      return response;
+    },
+    (error) => {
+      setLoading(false);
+      const errorMessage =
+        error?.response?.data?.body?.message ||
+        (error.message === "Network Error"
+          ? "Solicitud rechazada. No se puede conectar al servidor."
+          : "Error de red o servidor fuera de sevicio.");
+      handleAlert(errorMessage, "error", timeout);
+      return Promise.reject(error.response || error);
+    }
+  );
 
   const handleAlert = (message, type, duration, redirect) => {
-    setInitAlert(true);
     if (message) {
       setType(type);
       setAlert(message);
     }
     setTimeout(() => {
-      setAlert('');
-      setType('');
+      setAlert("");
+      setType("");
       setInitAlert(false);
       if (redirect) {
         window.location.href = redirect;

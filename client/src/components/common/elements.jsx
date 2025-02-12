@@ -64,7 +64,7 @@ export function EditRecord ({data, role, state, closeModal, editTitle}) {
           <X className="close-button-modal" onClick={closeModal}/>
           </div>
           </div>
-          <div className="modal-content">
+          <div className="modal-content-edit">
             { getFields(formData).map((item) => (
               <div className="card" key={item}>
                 <span className="label">{item.charAt(0).toUpperCase() + item.slice(1)}:</span>
@@ -80,14 +80,6 @@ export function EditRecord ({data, role, state, closeModal, editTitle}) {
             <button className="cancel-button" onClick={closeModal}>Cancelar</button>
           </div>
         </div>
-        </div>
-    )
-}
-
-export function deleteRecord () {
-    return (
-        <div>
-            <h1>Borrar Registro</h1>
         </div>
     )
 }

@@ -12,7 +12,7 @@ export const adduser = async (event) => {
         });
         return response.data;
     } catch (error) {
-        console.log("Error en la solicitud al servidor: ", error);  
+        return error;  
     } 
 };
 

@@ -9,9 +9,9 @@ export const auth = async (event) => {
   const data = res.data;
     if (res.status === 200) {
       const token = data.body.token;
-      sessionStorage.setItem("Token", token);
-    }
+      sessionStorage.setItem("token", token);
+    } 
   } catch (error) {
-    console.log("Error en la autenticación: ", error);
+    return error;
   }
 };

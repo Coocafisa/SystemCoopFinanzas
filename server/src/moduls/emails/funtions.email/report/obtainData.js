@@ -46,7 +46,6 @@ const obtainData = async (req, res, query) => {
 
     return request.error(req, res, {message: "Error en el envío del informe."}, 400);
   } catch (error) {
-    console.error("Error al enviar correo: ", error);
     return request.error(req, res, { message: "Error al enviar correo.", error }, 500);
   }
 };

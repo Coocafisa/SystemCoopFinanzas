@@ -10,7 +10,6 @@ export default function Invoices() {
   useEffect(() => {
     const fetchInvoices = async () => {
       const invoices = await queryInvoices(setError);
-      console.log("Consulta: ",invoices)
       if (invoices === 0) {
         setInvoices("0");
       }

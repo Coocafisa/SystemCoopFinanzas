@@ -7,7 +7,7 @@ export const emailValidate = async (event) => {
   try {
     await api.post("/auth/emailresetpass", { nit });
   } catch (error) {
-    console.log("Error en la solicitud al servidor: ", error);
+    return error;
   }
 };
 
@@ -15,7 +15,6 @@ export const resetpass = async (event, token) => {
   event.preventDefault();
   const newpass = event.target.newpass.value.trim();
   const confpass = event.target.confpass.value.trim();
-
   try {
     await api.post("/auth/resetpass", {
       newpass,
@@ -23,17 +22,16 @@ export const resetpass = async (event, token) => {
       token,
     });
   } catch (error) {
-    console.log("Error en la solicitud al servidor: ", error);
+    return error;
   }
 };
 
 export const getToken = async () => {
   const token = new URLSearchParams(window.location.search).get("token");
-
   try {
     await api.get(`/auth/getToken?token=${token}`);
   } catch (error) {
-    console.log("Error en la solicitud al servidor: ", error);
+    return error;
   }
 };
 
@@ -49,7 +47,7 @@ export const automaticRegistration = async (event, payload) => {
       ter_cond,
     });
   } catch (error) {
-    console.log("Error en la solicitud al servidor: ", error);
+    return error;
   }
 };
 
@@ -60,6 +58,6 @@ export const verifyTokenAutoregister = async (setData) => {
     const data = response.data.body;
     setData(data);
   } catch (error) {
-    console.log("Error en la solicitud al servidor: ", error); 
+    return error;
   }
 };

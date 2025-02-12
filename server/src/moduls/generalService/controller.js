@@ -33,48 +33,69 @@ module.exports = function (dbInsert) {
       return request.error( req, res, { message: "Campos requeridos no proporcionados." }, 400 );
     }
 
-    const updateForAdmin = new Set([
+    const updateForAdmin = ({
+    entities: [
       "tipo_entidad",
       "identificacion",
-      "correo",
-      "estado",
+      "nombre",
       "telefono",
       "direcc",
-      "nombre",
-      "usuario",
-      "accesos"
-    ]);
+      "correo",
+    ],
+    users: [
+      "rol",
+      "activo",
+    ],
+    auth: [
+      "pasword",
+      "sesion",
+    ],
+    authorization: [
+      "accesos",
+      "estado"
+    ]
+  });
 
-    const updateForUser = new Set(["usuario", "nombre", "telefono", "direcc", "telefono"]);
+    const updateForUser = new Set({
+      entities: [
+        "nombre",
+        "telefono",
+        "direcc",
+        "correo",
+      ],
+      auth: [
+        "pasword",
+      ]
+    });
     let allowedFields;
     if (role === "Administrador") {
       allowedFields = updateForAdmin;
+      console.log("Update for admin", allowedFields);
     } else if (role === "Usuario") {
       allowedFields = updateForUser;
     } else {
       return request.error( req, res, { message: "Rol no autorizado para realizar la operación." }, 400 );
     }
 
-    try {
+    /* try {
       const dataFields = validateFields(fields, allowedFields);
       if (!dataFields) {
         return request.error( req, res, { message: "No estás autorizado para actualizar estos campos." }, 400 );
       }
       
       const {usuario_id} = await validateUser(nit);
-      const selectTable = `authorizations
-      INNER JOIN users ON authorizations.usuario_id = users.usuario_id
-      INNER JOIN entities ON users.entidad_id = entities.entidad_id
-      INNER JOIN auth ON users.usuario_id = auth.usuario_id`;
-      const params = `users.usuario_id = '${usuario_id}'`;
+      console.log("Usuario ID: ", usuario_id);
+      console.log("Data Fields: ", dataFields);
+      0
       const executionUpdate = await db.update(selectTable, dataFields, params);
+      console.log("Resultado de la actualizacion de usuario: ", executionUpdate);
       if (executionUpdate.affectedRows === 0) {
         return request.error( req, res, { message: "No se encontró el registro para actualizar." }, 400 );
       }
       return request.success( req, res, { message: "Registro actualizado con éxito."}, 200 );
     } catch (error) {
       return request.error( req, res, { message: "Ocurrió un error al actualizar el registro." }, 500 );
-    }
+    } */
   };
 
   async function deleteRegister(req, res) {
@@ -94,7 +115,6 @@ module.exports = function (dbInsert) {
         }
 
         const { usuario_id, entidad_id } = await validateUser(nit);
-        console.log("Usuario_id: ", usuario_id, "entidad_id: ", entidad_id);
         if (!usuario_id && !entidad_id) {
             return request.error(req, res, { message: "Usuario no encontrado." }, 404);
         }
@@ -108,7 +128,6 @@ module.exports = function (dbInsert) {
 
         return request.success(req, res, { message: "Registro eliminado con éxito." }, 200);
     } catch (error) {
-        console.error("Error al eliminar registro:", error);
         return request.error(req, res, { message: "Ocurrió un error al eliminar el registro." }, 500);
     }
 };

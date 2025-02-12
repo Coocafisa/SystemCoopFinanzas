@@ -5,7 +5,7 @@ export const queryInvoices = async () => {
     const data = response.data.body;
     return data;
   } catch (error) {
-    console.log("Error en la solicitud al servidor: ", error);
+    return [];
   }
 };
 
@@ -15,7 +15,7 @@ export const queryinvoicepayment = async () => {
     const data = response.data.body;
     return data;
   } catch (error) {
-    console.log("Error en la solicitud al servidor: ", error);
+    return [];
   }
 };
 
@@ -23,9 +23,8 @@ export const queryinvoicepending = async () => {
   try {
     const response = await api.get("/invoices/invoicesPending");
     const data = response.data?.body;
-    console.log("Resultado de las consultas pendientes: ",data);
     return data;
   } catch (error) {
-    console.log("Error en la solicitud al servidor: ", error);
+    return [];
   }
 };

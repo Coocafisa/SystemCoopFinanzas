@@ -16,9 +16,15 @@
 .modal-container {
     display: block;
     position: initial;
-    width: 50vw;
+    width: 45vw;
     opacity: 1;
     transform: translateY(0);
+  }
+
+.modal-content-edit {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
   }
   
 .title-perfil {
@@ -30,7 +36,7 @@
 
 .close-button-modal {
     position: fixed;
-    left: 45vw;
+    left: 40vw;
     top: 10px;
     cursor: pointer;
 }
@@ -83,7 +89,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: calc(50% - 8px);
   }
   
 .label {
@@ -105,7 +110,7 @@
   
 .modal-footer {
     display: flex;
-    margin-left: auto;
+    justify-content: flex-end;
     gap: 10px;
 }
   

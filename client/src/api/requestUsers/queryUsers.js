@@ -14,7 +14,6 @@ export const queryEntities = async () => {
         const response = await api.get("/users/entities");
         return response.data.body;
     } catch (error) {
-        console.log("Error en la solicitud al servidor: ", error);
         return[]
     }
 }

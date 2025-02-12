@@ -29,7 +29,6 @@ async function updateRegister(event, updateFields, nit) {
         const data = response.data;
         return data;
     } catch (error) {
-        console.log("Error en la solicitud al servidor: ", error);
         return [];
     }
 }
@@ -37,7 +36,6 @@ async function updateRegister(event, updateFields, nit) {
 async function deleteRegister(event, nit, selectTable) {
     event.preventDefault();
     try {
-      console.log("Nit: ", nit, "selectTable: ", selectTable);
       const response = await api.post("/generalService/deleteRegister", {
         nit: nit,
         selectTable: selectTable

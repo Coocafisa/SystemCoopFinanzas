@@ -1,17 +1,15 @@
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 const  {validateUser} = require('../moduls/users/index');
-const tokenAuth = require('../moduls/auth/controller');
+const { tokenAuth } = require('../moduls/auth/index');
 const request = require('../red/request');
 
 async function verifyToken(req, res, next) {
     let token = null;
 
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+    if (req.headers.authorization?.startsWith('Bearer ')) {
         token = req.headers.authorization.split(' ')[1];
-    }
-
-    if (!token && req.cookies && req.cookies.token) {
+    } else if (req.cookies?.token) {
         token = req.cookies.token;
     }
 
@@ -21,31 +19,29 @@ async function verifyToken(req, res, next) {
 
     try {
         const decoded = jwt.verify(token, config.jwt.secret);
-        const now = Math.floor(Date.now() / 1000);
-        const exp = decoded.exp;
-        const remainingTime = exp - now;
-
-        if (remainingTime > 0) {
-            const user = await validateUser(decoded.name);
-            if (!user) {
-                return request.error(req, res, {message: 'Usuario no autorizado.'}, 401);
-            }
-
-            /* if (remainingTime < 120) {
-                const newToken = tokenAuth(user);
-                res.setHeader('Authorization', `Bearer ${newToken}`);
-                res.cookie('token', newToken, { httpOnly: true });
-            }
-            const newToken = tokenAuth(user);
-                res.setHeader('Authorization', `Bearer ${newToken}`);
-                res.cookie('token', newToken, { httpOnly: true }); */
-            req.auth = decoded;
-            next();          
+        const user = await validateUser(decoded.name);
+        if (!user) {
+            return request.error(req, res, {message: 'Usuario no autorizado.'}, 401);
         }
+
+        const now = Math.floor(Date.now() / 1000);
+        if (decoded.exp - now < 180 && decoded.exp > now) {
+            const newToken = tokenAuth(user);
+            res.setHeader( 'Authorization', `${newToken}`);
+           /*  res.cookie('token', newToken, { httpOnly: true }); */
+            req.auth = jwt.verify(newToken, config.jwt.secret);
+            console.log("Nuevo Token: ", newToken)
+        } else if (decoded.exp < now) {
+            return request.error(req, res, {message: 'Token expirado.'}, 401);
+        } else {
+            req.auth = decoded;
+        }
+        console.log("Datos de la sesión34", req.auth);
+        next();          
     } catch (error) {
-        request.error(req, res, {message:'Token invalido o expirado.'}, 401);
+        request.error(req, res, {message:'Session Expirada.'}, 401);
     }
-}
+};
 
 const roleMiddleware = (role) => (req, res, next) => {
     if (!req.auth || !req.auth.role) {

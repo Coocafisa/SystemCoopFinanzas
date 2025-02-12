@@ -72,6 +72,7 @@ const ResultTable = ({ data = [], keysToSearch, title, headers = [], fields = []
     const res = await deleteRegister(event, currentRecord.identificacion, selectTable);
     if (res.status === 200 || res.status === 204) {
       setDelete(false);
+      setFilteredData( data.filter((item) => item.identificacion !== currentRecord.identificacion));
       setCurrentRecord(null);
     }
   };
@@ -109,7 +110,7 @@ const ResultTable = ({ data = [], keysToSearch, title, headers = [], fields = []
                     {field === "num" ? rowIndex + 1 : item[field] || "N/A"}
                   </td>
                 ))}
-                { isAction && 
+                { isAction && (
                 <td className="actions">
                 <div className="icon-container">
                   <Edit className="edit-icon" onClick={() => handleEditClick(item)}/>
@@ -118,14 +119,16 @@ const ResultTable = ({ data = [], keysToSearch, title, headers = [], fields = []
                 { rol === "Administrador" && <div className="icon-container">
                   <TrashIcon className="delete-icon" onClick={() => handleDelete(item)}/>
                   <span className="tooltip">Eliminar</span>
-                  {isDelete && (<AlertPopup
-                  message={`Estas seguro de eliminar a: ${currentRecord.nombre}`} type={"warning"}>
-                    <button className="delete-button" onClick={confirmDelete}>Eliminar</button>
-                    <button className="cancel-button" onClick={() => {setDelete(false), setCurrentRecord(null)}}>
-                      Cancelar</button>
+                  {isDelete && (<AlertPopup className={`contain ${isDelete ? 'overlay-delete' : ''}`}
+                  message={`Estas seguro de eliminar a: ${currentRecord.nombre}`} type={"info"}>
+                    <div className="alert-buttons">
+                      <button className="alert-button delete-button" onClick={confirmDelete}>Eliminar</button>
+                      <button className="alert-button cancel-button" onClick={() => {setDelete(false), setCurrentRecord(null)}}>
+                        Cancelar</button>
+                    </div>
                     </AlertPopup>)}
                 </div>}
-                </td> }
+                </td>)}
               </tr>
             ))}
           </tbody>

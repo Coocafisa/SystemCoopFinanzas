@@ -10,9 +10,9 @@ export function ProtectedRoute({ children, allowedRoles = [] }) {
     useEffect(() => {
         if (!loading) {
             if (!dataUser) {
-                window.location.href = ("/")
+                /* window.location.href = ("/") */
             } else if (allowedRoles.length > 0 && !allowedRoles.includes(dataRole)) {
-                window.location.href = ("/");
+               /*  window.location.href = ("/"); */
             }
         }
     }, [dataUser, loading, dataRole, allowedRoles, router]);

@@ -13,11 +13,8 @@ export const getSession = async () => {
             seconds,
           },
         };
-      } else {
-        console.warn('La sesión ha expirado.');
       }
-
-    return {
+      return {
       isAuthenticated: false,
       user: null,
       role: null,
@@ -25,7 +22,6 @@ export const getSession = async () => {
     };
 
   } catch (error) {
-    console.log("Error de la sesión: ", error);
     return {
       isAuthenticated: false,
       user: null,
@@ -52,8 +48,8 @@ export const dateUser = async () => {
 
 export const sessionToken = async () => {
   try {
-    if (sessionStorage.getItem("Token")) {
-      return sessionStorage.getItem("Token");
+    if (sessionStorage.getItem("token")) {
+      return sessionStorage.getItem("token");
     }
     return null;
   } catch (error) {

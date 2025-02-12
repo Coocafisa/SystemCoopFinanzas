@@ -8,15 +8,15 @@ export const programmatEmails = async (hora, minuto) => {
         });
         return response.data;
     } catch (error) {
-        console.log("Error en la solicitud al servidor: ", error);
+        return error;
     } 
 }
 
-export const resendEmails = async (setMessage, setType, setLoading) => {
+export const resendEmails = async () => {
     try {
         const response = await api.post("/emails/resendEmails");
         return response.data;
     } catch (error) {
-        console.log("Error en la solicitud al servidor: ", error);
+        return error;
     } 
 }

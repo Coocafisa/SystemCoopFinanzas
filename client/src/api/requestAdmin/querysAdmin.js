@@ -11,7 +11,7 @@ export const consultPaymentEntities = async () => {
             return []
         }
     } catch (error) {
-        console.log("Error en la solicitud al servidor: ", error);
+        return []
     }
 };
 
@@ -21,7 +21,7 @@ export const queryEmails = async () => {
         const data = response.data;
         return data.body;
     } catch (error) {
-        console.log("Error en la solicitud al servidor: ", error);
+        return []
     }
 };
 
@@ -31,7 +31,7 @@ export const queryEmailsPending = async () => {
         const data = response.data;
         return data.body;
     } catch (error) {
-        console.log("Error en la solicitud al servidor: ", error); 
+        return []
     }
 }
 
@@ -45,6 +45,6 @@ export const timerEmails = async () => {
             return { hour: 0, minute: 0 };
         }
     } catch (error) {
-        console.log("Error en la solicitud al servidor: ", error);
+        return { hour: 0, minute: 0 };
     }
 };
