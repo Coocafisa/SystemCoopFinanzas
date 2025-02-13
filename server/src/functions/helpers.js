@@ -25,19 +25,26 @@ function formatPesos (number) {
     }).format(number);
 }
 
-function validateFields (dataFields, data) {
-    for (let key of Object.keys(dataFields)) {
-      if (!data.has(key)) {
-        return false
-      }
+  function validateFields(dataFields, data) {
+    const clausesByCategory = {};
+    let unauthorizedFields = [];
+    const allAuthorizedFields = Object.values(dataFields).flat();
+
+    for (let [category, fields] of Object.entries(dataFields)) {
+      const validFields = fields.filter((field) => data.hasOwnProperty(field));
+      const unauthorized = Object.keys(data).filter((field) => !allAuthorizedFields.includes(field));
+      unauthorizedFields = [...unauthorizedFields, ...unauthorized]; 
+
+    if (validFields.length > 0) {
+      const setClause = validFields.map((field) => `${field} = '${data[field]}'`).join(", ");
+      clausesByCategory[category] = setClause;
+    }
   }
-  const dataUpdate = Object.keys(dataFields).filter(key => data.has(key)).reduce((acc, key) => {
-    acc[key] = dataFields[key]
-    return acc;
-  }, {});
-  const setClause = Object.keys(dataUpdate).map(field => `${field} = '${dataUpdate[field]}'`).join(', ');
-  return setClause;
-}
+  if (unauthorizedFields.length > 0) {
+    return { error: true, message: "Actualización no autorizada."};
+  }
+  return clausesByCategory
+  }
 
 
 module.exports = { formatDate, generarToken, formatPesos, validateFields };
