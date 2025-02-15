@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useEffect } from "react";
 
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -29,24 +30,27 @@ export const useAxiosWithLoader = (
       responseInterceptor = undefined;
     }
   };
+
   removeInterceptors();
+
   requestInterceptor = api.interceptors.request.use(
     (config) => {
-      setLoading(true);
-      setInitAlert(true);
+      if (!config.skipAlert) {
+        setLoading(true);
+        setInitAlert(true);
+      }
       delete config.headers.Authorization;
       const token = sessionStorage.getItem("token") || "";
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
-      return config;
+      const { skipAlert, ...cleanConfig } = config;
+      return cleanConfig;
     },
     (error) => {
       setLoading(false);
       handleAlert(
-        error.response?.data?.body?.message ||
-          error ||
-          "Error en la solicitud.",
+        error.response?.data?.body?.message || error || "Error en la solicitud.",
         "error",
         timeout
       );
@@ -57,13 +61,11 @@ export const useAxiosWithLoader = (
   responseInterceptor = api.interceptors.response.use(
     (response) => {
       setLoading(false);
-      const newToken = response.headers["authorization"] || "";
-      if (newToken) {
-        sessionStorage.setItem("token", newToken);
+      if (!response.config?.skipAlert) {
+        const message = response.data?.body?.message || "";
+        const redirect = response.data?.body?.redirect || "";
+        handleAlert(message, "success", timeout, redirect);
       }
-      const message = response.data?.body?.message || "";
-      const redirect = response.data?.body?.redirect || "";
-      handleAlert(message, "success", timeout, redirect);
       return response;
     },
     (error) => {
@@ -71,8 +73,10 @@ export const useAxiosWithLoader = (
       const errorMessage =
         error?.response?.data?.body?.message ||
         (error.message === "Network Error"
-          ? "Solicitud rechazada. No se puede conectar al servidor."
-          : "Error de red o servidor fuera de sevicio.");
+          ? "No se pudo conectar al servidor. Verifica tu conexión."
+          : error.response?.status === 4001
+          ? "No autorizado. Por favor, inicia sesión de nuevo."
+          : "Error inesperado en la red o servidor.");
       handleAlert(errorMessage, "error", timeout);
       return Promise.reject(error.response || error);
     }
@@ -86,10 +90,14 @@ export const useAxiosWithLoader = (
     setTimeout(() => {
       setAlert("");
       setType("");
-      setInitAlert(false);
       if (redirect) {
         window.location.href = redirect;
       }
+      setInitAlert(false);
     }, duration);
   };
+
+  useEffect(() => {
+    return () => removeInterceptors();
+  }, []);
 };
