@@ -25,18 +25,11 @@ async function verifyToken(req, res, next) {
         }
 
         const now = Math.floor(Date.now() / 1000);
-        if (decoded.exp - now < 180 && decoded.exp > now) {
-            const newToken = tokenAuth(user);
-            res.setHeader( 'Authorization', `${newToken}`);
-           /*  res.cookie('token', newToken, { httpOnly: true }); */
-            req.auth = jwt.verify(newToken, config.jwt.secret);
-            console.log("Nuevo Token: ", newToken)
-        } else if (decoded.exp < now) {
+        if (decoded.exp < now) {
             return request.error(req, res, {message: 'Token expirado.'}, 401);
         } else {
             req.auth = decoded;
         }
-        console.log("Datos de la sesión34", req.auth);
         next();          
     } catch (error) {
         request.error(req, res, {message:'Session Expirada.'}, 401);

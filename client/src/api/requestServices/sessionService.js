@@ -2,7 +2,7 @@ import { api } from "../apiRest";
 
 export const getSession = async () => {
   try {
-    const res = await api.get('/session');
+    const res = await api.get('/session', {skipAlert: true});
     const sessionData = res.data;
     if (sessionData?.expiration) {
         const { minutes, seconds } = sessionData.expiration;

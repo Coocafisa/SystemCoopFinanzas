@@ -45,6 +45,18 @@ async function deleteRegister(event, nit, selectTable) {
       return [];
     }
   }
+
+async function refreshToken () {
+    try {
+        const response = await api.get("/auth/refreshToken", {skipAlert: true});
+        const data = response.data;
+        console.log("Datos de la sesión", data?.body.token);
+        sessionStorage.setItem("token", data?.body.token);
+        return data
+    } catch (error) {
+        return [];
+    }
+}
   
 
-export { updateRegister, deleteRegister };
+export { updateRegister, deleteRegister, refreshToken };

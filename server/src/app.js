@@ -27,13 +27,6 @@ app.use(cors({
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
-
-app.use((req, res, next) => {
-    res.header('Access-Control-Expose-Headers', 'Authorization');
-    res.setHeader('Authorization', '');
-    next();
-});
-
 app.set('port', config.app.port);
 app.set('MYSQL', {
     host: config.mysql.host,

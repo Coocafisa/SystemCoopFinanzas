@@ -1,7 +1,6 @@
 import { api } from '../apiRest';
 
-export const logout = async (event) => {
-    event.preventDefault();
+export const logout = async () => {
     try {
         await api.post('/session/logout');
         const session = sessionStorage.getItem('token');
@@ -10,6 +9,7 @@ export const logout = async (event) => {
       } 
       window.location.href = "/";
     } catch (error) {
+      window.location.href = "/";
       return error;
     }
   }

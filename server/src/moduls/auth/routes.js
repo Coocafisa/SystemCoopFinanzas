@@ -2,6 +2,7 @@ const express = require('express');
 
 const request = require('../../red/request');
 const controller = require('./index');
+const { verifyToken } = require('../../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -32,5 +33,7 @@ router.get('/getToken', (req, res) => {
     const data = req.query;
     return controller.getToken(req, res, data);
 });
+
+router.get('/refreshToken', verifyToken, controller.refreshToken);
 
 module.exports = router;

@@ -1,6 +1,5 @@
 "use client"
 import Navigations from "@/components/layout/optionavigations";
-import InactivityHandler from "@/components/middleware/InactivityHandler";
 import AuthProvider from "@/api/requestAuth/authContext";
 import { usePathname } from "next/navigation";
 
@@ -14,7 +13,6 @@ export default function IndexLayout({ children }) {
       <AuthProvider>
       <main>{children}</main>
       </AuthProvider>
-      <InactivityHandler/>
     </>
   );
 }

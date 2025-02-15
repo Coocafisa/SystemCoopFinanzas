@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import '@styles/preloader.css';
 
 export const Loader = ({ type, message, isLoading }) => {
-
   return (
     <div className="loader-container" style={{
         boxShadow: isLoading ? "0 4px 12px rgba(0, 0, 0, 0.2)": "none",
