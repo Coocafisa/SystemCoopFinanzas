@@ -38,6 +38,10 @@ module.exports = function (dbInsert) {
       const [usuario] = await db.query(table, fields, params, [data.user, data.user]);
 
       if (!usuario) {
+        if (usuario.sesion === true) {
+          return request.error(req, res, {message: "Ya tiene una sesión activa. Cierre la sesión antes de iniciar una nueva.", redirect: "/"}, 400);
+        }
+        
         const [newUser] = await db.query(
           "entities",
           fields,
@@ -80,7 +84,7 @@ module.exports = function (dbInsert) {
         return request.error(req, res, {message: "Credenciales incorrectas."}, 400);
       }
 
-      await db.update('auth', `intentos_fallidos = 0, actividad = CURRENT_TIMESTAMP`, ` usuario_id = '${usuario.usuario_id}'`);
+      await db.update('auth', `intentos_fallidos = 0, actividad = CURRENT_TIMESTAMP, sesion = true`, ` usuario_id = '${usuario.usuario_id}'`);
       const token = tokenAuth(usuario);
       const redirectPath =
         usuario.rol === "Administrador"
@@ -90,17 +94,15 @@ module.exports = function (dbInsert) {
       if (!token) {
         return request.error(req, res, {message: "No se encontró el token."}, 500);
       }
-      console.log("token", token);
       res.cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
-        maxAge: 1000 * 10 * 10,
+        maxAge: 1000 * 2 * 10,
       });
 
       return request.success(req, res, { token, redirect: redirectPath }, 200);
     } catch (error) {
-      console.log("Error: ", error)
       return request.error(
         req,
         res,
@@ -199,11 +201,21 @@ module.exports = function (dbInsert) {
         }
     }
 
+    const refreshToken = async (req, res) => {
+      const { name, role } = req.auth;
+      const user = { identificacion: name, rol: role };
+      const newToken = tokenAuth(user);
+      res.cookie('token', newToken, { httpOnly: true });
+      return request.success( req, res, { token: newToken}, 200);
+    }
+
+
   return {
     auth,
     tokenAuth,
     emailresetpass,
     resetpass,
     getToken,
+    refreshToken,
   };
 };

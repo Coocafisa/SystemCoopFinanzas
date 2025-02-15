@@ -1,21 +1,20 @@
 "use client";
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { getSession } from "../requestServices/sessionService";
+import InactivityHandler from "@/components/middleware/InactivityHandler";
+import { Loader } from "@/components/common/preloader";
 
 const AuthContext = createContext();
-
 export default function AuthProvider({ children }) {
     const [dataUser, setDataUser] = useState(null);
     const [dataRole, setDataRole] = useState(null);
     const [timeExpiration, setTimeExpiration] = useState(null);
     const [ loading, setLoading ] = useState(true);
-
     const resetAuth = () => {
         setDataUser(null);
         setDataRole(null);
         setTimeExpiration(null);
     };
-
     useEffect(() => {
         const checkSession = async () => {
             try {
@@ -34,11 +33,17 @@ export default function AuthProvider({ children }) {
             }
         };
         checkSession();
+        const intervalId = setInterval(() => {
+            checkSession();
+        }, 3 * 60 * 1000);
+        return () => clearInterval(intervalId);
     }, []);
-
-    return (
+    return loading ? (
+        <Loader type={"info"} message={"Cargando..."} isLoading={true}/>
+        ) : (        
         <AuthContext.Provider value={{ dataUser, dataRole, timeExpiration, loading}}>
-           {children}
+            <InactivityHandler timeRemaining={timeExpiration}/>
+            { children }
         </AuthContext.Provider>
     );
 }

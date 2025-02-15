@@ -4,93 +4,117 @@ import { logout } from "@/api/requestServices/logout";
 import { getSession } from "@/api/requestServices/sessionService";
 import AlertPopup from "../common/alert";
 import "@styles/alertInativity.css";
-import { calculateCountdown } from "../utils/timerUtils";
+import { calculateCountdown, useUserActivity } from "../utils/timerUtils";
+import { refreshToken } from "@/api/requestServices/generalServices";
 
-export default function InactivityHandler() {
-  const [sessionState, setSessionState] = useState("active");
+const SESSION_STATES = {
+  ACTIVE: "active",
+  INACTIVE: "inactive",
+  EXPIRED: "expired",
+};
+
+export default function InactivityHandler({ timeRemaining }) {
+  const [sessionState, setSessionState] = useState(SESSION_STATES.ACTIVE);
   const [timer, setTimer] = useState({ minutes: "00", seconds: "00" });
+  const { userActivity, resetActivity } = useUserActivity();
 
-   const fetchExpirationTime = async () => {
-    try {
-      const sessionData = await getSession();
-      console.log("sessionData", sessionData?.timeRemaining);
-      if (sessionData?.timeRemaining) {
-        const { minutes, seconds } = sessionData.timeRemaining;
-        setTimer({
-          minutes: String(minutes).padStart(2, "0"),
-          seconds: String(seconds).padStart(2, "0"),
-        });
-      } else {
-        setTimer({ minutes: "00", seconds: "00" });
-      }
-    } catch (error) {
-      setTimer({ minutes: "00", seconds: "00" });
-    }
+  const useTimer = (initialTime) => {
+    useEffect(() => {
+      setTimer(initialTime || { minutes: "00", seconds: "00" });
+    }, [initialTime]);
+
+    const updateTimer = (callback) => {
+      setTimer((prev) => {
+        const newTime = calculateCountdown(prev.minutes, prev.seconds);
+        callback(newTime);
+        return newTime;
+      });
+    };
+
+    return { timer, updateTimer };
   };
 
-  useEffect(() => {
-    fetchExpirationTime();
-  }, []);
+  const { timer: currentTimer, updateTimer } = useTimer(timeRemaining);
 
   useEffect(() => {
-    if (sessionState === "expired") return;
+    if (sessionState === SESSION_STATES.EXPIRED) return;
+
     const intervalId = setInterval(() => {
-      setTimer((prevTimer) => {
-        const newTime = calculateCountdown(prevTimer.minutes, prevTimer.seconds);
+      updateTimer((newTime) => {
+        const { minutes, seconds } = newTime;
 
-        if (newTime.minutes === "01" && newTime.seconds === "00") {
-          if (newTime.seconds > 0 ) {
-            setSessionState("inactive");
-          }
-          setSessionState("inactive");
-        } else if (newTime.minutes === "00" && newTime.seconds === "00") {
-          setSessionState("expired");
+        if (parseInt(minutes) === 1 && parseInt(seconds) <= 40 && userActivity) {
+          refreshSession();
+          setSessionState(SESSION_STATES.ACTIVE);
+          resetActivity();
+        } else if (minutes === "01" && seconds === "00") {
+          setSessionState(SESSION_STATES.INACTIVE);
+        } else if (minutes === "00" && seconds === "00") {
+          setSessionState(SESSION_STATES.EXPIRED);
           clearInterval(intervalId);
         }
-
-        return newTime;
       });
     }, 1000);
 
     return () => clearInterval(intervalId);
-  }, [sessionState]);
+  }, [sessionState, userActivity ]);
 
-  const handleLogout = async (event) => {
-    event.preventDefault();
-    setSessionState("expired");
-    await logout(event);
+  const refreshSession = async () => {
+    try {
+      const result = await refreshToken();
+      
+      if (result?.status === 200) {
+        const sessionData = await getSession();
+        if (sessionData?.timeRemaining) {
+          setSessionState(SESSION_STATES.ACTIVE);
+          setTimer(sessionData.timeRemaining);
+        }
+      }
+    } catch (error) {
+      console.error("Error refreshing session:", error);
+    }
   };
+
+  const handleLogout = async () => {
+    setSessionState(SESSION_STATES.EXPIRED);
+    await logout();
+  };
+
+  const timeClass =
+    currentTimer.minutes === "00" && currentTimer.seconds <= "30"
+      ? "time-critical"
+      : "";
 
   return (
     <>
-      {sessionState === "inactive" && (
+      {sessionState === SESSION_STATES.INACTIVE && (
         <div className="blocking-layer">
-          <AlertPopup 
+          <AlertPopup
             message="Llevas mucho tiempo inactivo. ¿Deseas continuar navegando en la aplicación?"
             type="info"
           >
             <div className="alert_text">
               <p>La sesión expirará en:</p>
             </div>
-            <div className="timer-container" aria-live="polite">
-              <div className="time-box" role="timer">
-                <span id="minutes">{timer.minutes}</span>
+            <div className="timer-container" aria-label="polite">
+              <div className={`time-box ${timeClass}`} role="timer">
+                <span id="minutes">{currentTimer.minutes}</span>
                 <span className="label-timer">Minutos</span>
               </div>
-              <div className="time-box" role="timer">
-                <span id="seconds">{timer.seconds}</span>
+              <div className={`time-box ${timeClass}`} role="timer">
+                <span id="seconds">{currentTimer.seconds}</span>
                 <span className="label-timer">Segundos</span>
               </div>
             </div>
             <div className="alert-buttons">
               <button onClick={handleLogout}>No</button>
-              <button onClick={() => setSessionState("active")}>Sí</button>
+              <button onClick={refreshSession}>Sí</button>
             </div>
           </AlertPopup>
         </div>
       )}
-      
-      {sessionState === "expired" && (
+
+      {sessionState === SESSION_STATES.EXPIRED && (
         <div className="blocking-layer">
           <AlertPopup
             message="Has tardado mucho. Vuelve a iniciar sesión para continuar navegando."
@@ -102,4 +126,4 @@ export default function InactivityHandler() {
       )}
     </>
   );
-}
+};
