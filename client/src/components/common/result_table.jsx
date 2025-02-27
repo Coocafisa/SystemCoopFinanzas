@@ -2,14 +2,16 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import "@styles/table.css";
 import Search from "./search";
-import { Edit, TrashIcon } from "lucide-react";
-import { EditRecord } from "./elements";
+import { Edit, TrashIcon, ShieldCheck } from "lucide-react";
+import EditRecord from "./edit_record";
 import AlertPopup from "./alert";
 import { deleteRegister } from "@/api/requestServices/generalServices";
+import { AddRecord } from "./add_permits";
 
-const ResultTable = ({ data = [], keysToSearch, title, headers = [], fields = [], isAction, rol, editTitle, selectTable}) => {
+const ResultTable = ({ data = [], keysToSearch, title, headers = [], fields = [], isAction, rol, editTitle, selectTable, aditionalData = [], children, isPermit}) => {
   const [filteredData, setFilteredData] = useState(data);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isChecking, setIsChecking] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isDelete, setDelete ] = useState(false);
   const [currentRecord, setCurrentRecord] = useState("");
@@ -45,22 +47,34 @@ const ResultTable = ({ data = [], keysToSearch, title, headers = [], fields = []
   const handlePrevGroup = useCallback(() => {
     const newPage = Math.max(1, currentPage - maxVisiblePages);
     setCurrentPage(newPage);
-  }, [maxVisiblePages]);
+  }, [maxVisiblePages, currentPage]);
 
   const handleNextGroup = useCallback(() => {
     const newPage = Math.min(totalPages, currentPage + maxVisiblePages);
     setCurrentPage(newPage);
-  }, [maxVisiblePages ,totalPages]);
+  }, [maxVisiblePages, totalPages, currentPage]);
 
   const handleEditClick = (record) => {
     setCurrentRecord(record);
     setIsEditing(true);
   }
 
-  const closeModal = () => {
-    setIsEditing(false);
-    setCurrentRecord(null);
-  }
+  const handleCheckClick = (record) => {
+    let permitUser = aditionalData
+      .filter((item) => item.usuario_id.toLowerCase() === record.usuario_id)
+      .map((item) => ({
+        identificacion: record.identificacion,
+        acceso: item.permits_id,
+        estado: item.estado,
+        fech_auth: item.fech_auth,
+      }));
+    if (permitUser.length === 0) {
+      permitUser = [{ identificacion: record.identificacion, acceso: "" }];
+    }
+    setCurrentRecord(permitUser);
+    setIsChecking(true);
+  };
+  
 
   const handleDelete = async (recordDelete) => {
     setDelete(true);
@@ -69,9 +83,10 @@ const ResultTable = ({ data = [], keysToSearch, title, headers = [], fields = []
 
   const confirmDelete = async (event) => {
     event.preventDefault();
+    if(!currentRecord) return;
+    setDelete(false);
     const res = await deleteRegister(event, currentRecord.identificacion, selectTable);
     if (res.status === 200 || res.status === 204) {
-      setDelete(false);
       setFilteredData( data.filter((item) => item.identificacion !== currentRecord.identificacion));
       setCurrentRecord(null);
     }
@@ -79,7 +94,8 @@ const ResultTable = ({ data = [], keysToSearch, title, headers = [], fields = []
   return (
     <>
     {isEditing && currentRecord && <EditRecord data={currentRecord} role={rol}
-    state={isEditing} closeModal={closeModal} editTitle={editTitle}/>}
+    state={isEditing} closeModal={() => {setIsEditing(false), setCurrentRecord("")}} editTitle={editTitle}/>}
+    {isChecking && currentRecord && <AddRecord data={currentRecord} role= {rol} state={isChecking} closeModal={() => {setIsChecking(false), setCurrentRecord("")}}/>}
     <div className="container">
       <div className="header">
         <div className="title-search">
@@ -116,18 +132,23 @@ const ResultTable = ({ data = [], keysToSearch, title, headers = [], fields = []
                   <Edit className="edit-icon" onClick={() => handleEditClick(item)}/>
                   <span className="tooltip">Editar</span>
                 </div>
-                { rol === "Administrador" && <div className="icon-container">
+                { isPermit && <div className="icon-container"> 
+                  <ShieldCheck className="check-icon" onClick={ ()=> {handleCheckClick(item)}}/>
+                    <span className="tooltip">Permisos</span>
+                    </div>}
+                    { rol === ("Administrador" ||"Supervisor") && <div className="icon-container">
                   <TrashIcon className="delete-icon" onClick={() => handleDelete(item)}/>
                   <span className="tooltip">Eliminar</span>
                   {isDelete && (<AlertPopup className={`contain ${isDelete ? 'overlay-delete' : ''}`}
                   message={`Estas seguro de eliminar a: ${currentRecord.nombre}`} type={"info"}>
                     <div className="alert-buttons">
                       <button className="alert-button delete-button" onClick={confirmDelete}>Eliminar</button>
-                      <button className="alert-button cancel-button" onClick={() => {setDelete(false), setCurrentRecord(null)}}>
+                      <button className="alert-button cancel-button" onClick={() => {setDelete(false), setCurrentRecord("")}}>
                         Cancelar</button>
                     </div>
                     </AlertPopup>)}
                 </div>}
+                {children}
                 </td>)}
               </tr>
             ))}
