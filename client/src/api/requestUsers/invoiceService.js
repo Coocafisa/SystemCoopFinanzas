@@ -1,30 +1,28 @@
 import { api } from "../apiRest";
 export const queryInvoices = async () => {
-  try {
+    try {
     const response = await api.get("/invoices");
-    const data = response.data.body;
-    return data;
-  } catch (error) {
-    return [];
-  }
+    return response.data.body;
+    } catch (error) {
+        return [];
+    }
 };
 
 export const queryinvoicepayment = async () => {
-  try {
+    try {
     const response = await api.get("/invoices/invoicesPayment");
     const data = response.data.body;
-    return data;
-  } catch (error) {
-    return [];
-  }
+    return data
+    } catch (error) {
+        return []
+    }
 };
 
 export const queryinvoicepending = async () => {
-  try {
+    try {
     const response = await api.get("/invoices/invoicesPending");
-    const data = response.data?.body;
-    return data;
-  } catch (error) {
-    return [];
-  }
+    return response.data?.body
+    } catch (error) {
+        return []
+    }
 };

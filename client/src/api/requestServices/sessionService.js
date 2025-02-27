@@ -14,46 +14,21 @@ export const getSession = async () => {
           },
         };
       }
+    } catch (error) {
       return {
-      isAuthenticated: false,
-      user: null,
-      role: null,
-      expiration: null,
-    };
-
-  } catch (error) {
-    return {
-      isAuthenticated: false,
-      user: null,
-      role: null,
-      expiration: null,
-    };
-  }
+        isAuthenticated: false,
+        user: null,
+        role: null,
+        expiration: null,
+      };
+    }
 };
 
 export const dateUser = async () => {
   try {
     const response = await api.get('/users');
-    const userData = response.data;
-    return userData;
+    return response.data;
   } catch (error) {
-    return {
-      isAuthenticated: false,
-      user: null,
-      role: null,
-      expiration: null,
-    };
+    return [];
   }
 };
-
-export const sessionToken = async () => {
-  try {
-    if (sessionStorage.getItem("token")) {
-      return sessionStorage.getItem("token");
-    }
-    return null;
-  } catch (error) {
-    return null;
-  }
-};
-

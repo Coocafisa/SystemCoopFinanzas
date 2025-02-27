@@ -1,6 +1,6 @@
 "use client"
 import Navigations from "@/components/layout/optionavigations";
-import AuthProvider from "@/api/requestAuth/authContext";
+import AuthProvider from "@/components/middleware/authContext";
 import { usePathname } from "next/navigation";
 
 export default function IndexLayout({ children }) {

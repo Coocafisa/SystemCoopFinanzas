@@ -5,14 +5,15 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
 const error = require('./red/error');
-const users = require('./moduls/users/routes');
-const auth = require('./moduls/auth/routes');
-const emails = require('./moduls/emails/routes');
-const session = require('./moduls/sessions/routes');
-const admin = require('./moduls/admin/routes');
-const invoices = require('./moduls/invoices/routes');
-const userManagement = require('./moduls/userManagement/routes');
-const generalService = require('./moduls/generalService/routes');
+const users = require('./modules/users/routes');
+const auth = require('./modules/auth/routes');
+const emails = require('./modules/emails/routes');
+const session = require('./modules/sessions/routes');
+const admin = require('./modules/admin/routes');
+const invoices = require('./modules/invoices/routes');
+const userManagement = require('./modules/userManagement/routes');
+const generalService = require('./modules/generalService/routes');
+const { scheduleJob } = require('./modules/emails/funtions.email/shedulEmails');
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.set('MYSQL', {
 });
 app.set('trust proxy', 1);
 
+scheduleJob();
 app.use('/auth', auth);
 app.use('/session', session);
 app.use('/users', users);

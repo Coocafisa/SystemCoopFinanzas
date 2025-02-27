@@ -6,13 +6,13 @@ export const adduser = async (event) => {
     const pass = event.target.pass.value;
     const passcon = event.target.passcon.value;
     try {
-        const response = await api.post('/adduser/newUser', {
-            nit, rol,
-            pass, passcon
-        });
-        return response.data;
-    } catch (error) {
-        return error;  
-    } 
+    const response = await api.post('/adduser/newUser', {
+        nit, rol,
+        pass, passcon
+    });
+    return response.data;
+} catch (error) {
+    return [];
+}
 };
 

@@ -1,7 +1,7 @@
 "use client";
 import ResultTable from "@/components/common/result_table";
 import { useState, useEffect } from "react";
-import { ProtectedRoute } from "@/components/middleware/middleware";
+import { ProtectedRoute } from "@/components/middleware/protecte-route";
 import { consultPaymentEntities } from "@/api/requestAdmin/querysAdmin";
 export default function Homepage() {
     const [payments, setPayments] = useState([]);

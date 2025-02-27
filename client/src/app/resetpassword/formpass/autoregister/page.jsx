@@ -2,13 +2,10 @@
 import "@styles/formusers.css";
 import { useEffect, useState } from "react";
 import { automaticRegistration, verifyTokenAutoregister } from "@/api/requestServices/passwordService";
-import AlertPopup from "@/components/common/alert";
-import { Loader } from "@/components/common/preloader";
 import { Message, ValidateInput } from "@/components/utils/helpers";
-import { useAlertState } from "@/components/utils/alertState";
 
 export default function AutoRegister() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState("");
   const [formData, setFormData] = useState({
     newpass: "",
     confpass: "",

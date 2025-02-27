@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import ResultTable from "@/components/common/result_table";
-import { ProtectedRoute } from "@/components/middleware/middleware";
+import { ProtectedRoute } from "@/components/middleware/protecte-route";
 import { queryEntities } from "@/api/requestUsers/queryUsers";
 import { getSession } from "@/api/requestServices/sessionService";
 
@@ -12,8 +12,9 @@ export default function Entities() {
     useEffect(() => {
         const fetchData = async () => {
             const entitiesData = await queryEntities();
-            setEntities(entitiesData);
-            const {role} = await getSession();
+            const {role, user} = await getSession();
+            const filteredEntities = entitiesData.filter((data => data.identificacion !== user));
+            setEntities(filteredEntities);
             setRol(role);
             }
         fetchData();
@@ -35,7 +36,6 @@ export default function Entities() {
     const fields = [
         "num",
         "identificacion",
-        "tipo_entidad",
         "nombre",
         "correo",
         "direcc",
@@ -49,7 +49,7 @@ export default function Entities() {
         title={title}
         headers={headers}
         data={entities}
-        keysToSearch={['identificacion', 'tipo_entidad', 'nombre', 'correo', 'fech_reg']}
+        keysToSearch={['identificacion', 'nombre', 'correo', 'fech_reg']}
         fields={fields}
         isAction={true}
         rol={rol}

@@ -2,10 +2,8 @@
 import { adduser } from "@/api/requestAdmin/registerService";
 import "@styles/formusers.css";
 import { useState } from "react";
-import { ProtectedRoute } from "@/components/middleware/middleware";
-import { Loader } from "@/components/common/preloader";
+import { ProtectedRoute } from "@/components/middleware/protecte-route";
 import { Message, ValidateInput } from "@/components/utils/helpers";
-import { useAlertState } from "@/components/utils/alertState";
 
 export default function Registerusers() {
   const [message, setMessage] = useState({});
@@ -41,6 +39,7 @@ export default function Registerusers() {
 
   return (
     <>
+    <ProtectedRoute allowedRoles={["Administrador"]}/>
     <div className="content_register">
       <header>
         <img

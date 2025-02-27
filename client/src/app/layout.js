@@ -1,4 +1,4 @@
-import LoaderWithMessage from "@/components/layout/conponent-message";
+import LoaderWithMessage from "@/components/layout/conponent_message";
 import "@styles/globals.css";
 export const metadata = {
   icon: "/favicon.ico",

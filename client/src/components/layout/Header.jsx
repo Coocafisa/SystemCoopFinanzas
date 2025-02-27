@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import Menu from "./navigationmenu";
+import Menu from "./navigation_menu";
 import { getSession, dateUser } from "@/api/requestServices/sessionService";
-import "@styles/header.css"
+import "@styles/header.css";
+import "@styles/elements.css";
 import { Message, ValidateInput } from "../utils/helpers";
 import { updateRegister } from "@/api/requestServices/generalServices";
 import { CircleUser, X } from "lucide-react";
@@ -97,7 +98,7 @@ export default function Header({ menuOptions }) {
     });
   const handleSaveClick = async (event) => {
     const res = await updateRegister(event, updateFields, user.nit);
-    if (res.status === 200) {
+    if (res.data?.status === 200) {
       const updatedUser = { ...user, ...updateFields };
       updatedUser.estado = updatedUser.estado === '0' ? 'Inactivo' : 'Activo';
       setUser(updatedUser);

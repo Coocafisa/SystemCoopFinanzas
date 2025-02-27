@@ -2,9 +2,8 @@
 import ResultTable from "@/components/common/result_table";
 import { useState, useEffect } from "react";
 import { queryEmailsPending } from "@/api/requestAdmin/querysAdmin";
-import HoraForm from "@/components/layout/formhouremail";
-import { ProtectedRoute } from "../../../../components/middleware/middleware";
-import { resendEmails } from "@/api/requestAdmin/servicesAdmin";
+import HoraForm from "@/components/layout/form_hour_email";
+import { ProtectedRoute } from "@/components/middleware/protecte-route";
 
 export default function PendingEmails() {
     const [pendingEmails, setPendingEmails] = useState([]);
@@ -33,16 +32,10 @@ export default function PendingEmails() {
         "correo"
     ];
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        await resendEmails();
-    }
-
     return (
         <>
         <ProtectedRoute allowedRoles={["Administrador"]}/>
-        <button onClick={handleSubmit} className="btn-resend"> Enviar Emails </button>
-        <HoraForm/>
+        <HoraForm btnEmails={true}/>
         <ResultTable data={pendingEmails} title={title} headers={headers} fields={fields}/>
         </>
     );

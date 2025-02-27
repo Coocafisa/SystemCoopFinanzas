@@ -7,7 +7,7 @@ module.exports = {
 
     jwt: {
         secret: process.env.JWT_SECRET || 'secret',
-        expiresIn: process.env.JWT_EXPIRES_IN || '15m',
+        expiresIn: process.env.JWT_EXPIRES_IN || '5m',
     },
 
     mysql: {

@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Table from "@/components/common/table";
 import { queryinvoicepayment } from "@/api/requestUsers/invoiceService";
-import { ProtectedRoute } from "@/components/middleware/middleware";
+import { ProtectedRoute } from "@/components/middleware/protecte-route";
+import TableInvoices from "@/components/common/table_invoices";
 export default function Invoicepayments() {
   const [data, setInvoices] = useState([]);
   const [error, setError] = useState(null);
@@ -37,7 +37,7 @@ export default function Invoicepayments() {
 
   return (
     <>
-    <Table
+    <TableInvoices
       data={data}
       title={title}
       fields={fields}

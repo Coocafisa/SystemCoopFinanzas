@@ -100,7 +100,7 @@ function ValidateInput(event, setMessage, formData) {
       } else if (!/^[a-zA-Z0-9-\s]+$/.test(value)) {
         message = "Caracter invalido para este campo";
       }
-    }
+    } 
   
     setMessage((prevState) => ({
       ...prevState,

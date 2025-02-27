@@ -1,9 +1,9 @@
 "use client"
 
 import React, { useEffect, useState } from "react";
-import Table from "@/components/common/table";
 import { queryinvoicepending } from "@/api/requestUsers/invoiceService";
-import { ProtectedRoute } from "@/components/middleware/middleware";
+import { ProtectedRoute } from "@/components/middleware/protecte-route";
+import TableInvoices from "@/components/common/table_invoices";
 
 export default function InvoicePending() {
     const [data, setInvoices] = useState([]);
@@ -38,7 +38,7 @@ export default function InvoicePending() {
 
     return (
         <>
-        <Table
+        <TableInvoices
       data={data}
       title={title}
       fields={fields}
