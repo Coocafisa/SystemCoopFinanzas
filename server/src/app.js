@@ -4,7 +4,7 @@ const config = require('./config');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
-const error = require('./red/error');
+const errors = require('./red/error');
 const users = require('./modules/users/routes');
 const auth = require('./modules/auth/routes');
 const emails = require('./modules/emails/routes');
@@ -46,6 +46,6 @@ app.use('/admin', admin)
 app.use('/invoices', invoices)
 app.use('/userManagement', userManagement)
 app.use('/generalService', generalService)
-app.use(error);
+app.use(errors);
 
 module.exports = app;
