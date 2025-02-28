@@ -1,17 +1,16 @@
 "use client"
-
 import React, { useEffect, useState } from "react";
-import { queryinvoicepending } from "@/api/requestUsers/invoiceService";
 import { ProtectedRoute } from "@/components/middleware/protecte-route";
 import TableInvoices from "@/components/common/table_invoices";
+import { queryinvoicepending } from "@/api/requestUsers/invoiceService";
 
 export default function InvoicePending() {
-    const [data, setInvoices] = useState([]);
+    const [data, setInvoicesPending] = useState([]);
 
     useEffect(() => {
         const fetchInvoices = async () => {
             const invoices = await queryinvoicepending();
-            setInvoices(invoices.formatedResults);
+            setInvoicesPending(invoices);
         };
         fetchInvoices();
     }, []);
@@ -36,7 +35,7 @@ export default function InvoicePending() {
     { label: "Valor Pago", value: data[0]?.pagtot || "0", }
   ];
 
-    return (
+  return (
         <>
         <TableInvoices
       data={data}
@@ -48,4 +47,4 @@ export default function InvoicePending() {
     />
         </>
     );  
-}
+};

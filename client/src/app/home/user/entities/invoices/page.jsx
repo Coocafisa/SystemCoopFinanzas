@@ -5,14 +5,10 @@ import { ProtectedRoute } from "@/components/middleware/protecte-route";
 import TableInvoices from "@/components/common/table_invoices";
 export default function Invoices() {
   const [data, setInvoices] = useState([]);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchInvoices = async () => {
-      const invoices = await queryInvoices(setError);
-      if (invoices === 0) {
-        setInvoices("0");
-      }
+      const invoices = await queryInvoices();
       setInvoices(invoices);
     };
     fetchInvoices();
@@ -46,7 +42,6 @@ export default function Invoices() {
       fields={fields}
       headers={headers}
       expandedData={expandedData}
-      error={error}
       keysToSearch={['factura', 'fecfac', 'fecvcto']}
     />
     </>

@@ -5,11 +5,10 @@ import { ProtectedRoute } from "@/components/middleware/protecte-route";
 import TableInvoices from "@/components/common/table_invoices";
 export default function Invoicepayments() {
   const [data, setInvoices] = useState([]);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchInvoices = async () => {
-      const invoices = await queryinvoicepayment(setError);
+      const invoices = await queryinvoicepayment();
       setInvoices(invoices);
     };
     fetchInvoices();
@@ -35,6 +34,8 @@ export default function Invoicepayments() {
     { label: "Valor Pago", value: data[0]?.pagtot || "0", }
   ];
 
+  console.log(data);
+
   return (
     <>
     <TableInvoices
@@ -43,7 +44,6 @@ export default function Invoicepayments() {
       fields={fields}
       headers={headers}
       expandedData={expandedData}
-      error={error}
       keysToSearch={['factura', 'fecfac', 'fecvcto']}
     />
     </>
