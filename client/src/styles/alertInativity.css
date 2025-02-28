@@ -11,9 +11,6 @@
   z-index: 1000;
 }
 
-.alert-content {
-    flex-direction: column;
-}
 .alert-popup.timer {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(8px);

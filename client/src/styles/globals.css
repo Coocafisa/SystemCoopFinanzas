@@ -70,14 +70,7 @@ input[type="number"]::-webkit-outer-spin-button {
     margin: 0;
 }
 
-.btn-resend {
-  margin-top: 220px;
-  cursor: pointer;
-  position: absolute;
-  margin-left: 1090px;
-}
-
-.btn_registrar:disabled, .btn_enviar:disabled, .save-button:disabled {
+.btn_registrar:disabled, .btn_enviar:disabled, .save-button:disabled, .btn-edit:disabled {
   background-color: #ccc;
   color: #666;
   cursor: not-allowed;
