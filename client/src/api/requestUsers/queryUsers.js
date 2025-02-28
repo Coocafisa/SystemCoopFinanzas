@@ -5,7 +5,7 @@ export const queryUsers = async () => {
         const response = await api.get("/users/queryusers");
         return response.data.body;
     } catch (error) {
-        return[]
+        return [];
     }
 }
 
@@ -14,6 +14,15 @@ export const queryEntities = async () => {
         const response = await api.get("/users/entities");
         return response.data.body;
     } catch (error) {
-        return[]
+        return [];
+    }
+}
+
+ export const queryPermits = async () => {
+    try {
+        const response = await api.get("/users/permits");
+        return response.data.body;
+    } catch (error) {
+        return [];
     }
 }
