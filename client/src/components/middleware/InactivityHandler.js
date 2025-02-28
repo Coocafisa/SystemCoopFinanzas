@@ -17,6 +17,7 @@ export default function InactivityHandler({ timeRemaining }) {
   const [sessionState, setSessionState] = useState(SESSION_STATES.ACTIVE);
   const [timer, setTimer] = useState({ minutes: "00", seconds: "00" });
   const { userActivity, resetActivity } = useUserActivity();
+  const [updateSession, setUpdateSession] = useState(false);
 
   const useTimer = (initialTime) => {
     useEffect(() => {
@@ -43,11 +44,13 @@ export default function InactivityHandler({ timeRemaining }) {
       updateTimer((newTime) => {
         const { minutes, seconds } = newTime;
 
-        if (parseInt(minutes) === 1 && parseInt(seconds) <= 40 && userActivity) {
-          refreshSession();
-          setSessionState(SESSION_STATES.ACTIVE);
+        if (parseInt(minutes) === 1 && parseInt(seconds) === 40 && userActivity) {
+          if (!updateSession) {
+            refreshSession();
+            setUpdateSession(true);
+          }
           resetActivity();
-        } else if (minutes === "01" && seconds === "00") {
+        } else if (minutes === "00" && seconds === "40") {
           setSessionState(SESSION_STATES.INACTIVE);
         } else if (minutes === "00" && seconds === "00") {
           setSessionState(SESSION_STATES.EXPIRED);
@@ -57,22 +60,17 @@ export default function InactivityHandler({ timeRemaining }) {
     }, 1000);
 
     return () => clearInterval(intervalId);
-  }, [sessionState, userActivity ]);
+  }, [sessionState, userActivity, updateSession ]);
 
   const refreshSession = async () => {
-    try {
       const result = await refreshToken();
-      
-      if (result?.status === 200) {
+        if (result?.status === 200) {
         const sessionData = await getSession();
         if (sessionData?.timeRemaining) {
           setSessionState(SESSION_STATES.ACTIVE);
           setTimer(sessionData.timeRemaining);
         }
       }
-    } catch (error) {
-      console.error("Error refreshing session:", error);
-    }
   };
 
   const handleLogout = async () => {
@@ -97,10 +95,6 @@ export default function InactivityHandler({ timeRemaining }) {
               <p>La sesión expirará en:</p>
             </div>
             <div className="timer-container" aria-label="polite">
-              <div className={`time-box ${timeClass}`} role="timer">
-                <span id="minutes">{currentTimer.minutes}</span>
-                <span className="label-timer">Minutos</span>
-              </div>
               <div className={`time-box ${timeClass}`} role="timer">
                 <span id="seconds">{currentTimer.seconds}</span>
                 <span className="label-timer">Segundos</span>

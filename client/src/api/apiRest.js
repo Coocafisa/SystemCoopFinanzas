@@ -18,6 +18,7 @@ export const useAxiosWithLoader = (
   setAlert,
   setType,
   setInitAlert,
+  setData,
   timeout = 2000
 ) => {
   const removeInterceptors = () => {
@@ -60,9 +61,11 @@ export const useAxiosWithLoader = (
 
   responseInterceptor = api.interceptors.response.use(
     (response) => {
-      setLoading(false);
       if (!response.config?.skipAlert) {
         const message = response.data?.body?.message || "";
+        if (message) {
+          setLoading(false);
+        }
         const redirect = response.data?.body?.redirect || "";
         handleAlert(message, "success", timeout, redirect);
       }
@@ -70,15 +73,18 @@ export const useAxiosWithLoader = (
     },
     (error) => {
       setLoading(false);
-      const errorMessage =
-        error?.response?.data?.body?.message ||
+      const errorRedirect = error?.response?.data?.body?.redirect;
+      const errorMessage = error?.response?.data?.body?.message ||
         (error.message === "Network Error"
           ? "No se pudo conectar al servidor. Verifica tu conexión."
           : error.response?.status === 4001
           ? "No autorizado. Por favor, inicia sesión de nuevo."
           : "Error inesperado en la red o servidor.");
-      handleAlert(errorMessage, "error", timeout);
-      return Promise.reject(error.response || error);
+      if (error.response?.data?.body?.resetSession) {
+        setData(error.response?.data?.body?.resetSession);
+      }
+      handleAlert(errorMessage, "error", 3000);
+      return Promise.reject(error);
     }
   );
 
@@ -90,7 +96,7 @@ export const useAxiosWithLoader = (
     setTimeout(() => {
       setAlert("");
       setType("");
-      if (redirect) {
+     if (redirect) {
         window.location.href = redirect;
       }
       setInitAlert(false);
