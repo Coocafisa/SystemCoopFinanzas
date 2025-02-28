@@ -1,5 +1,6 @@
 const mysql = require('mysql2/promise');
 const config = require('../config');
+const { formatDate, formatPesos } = require('../functions/helpers');
 
 
 const dbConfig = {
@@ -21,7 +22,23 @@ async function query(table, fields = '*', params = '', values = []) {
             sql += ` WHERE ${params}`;
         }
         const [result] = await connection.query(sql, values);
-        return result;
+        const fieldDate = ["fecpago", "fecvcto", "fecfac", "fech_reg", "fech_auth"];
+        const fieldMoney = ["total", "retencion", "tot", "pagfac", "pagtot"];
+
+
+        const formatedResults = result.map(item => {
+            return Object.keys(item).reduce((newItem, key) => {
+                if (fieldDate.includes(key)) {
+                    newItem[key] = formatDate(item[key]) || "No disponible";
+                } else if (fieldMoney.includes(key)) {
+                    newItem[key] = formatPesos(item[key]) || "0";
+                } else {
+                    newItem[key] = item[key];
+                }
+                return newItem;
+            }, {});
+            });
+        return formatedResults;
     } catch (error) {
         throw error;
     }
