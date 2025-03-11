@@ -8,7 +8,7 @@ async function createUserId(rol, identificacion) {
     } else {
       consec = "-2U";
     }
-    const dataIdentificacion = rol.substring(0, 5)+String(identificacion).substring(0, 4)+consec;
+    const dataIdentificacion = rol.substring(0, 5)+String(identificacion)+consec;
     return dataIdentificacion;
   }
 
@@ -22,7 +22,7 @@ async function createUserId(rol, identificacion) {
         return decoded;
       }
     } catch (error) {
-      return { status: 401, message: "Token invalido o expirado." };
+      return { status: 401, message: "Token invalido o expirado.", redirect: "/" };
     }
   }
   module.exports = { 

@@ -34,6 +34,6 @@ router.get('/getToken', (req, res) => {
     return controller.getToken(req, res, data);
 });
 
-router.post('/refreshToken', verifyToken, controller.refreshToken);
+router.get('/refreshToken', verifyToken, controller.refreshToken);
 
 module.exports = router;

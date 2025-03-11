@@ -39,7 +39,7 @@ module.exports = function (dbInsert) {
 
     try {
       const [usuario] = await db.query(table, fields, params, [data.user, data.user]);
-      if (!usuario?.actividad &&  !usuario?.pasword) {        
+      if (!usuario?.actividad &&  !usuario?.password) {        
         const [newUser] = await db.query(
           "entities",
           fields,
@@ -81,7 +81,7 @@ module.exports = function (dbInsert) {
         );
       }
 
-      const isMatch = await bcrypt.compare(String(data.password), usuario.pasword);
+      const isMatch = await bcrypt.compare(String(data.password), usuario.password);
       if (!isMatch) {
         const updatedIntentos = usuario.intentos_fallidos + 1;
         await db.update('auth', `intentos_fallidos = ${updatedIntentos}`, ` usuario_id = '${usuario.usuario_id}'`);
@@ -149,7 +149,7 @@ module.exports = function (dbInsert) {
     const baseUrl = config.app.origin;
     const enlace = `${baseUrl}/resetpassword/formpass?token=${token}`;
     await resetEmail(gmail, enlace);
-    return request.success(req, res, { message: "Correo enviado con éxito." }, 200);
+    return request.success(req, res, { message: "Correo enviado con éxito.", redirect: "/"}, 200);
   } catch (error) {
     return request.error(
       req,
@@ -171,7 +171,7 @@ module.exports = function (dbInsert) {
       }
       const [tokenQuery] = await db.query('auth', 'token_pass, expiracion_token_pass', 'token_pass = ?', [token]);
       if(!tokenQuery){
-        return request.error(req, res, {message: 'Token no válido o no encontrado.'}, 400);
+        return request.error(req, res, {message: 'Token no válido o no encontrado.', redirect: "/"}, 400);
       }
       const now = new Date();
       const tokenExpiration = new Date(tokenQuery.expiracion_token_pass);
@@ -180,7 +180,7 @@ module.exports = function (dbInsert) {
       }
       const hashedPassword = await bcrypt.hash(newpass, 10);
       const updateQuery = await db.update('auth', `intentos_fallidos = 0, fech_pass = CURRENT_TIMESTAMP,
-        token_pass = 0, expiracion_token_pass = 0, pasword = '${hashedPassword}'`, ` token_pass = '${token}'`);
+        token_pass = 0, expiracion_token_pass = 0, password = '${hashedPassword}'`, ` token_pass = '${token}'`);
         if (!updateQuery){
           return request.error(req, res, { message: 'Error al actualizar la contraseña.'}, 501);
         }
@@ -241,7 +241,6 @@ module.exports = function (dbInsert) {
           res.cookie('token', newToken, { httpOnly: true, sameSite: 'Strict' });
           return request.success(req, res, { token: newToken }, 200);
       } catch (error) {
-          console.error("Error en refreshToken:", error);
           return request.error(req, res, { message: 'Error al refrescar sesión.' }, 400);
       }
   };

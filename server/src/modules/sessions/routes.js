@@ -4,7 +4,6 @@ const request = require('../../red/request');
 const controller = require('./index');
 
 const {verifyToken} = require('../../middleware/authMiddleware');
-const { validateUser } = require('../users/index');
 const router = express.Router();
 
 router.get('/', verifyToken, controller.session);

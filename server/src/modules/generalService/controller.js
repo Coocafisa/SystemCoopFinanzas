@@ -29,7 +29,7 @@ module.exports = function (dbInsert) {
     const { nit, fields } = req.body;
     const { role } = req.auth;
 
-    if (!fields || !nit || !role) {
+    if (fields.length === 0 || !nit || !role) {
       return request.error( req, res, { message: "Campos requeridos no proporcionados." }, 400 );
     }
 
@@ -49,7 +49,7 @@ module.exports = function (dbInsert) {
     auth: [
       "sessionId",
     ],
-    authorization: [
+    authorizations: [
       "permits_id",
       "estado"
     ]
@@ -83,7 +83,6 @@ module.exports = function (dbInsert) {
     }
 
   try {      
-      const {usuario_id} = await validateUser(nit);
       let camposActualizados = 0;
       for (const table of Object.keys(dataFields)) {
         const updateFields = dataFields[table];
@@ -92,7 +91,11 @@ module.exports = function (dbInsert) {
           if (table === "entities") {
             selectParams = `identificacion = ${nit}`
           } else {
-          selectParams = `usuario_id = '${usuario_id}'`
+            const {usuario_id} = await validateUser(nit);
+            if (!usuario_id) {
+              return request.error(req, res, { message: "Usuario no encontrado." }, 404);
+              }
+              selectParams = `usuario_id = '${usuario_id}'`
           }
 
           const executionUpdate = await db.update(table, updateFields, selectParams);
@@ -111,33 +114,38 @@ module.exports = function (dbInsert) {
   };
 
   async function deleteRegister(req, res) {
+    try {
         const { nit, selectTable } = req.body;
         const { role } = req.auth;
 
-        if (!role) {
-            return request.error(req, res, { message: "No autorizado." }, 403);
-        }
-
-        if (role !== "Administrador") {
-            return request.error(req, res, { message: "No estás autorizado para realizar esta operación." }, 403);
-        }
+        if (!role || role !== "Administrador") {
+          return request.error(req, res, { message: "No autorizado para realizar esta operación." }, 403);
+      }
 
         if (!nit || !selectTable) {
             return request.error(req, res, { message: "Campos requeridos no proporcionados." }, 400);
         }
 
-        const { usuario_id, entidad_id } = await validateUser(nit);
+        const userData = await validateUser(nit);
+        if (!userData) {
+            return request.error(req, res, { message: "Error al validar el usuario." }, 500);
+        }
+
+        const { usuario_id, entidad_id } = userData;
         if (!usuario_id && !entidad_id) {
             return request.error(req, res, { message: "Usuario no encontrado." }, 404);
         }
-        try {
-        const params = selectTable === "entities" ? `entidad_id = ${entidad_id}` : `usuario_id = '${usuario_id}'`;
-        const executionUpdate = await db.remove(selectTable, params);
 
-        if (!executionUpdate || executionUpdate.affectedRows === 0) {
-            return request.error(req, res, { message: "No se encontró el registro para eliminar." }, 404);
+        let params;
+        if (selectTable === "entities") {
+          params = `entidad_id = ${entidad_id}`;
+        } else {
+          params = `usuario_id = '${usuario_id}'`;
         }
-
+        const executionUpdate = await db.remove(selectTable, params);
+        if (executionUpdate.affectedRows === 0) {
+          return request.error(req, res, { message: "No se encontró el registro para eliminar." }, 404);
+      }
         return request.success(req, res, { message: "Registro eliminado con éxito." }, 200);
     } catch (error) {
         return request.error(req, res, { message: "Ocurrió un error al eliminar el registro." }, 500);

@@ -65,13 +65,13 @@ module.exports = function (dbInsert) {
   }
 
   async function queryPermits(req, res) {
-    const table = "authorizations LEFT   JOIN permits ON authorizations.permits_id = permits.permits_id";
+    const table = "authorizations LEFT JOIN permits ON authorizations.permits_id = permits.permits_id";
     const fields = "usuario_id, authorizations.permits_id, estado, fech_auth";
     try {
     const data = await db.query(table, fields);
-    request.success(req, res, data, 200);
+    return request.success(req, res, data, 200);
     } catch (error) {
-      request.error(req, res, error, 404);
+      return request.error(req, res, error, 404);
     }
   }
 

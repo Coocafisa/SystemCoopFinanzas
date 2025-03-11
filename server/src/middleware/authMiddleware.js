@@ -23,7 +23,7 @@ async function verifyToken(req, res, next) {
         req.auth = decoded;
         next();
     } catch (error) {
-        return request.error(req, res, { message: "Inicia sesión nuevamente para continuar." }, 401);
+        return request.error(req, res, { message: "Inicia sesión nuevamente para continuar.", redirect: "/" }, 401);
     }
 }
 
