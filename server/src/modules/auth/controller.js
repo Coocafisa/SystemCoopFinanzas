@@ -211,7 +211,7 @@ module.exports = function (dbInsert) {
           }
           return request.success(req, res, {message: "Validación correcta."}, 200);
         } catch (error) {
-          return request.error(req, res, {message: "Ocurrió un error en la solicitud. Inténtalo de nuevo más tarde."}, 500);
+          return request.error(req, res, {message: `Ocurrió un error en la solicitud. ${error.message}`}, 500);
         }
     }
 
