@@ -161,11 +161,6 @@ label {
     font-weight: 500;
 }
 
-.btn_butones {
-    display: flex;
-    justify-content: space-evenly;
-}
-
 .btn_registrar, .btn_cancelar {
     padding: 10px 20px;
     border: none;
@@ -208,6 +203,12 @@ label {
     transform: scale(1.1);
 }
 
+.eye-password {
+    position: absolute;
+    right: 100px;
+    margin-top: 40px;
+}
+
 .stlvar a {
     color: #27ae60;
     text-decoration: none;
@@ -218,12 +219,6 @@ label {
 .stlvar a:hover {
     color: #2ecc71;
     text-decoration: underline;
-}
-
-.stlvar span {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
 }
 
 .stlvar label{
@@ -238,12 +233,8 @@ label {
     .stlvar input[type="checkbox"] {
         width: 18px;
         height: 18px;
-    }
-
-    .stlvar label {
-        font-size: 12px;
-    }
-
+    } 
+    
     .stlvar a {
         font-size: 13px;
     }
