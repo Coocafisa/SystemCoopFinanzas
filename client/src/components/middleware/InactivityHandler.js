@@ -6,7 +6,7 @@ import "@styles/alertInativity.css";
 import { calculateCountdown, useUserActivity } from "../utils/timerUtils";
 import { refreshToken } from "@/api/requestServices/generalServices";
 import { logout } from "@/api/requestServices/logout";
-import { logError } from "@/utils/logger"; // Importar la utilidad de registro de errores
+import { logError } from "@/components/utils/logger"; // Importar la utilidad de registro de errores
 
 const SESSION_STATES = {
   ACTIVE: "active",

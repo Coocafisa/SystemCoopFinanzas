@@ -21,7 +21,7 @@ export const queryinvoicepayment = async () => {
 export const queryinvoicepending = async () => {
     try {
     const response = await api.get("/invoices/invoicesPending");
-    return response.data?.body
+    return response.data.body
     } catch (error) {
         return []
     }

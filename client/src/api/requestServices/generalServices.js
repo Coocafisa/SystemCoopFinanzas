@@ -1,22 +1,20 @@
 const { api } = require("../apiRest");
 
-async function updateRegister(event, updateFields, nit) {
-    event.preventDefault();
+async function updateRegister(updateFields, nit) {
     const renamedFields = (fields) => {
         const renameFields = {
-            identificacion: fields.nit,
-            nombre: fields.nombre,
-            usuario: fields.usuario,
-            correo: fields.correo,
-            telefono: fields.telefono,
-            direcc: fields.direccion
+            nit: 'identificacion',
+            direccion: 'direcc',
+            acceso: 'permits_id',
+            estado: 'estado',
         };
-        const newFields = Object.keys(renameFields).reduce((acc, key) => {
-            if (renameFields[key] !== "" && renameFields[key] !== null && renameFields[key] !== undefined) {
-                acc[key] = renameFields[key];
+        const newFields = {};
+        for (const key in fields) {
+            if (fields[key] !== "" && fields[key] !== null && fields[key] !== undefined) {
+                const newKey = renameFields[key] || key;
+                newFields[newKey] = fields[key];
             }
-            return acc;
-        }, {});
+        }
         return newFields;
     }; 
     try {
@@ -24,28 +22,27 @@ async function updateRegister(event, updateFields, nit) {
         nit: nit,
         fields: renamedFields(updateFields)
     });
-    return response.data;
+    return response;
     } catch (error) {
         return [];
     }
 }
 
-async function deleteRegister(event, nit, selectTable) {
-    event.preventDefault();
+async function deleteRegister(nit, selectTable) {
     try {
       const response = await api.post("/generalService/deleteRegister", {
         nit: nit,
         selectTable: selectTable
       });
-    return response.data;
+      return response.data;
     } catch (error) {
         return [];
     }
-  }
+}
 
 async function refreshToken () {
     try {
-        const response = await api.post("/auth/refreshToken", {skipAlert: true});
+        const response = await api.get("/auth/refreshToken", {skipAlert: true});
         sessionStorage.setItem("token", response.data?.body.token);
         return response
     } catch (error) {

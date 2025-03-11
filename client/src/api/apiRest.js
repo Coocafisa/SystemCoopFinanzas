@@ -7,7 +7,7 @@ export const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 10000,
+  timeout: 15000,
 });
 
 let requestInterceptor;
@@ -45,8 +45,7 @@ export const useAxiosWithLoader = (
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
-      const { skipAlert, ...cleanConfig } = config;
-      return cleanConfig;
+      return {...config}
     },
     (error) => {
       setLoading(false);
@@ -83,7 +82,7 @@ export const useAxiosWithLoader = (
       if (error.response?.data?.body?.resetSession) {
         setData(error.response?.data?.body?.resetSession);
       }
-      handleAlert(errorMessage, "error", 3000);
+      handleAlert(errorMessage, "error", 3000, errorRedirect);
       return Promise.reject(error);
     }
   );

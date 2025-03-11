@@ -10,10 +10,11 @@ export const emailValidate = async (event) => {
   }
 };
 
-export const resetpass = async (event, token) => {
+export const resetpass = async (event) => {
   event.preventDefault();
   const newpass = event.target.newpass.value.trim();
   const confpass = event.target.confpass.value.trim();
+  const token = new URLSearchParams(window.location.search).get("token");
   try {
   await api.post("/auth/resetpass", {
     newpass,
@@ -32,21 +33,6 @@ export const getToken = async () => {
   } catch (error) {
     return [];
   }
-};
-
-export const automaticRegistration = async (event, payload) => {
-  event.preventDefault();
-  const { identificacion, rol, password, ter_cond } = payload;
-  try {
-    await api.post("/userManagement/automaticRegistration", {
-      identificacion,
-      rol,
-      password,
-      ter_cond,
-    });
-    } catch (error) {
-      return [];
-    }
 };
 
 export const verifyTokenAutoregister = async (setData) => {

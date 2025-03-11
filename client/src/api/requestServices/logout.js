@@ -2,7 +2,7 @@ import { api } from '../apiRest';
 
 export const logout = async () => {
   try {
-    await api.post('/session/logout');
+    await api.post('/session/logout', {skipAlert: true});
   } catch (error) {
     return [];
   } finally {
