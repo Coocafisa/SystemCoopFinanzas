@@ -1,15 +1,11 @@
 "use client"
 import Navigations from "@/components/layout/optionavigations";
 import AuthProvider from "@/components/middleware/authContext";
-import { usePathname } from "next/navigation";
 
 export default function IndexLayout({ children }) {
-  const pathname = usePathname();
-  const SpecificPage = ["/home/administrator/register"]
-  const hideNavigation = SpecificPage.includes(pathname)
   return (
     <>
-      {!hideNavigation && <Navigations/> }
+      <Navigations/>
       <AuthProvider>
       <main>{children}</main>
       </AuthProvider>

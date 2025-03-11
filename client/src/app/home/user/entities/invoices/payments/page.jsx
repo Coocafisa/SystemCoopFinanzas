@@ -29,12 +29,10 @@ export default function Invoicepayments() {
 
   const expandedData = [
     { label: "Neto", value: data[0]?.tot || "0", },
-    { label: "Fecha Pago", value: data[0]?.fecpago || "0",},
-    { label: "Pago Factura", value: data[0]?.pagfac || "0",},
-    { label: "Valor Pago", value: data[0]?.pagtot || "0", }
+    { label: "Fecha Pago", value: data[0]?.fecpago || "0"},
+    { label: "Pago Factura", value: data[0]?.pagfac || "0"},
+    { label: "Valor Pago", value: data[0]?.pagtot || "0"},
   ];
-
-  console.log(data);
 
   return (
     <>

@@ -1,8 +1,9 @@
 "use client";
 import "@styles/formusers.css";
 import { useEffect, useState } from "react";
-import { automaticRegistration, verifyTokenAutoregister } from "@/api/requestServices/passwordService";
+import { verifyTokenAutoregister } from "@/api/requestServices/passwordService";
 import { Message, ValidateInput } from "@/components/utils/helpers";
+import { automaticRegistration } from "@/api/requestAdmin/registerService";
 
 export default function AutoRegister() {
   const [data, setData] = useState("");

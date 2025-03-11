@@ -90,15 +90,11 @@ const TableInvoices = ({ data, keysToSearch, fields, title, headers, expandedDat
                   </tr>
                   {expandedRows[rowIndex] && (
                     <tr className="expanded-row">
-                      <td colSpan={headers.length + 1}>
-                        <div>
                           {expandedData.map((dataItem, idx) => (
-                            <div key={idx}>
+                            <td key={idx}>
                               <strong className='text-oculto'>{dataItem.label}:</strong> {dataItem.value}
-                            </div>
+                            </td>
                           ))}
-                        </div>
-                      </td>
                     </tr>
                   )}
                 </React.Fragment>

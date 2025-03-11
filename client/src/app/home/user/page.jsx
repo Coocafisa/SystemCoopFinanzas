@@ -7,21 +7,26 @@ import { getSession } from "@/api/requestServices/sessionService";
 
 export default function Users() {
     const [users, setUsers] = useState([]);
-    const [rol, setRol] = useState("");
-    const [permissions, setPermissions] = useState([]);
+const [rol, setRol] = useState("");
+const [permissions, setPermissions] = useState([]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const usersData = await queryUsers();
-            const {role, user} = await getSession();
-            const permits = await queryPermits();
-            setPermissions(permits);
-            const filteredUsers = usersData.filter((data => data.identificacion !== user));
+useEffect(() => {
+    const fetchData = async () => {
+            const [usersData, session, permits] = await Promise.all([
+                queryUsers(),
+                getSession(),
+                queryPermits()
+            ]);
+            const { role, user } = session;
+
+            const filteredUsers = usersData.filter(data => data.identificacion !== user);
             setUsers(filteredUsers);
             setRol(role);
-            }
-        fetchData();
-    }, []);
+            setPermissions(permits);
+    };
+
+    fetchData();
+}, []);
     const title = "Usuarios";
     const headers = [
         "#",
@@ -56,7 +61,8 @@ export default function Users() {
     selectTable={"users"}
     aditionalData={permissions}
     isPermit={true}
+    isNewRegister={true}
     />
-        </>
+    </>
     );
 }

@@ -3,19 +3,28 @@ import { useState, useEffect } from "react";
 import Menu from "./navigation_menu";
 import { getSession, dateUser } from "@/api/requestServices/sessionService";
 import "@styles/header.css";
-import "@styles/elements.css";
-import { Message, ValidateInput } from "../utils/helpers";
 import { updateRegister } from "@/api/requestServices/generalServices";
 import { CircleUser, X } from "lucide-react";
+import useForm from "@/hooks/useForm";
+import ErrorMessage from "@/components/common/ErrorMessage";
 
 export default function Header({ menuOptions }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [user, setUser] = useState({});
-  const [message, setMessage] = useState({ nit: "", nombre: "", correo: "", rol: "", estado: "" });
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({ ...user });
   const [restrictedFields, setRestrictedFields] = useState([]);
+
+  const { formValues, message, handleChange, isValid, setFormValues } = useForm({
+    nit: "",
+    nombre: "",
+    usuario: "",
+    rol: "",
+    estado: "",
+    correo: "",
+    telefono: "",
+    direccion: "",
+  });
 
   const handleScroll = () => {
     const scrollY = window.scrollY;
@@ -39,15 +48,12 @@ export default function Header({ menuOptions }) {
       setUser({
         'nit': nit, 'nombre': nombre, 'usuario': user, 'rol': rol, 
         'estado': estadoUser, 'correo': correo, 'telefono': telefono, 'direccion': direccion});
+      setFormValues({
+        nit, nombre, usuario: user, rol, estado: estadoUser, correo, telefono, direccion
+      });
     };
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    if (JSON.stringify(user) !== JSON.stringify(formData)) {
-      setFormData({ ...user });
-    }
-  }, [user]);
+  }, [setFormValues]);
 
   const handleClick = async() => {
     var { role } = await getSession();
@@ -76,33 +82,23 @@ export default function Header({ menuOptions }) {
 
   const handleCancelClick = () => {
     setIsEditing(false);
-    setFormData({ ...user });
+    setFormValues({ ...user });
   };
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-    ValidateInput(event, setMessage, formData);
-  };
-  const updateFields = Object.keys(formData).reduce((acc, key) => {
-    if (String(formData[key]) !== String(user[key])) {
-      acc[key] = formData[key];
+  const updateFields = Object.keys(formValues).reduce((acc, key) => {
+    if (String(formValues[key]) !== String(user[key])) {
+      acc[key] = formValues[key];
     }
     return acc;
   }, {});
 
-  const isValid = Object.keys(updateFields).every((key) => {
-    return (
-      message[key] === ""
-    )
-    });
-  const handleSaveClick = async (event) => {
-    const res = await updateRegister(event, updateFields, user.nit);
+  const handleSaveClick = async () => {
+    const res = await updateRegister(updateFields, user.nit);
     if (res.data?.status === 200) {
       const updatedUser = { ...user, ...updateFields };
       updatedUser.estado = updatedUser.estado === '0' ? 'Inactivo' : 'Activo';
       setUser(updatedUser);
-      setFormData(updatedUser);
+      setFormValues(updatedUser);
       setIsEditing(false);
     }
   };
@@ -124,27 +120,25 @@ export default function Header({ menuOptions }) {
       <h1 className="text-header">CoopFinanzas</h1>      
       <div className="perfil">
         <div className="info">
-          <p className="text_user" onClick={toogleDetalles}>Bienvenido, {user.nombre}
+          <p className="text_user" onClick={toogleDetalles}>Bienvenid@, {user.nombre}
           <CircleUser className="icono-perfil"/></p>
         </div>
-        <div className={`modal-overlay ${isEditing ? 'editing' : ''}`}>
+        <div className={`modal-overlay ${isVisible ? 'active' : ''} ${isEditing ? 'editing' : ''}`}>
         <div className={`detalle-perfil ${isVisible ? 'visible': ''} ${isEditing ? 'editing' : ''}`}>
-          <div className="modal-header">
-          <div className="modal-title">
+          <div className="modal-header-perfil">
           <i className="bi bi-file-person-fill person-perfil"/>
           <h2>Perfil</h2>
-          <X onClick={toogleDetalles} className={`close-button ${isEditing ? 'editing': ''}`}/>
+          <X onClick={toogleDetalles} className={`close-button-perfil ${isEditing ? 'editing': ''}`}/>
           </div>
-          </div>
-          <div className={`modal-content ${isEditing ? 'editing': ''}` }>
+          <div className={`modal-content-perfil ${isEditing ? 'editing': ''}` }>
             { getFields().map((item) => (
               <div className={`profile-card ${isEditing ? 'editing': ''}` } key={item}>
                 <span className="label">{item.charAt(0).toUpperCase() + item.slice(1)}:</span>
                 {isEditing ? (
                   <>
-                  <input type="text" name={item} value={formData[item]}
-                  onChange={handleChange} disabled={restrictedFields.includes(item)} className="input-field"/>
-                  <Message text={message[item]} type="error-message"/>
+                  <input type="text" name={item} value={formValues[item]}
+                  onChange={handleChange} disabled={restrictedFields.includes(item)} className={`input-field-perfil ${isEditing ? 'editing': ''}`}/>
+                  <ErrorMessage message={message[item]} />
                   </>
                 ): (
                   <span className="data">{user[item]}</span>
@@ -152,12 +146,12 @@ export default function Header({ menuOptions }) {
                 </div>
             ))}
           </div>
-          <div className="modal-footer">
+          <div className={`modal-footer-perfil ${isEditing ? 'editing': ''}`}>
             {isEditing ? (
               <>
-              <button className="save-button" onClick={handleSaveClick}
+              <button className={`save-button ${isEditing ? 'editing': ''}`} onClick={handleSaveClick}
               disabled={ Object.keys(updateFields).length === 0 || !isValid}>Guardar</button>
-              <button className="cancel-button" onClick={handleCancelClick} >Cancelar</button>
+              <button className={`cancel-button ${isEditing ? 'editing': ''}`} onClick={handleCancelClick} >Cancelar</button>
               </>
             ) : (
               <button className="edit-button" onClick={handleEditClick}>Editar Perfil</button>

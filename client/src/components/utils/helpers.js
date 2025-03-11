@@ -18,12 +18,6 @@ function ValidateInput(event, setMessage, formData) {
       }
     }
   
-    if (name === "rol" && value) {
-      if (value === "Select") {
-        message = "Debes seleccionar un rol";
-      }
-    }
-  
     if (name === "email" && value || name === "correo" && value) {
       if (!/\S+@\S+\.\S+/.test(value)) {
         message = "El formato del correo electrónico no es válido";

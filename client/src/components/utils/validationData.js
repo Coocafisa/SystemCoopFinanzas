@@ -1,4 +1,4 @@
-  const selectOptions ={    
+  const selectOptions = {    
     rol: [
     { value: "Usuario", label: "Usuario" },
     { value: "Supervisor", label: "Supervisor" },
@@ -6,13 +6,11 @@
     ],
   
     activo:[
-      { value: "Select", label: "Seleccionar" },
       { value: "1", label: "Activo" },
       { value: "0", label: "Inactivo" },
   ],
   
   estado: [
-    { value: "Select", label: "Seleccionar" },
     { value: "1", label: "Habilitado" },
     { value: "0", label: "Deshabilitado" },
   ],

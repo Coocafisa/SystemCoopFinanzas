@@ -18,19 +18,21 @@ export default function Formresetpass() {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
+    setFormData((prevData) => {
+      return {
+        ...prevData,
+        [name]: value,
+      };
     });
 
     ValidateInput(event, setMessage, formData);
-  };
+  }
+
 
   const isValid = Object.keys(formData).every((key) => {
     return (
       message[key] === "" &&
-      ( formData[key] === true) &&
-      formData[key] !== ""
+      (formData[key].trim() !== "")
     );
   });
 

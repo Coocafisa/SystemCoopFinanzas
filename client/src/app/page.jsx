@@ -2,12 +2,14 @@
 import { useState } from "react";
 import "@styles/formusers.css";
 import { auth } from "@/api/requestAuth/authService";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
     const [formData, setFormData] = useState({
         user: "",
         password: "",
     });
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -64,12 +66,12 @@ export default function Login() {
                     />
                 </div>
 
-                <div className="flex flex-col stlvar">
+                <div className="relative flex flex-col stlvar">
                     <label htmlFor="password" className="text-sm font-medium text-gray-700">
                         Contraseña
                     </label>
                     <input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         id="password"
                         name="password"
                         value={formData.password}
@@ -77,6 +79,7 @@ export default function Login() {
                         required
                         className="mt-1 p-2 border rounded-md focus:ring-foreground focus:border-foreground"
                     />
+                    {formData.password.length > 0 && <i className="eye-password" onClick={() => setShowPassword(!showPassword)}>{showPassword ? <Eye size={15} cursor={"pointer"}/> : <EyeOff size={15} cursor={"pointer"}/>}</i>}
                 </div>
                 <div className="btn">
                     <button type="submit" className="btn_ingresar w-full">

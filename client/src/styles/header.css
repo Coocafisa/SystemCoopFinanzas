@@ -95,11 +95,20 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
 }
 
-.modal-content.editing {
+.input-field-perfil {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  width: 100%;
+}
+
+.modal-content-perfil.editing {
   display: flex;
   flex-wrap: wrap;
+  text-align: center;
   gap: 10px;
 }
 
@@ -124,19 +133,94 @@
   justify-content: center;
 }
 
-.close-button {
-  position: relative;
+.close-button-perfil {
+  position: absolute;
   cursor: pointer;
-  left: 80px;
-  top: -10px;
+  left: 210px;
+  top: 12.1px;
 }
 
-.close-button.editing {
+.close-button-perfil.editing {
   display: none;
 }
 
-.close-button:hover {
+.close-button-perfil:hover {
   transform: scale(1.5);
+}
+
+.title-perfil {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #34495e;
+}
+
+.modal-header-perfil {
+  display: flex;
+  align-items: center;
+  border-bottom: 1.5px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.modal-header-perfil h2 {
+  font-size: 20px;
+  color: #1c8342;
+}
+
+.card {
+  background: #f9f9f9;
+  padding: 7px;
+  border-radius: 8px;
+  margin-bottom: 7px;
+}
+
+.label {
+  font-weight: bold;
+  color: #1c8342;
+}
+
+.data {
+  color: #333;
+}
+
+.modal-footer-perfil {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.save-button, .cancel-button, .btn-crear, .btn-edit{
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.save-button, .btn-crear, .btn-edit {
+  background: #007bff;
+  color: white;
+}
+
+.cancel-button {
+  background: #dc3545;
+  color: white;
+}
+
+.save-button:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.save-button:hover{
+  background: #0056b3;
+}
+
+.cancel-button:hover {
+  background: #a71d2a;
 }
 
 @media (max-width: 600px) {
@@ -145,6 +229,14 @@
   .cancel-button {
     font-size: 0.9rem;
     padding: 8px 12px;
+  }
+
+  .modal-content-perfil.editing {
+    flex-direction: column;
+  }
+
+  .profile-card, .profile-card.editing {
+    width: 100%;
   }
 }
 

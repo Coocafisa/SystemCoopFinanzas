@@ -24,7 +24,6 @@ export default function Entities() {
     const headers = [
         "#",
         "NIT",
-        "Tipo de Entidad",
         "Nombre",
         "Correo",
         "Direccion",
@@ -55,6 +54,7 @@ export default function Entities() {
         rol={rol}
         editTitle={"Edicción de Entidad"}
         selectTable={"entities"}
+        isNewRegister={true}
         />
         </>
     );

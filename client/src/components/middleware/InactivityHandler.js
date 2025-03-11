@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
-import { logout } from "@/api/requestServices/logout";
 import { getSession } from "@/api/requestServices/sessionService";
 import AlertPopup from "../common/alert";
 import "@styles/alertInativity.css";
 import { calculateCountdown, useUserActivity } from "../utils/timerUtils";
 import { refreshToken } from "@/api/requestServices/generalServices";
+import { logout } from "@/api/requestServices/logout";
+import { logError } from "@/utils/logger"; // Importar la utilidad de registro de errores
 
 const SESSION_STATES = {
   ACTIVE: "active",
@@ -44,13 +45,13 @@ export default function InactivityHandler({ timeRemaining }) {
       updateTimer((newTime) => {
         const { minutes, seconds } = newTime;
 
-        if (parseInt(minutes) === 1 && parseInt(seconds) === 40 && userActivity) {
+        if (parseInt(minutes) === 1 && parseInt(seconds) < 40 && userActivity) {
           if (!updateSession) {
             refreshSession();
             setUpdateSession(true);
           }
           resetActivity();
-        } else if (minutes === "00" && seconds === "40") {
+        } else if (minutes === "00" && parseInt(seconds) < 40 && parseInt(seconds) > 0) {
           setSessionState(SESSION_STATES.INACTIVE);
         } else if (minutes === "00" && seconds === "00") {
           setSessionState(SESSION_STATES.EXPIRED);
@@ -63,18 +64,21 @@ export default function InactivityHandler({ timeRemaining }) {
   }, [sessionState, userActivity, updateSession ]);
 
   const refreshSession = async () => {
+    try {
       const result = await refreshToken();
-        if (result?.status === 200) {
+      if (result?.status === 200) {
         const sessionData = await getSession();
         if (sessionData?.timeRemaining) {
           setSessionState(SESSION_STATES.ACTIVE);
           setTimer(sessionData.timeRemaining);
         }
       }
+    } catch (error) {
+      logError(error);
+    }
   };
 
   const handleLogout = async () => {
-    setSessionState(SESSION_STATES.EXPIRED);
     await logout();
   };
 
@@ -114,7 +118,7 @@ export default function InactivityHandler({ timeRemaining }) {
             message="Has tardado mucho. Vuelve a iniciar sesión para continuar navegando."
             type="info"
           >
-            <button onClick={handleLogout}>Aceptar</button>
+            <button onClick={() => (window.location.href = "/")}>Aceptar</button>
           </AlertPopup>
         </div>
       )}
