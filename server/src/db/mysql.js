@@ -8,12 +8,16 @@ const dbConfig = {
     user: config.mysql.user,
     password: config.mysql.password,
     database: config.mysql.database,
+    connectTimeout: 10000,
     waitForConnections: true,
     connectionLimit: 50,
     queueLimit: 0
 };
 
 const connection = mysql.createPool(dbConfig);
+connection.on('error', (err) => {
+    return {status: 500, message: `Error en la conexión con MySQL: ${err.message}`};
+});
 
 async function query(table, fields = '*', params = '', values = []) {
     try {
@@ -24,7 +28,6 @@ async function query(table, fields = '*', params = '', values = []) {
         const [result] = await connection.query(sql, values);
         const fieldDate = ["fecpago", "fecvcto", "fecfac", "fech_reg", "fech_auth"];
         const fieldMoney = ["total", "retencion", "tot", "pagfac", "pagtot"];
-
 
         const formatedResults = result.map(item => {
             return Object.keys(item).reduce((newItem, key) => {
@@ -40,7 +43,7 @@ async function query(table, fields = '*', params = '', values = []) {
             });
         return formatedResults;
     } catch (error) {
-        throw error;
+        return { error: `Error en la base de datos: ${error.message}` };
     }
 }
 
@@ -49,7 +52,7 @@ async function insert(table, data) {
     const [result] = await connection.query(`INSERT INTO ${table} SET ?`, data);
     return result;
     } catch (error) {
-        throw error;
+        return { error: `Error en la base de datos: ${error.message}` };
     }
 }
 
@@ -58,7 +61,7 @@ async function update(table, data, params) {
         const [result] = await connection.query(`UPDATE ${table} SET ${data} WHERE ${params}`);
         return result;
     } catch (error) {
-        throw error;
+        return { error: `Error en la base de datos: ${error.message}` };
     }
 }
 
@@ -67,7 +70,7 @@ async function remove (table, params) {
         const [result] = await connection.query(`DELETE FROM ${table} WHERE ${params}`);
         return result;
     } catch (error) {
-        throw error;
+        return { error: `Error en la base de datos: ${error.message}` };
     }
 }
 
