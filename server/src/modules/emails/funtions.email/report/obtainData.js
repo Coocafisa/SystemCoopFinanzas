@@ -21,13 +21,13 @@ const obtainData = async (query) => {
     }, {});
 
     const emailsSent = [];
-    /* let status = {}; */
+    let status = {};
     for (const nit of Object.keys(groupedResults)) {
       const data = groupedResults[nit];
       const pdfPath = await generarReportePDF(data);
       await emailSend(data, pdfPath);
       emailsSent.push(...data);
-      /* status = await addStatusEmails(nit, data[0].factura); */
+      status = await addStatusEmails(nit, data[0].factura);
     }
 
     if (emailsSent.length > 0) {
@@ -35,7 +35,7 @@ const obtainData = async (query) => {
       countNotification += emailsSent.length;
       const summaryPdfBuffer = await generarResumenPDF(emailsSent);
       await sendNotificationEmail(countNotification, summaryPdfBuffer);
-      return { message: `Correos enviados con éxito y ${countNotification} correos`, status: 200};
+      return { message: `Correos enviados con éxito y ${status.message} correos`, status: 200};
     }
 
   } catch (error) {

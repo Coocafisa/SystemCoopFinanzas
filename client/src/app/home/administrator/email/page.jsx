@@ -26,7 +26,7 @@ export default function Emails() {
     ];
 
     const fields = [
-        "identificacion",
+        "nit",
         "factura",
         "fecpago",
         "nombre",
@@ -36,7 +36,7 @@ export default function Emails() {
     return (
         <>
         <ProtectedRoute allowedRoles={["Administrador"]}/>
-        <ResultTable data={email} title={title} headers={headers} fields={fields}/>
+        <ResultTable data={email} title={title} headers={headers} fields={fields} keysToSearch={["identificacion", "factura", "nombre"]}/>
         <HoraForm/>
         </>
     )

@@ -16,7 +16,7 @@ module.exports = function (dbInsert) {
         str_to_Date(fecpago, '%e-%b-%y') = curdate()`;
         return await db.query(table, fields, params);
         } catch (error) {
-            request.error(req, res, error, 404);
+            return request.error(req, res, error, 404);
         }
     }
 
@@ -24,10 +24,10 @@ module.exports = function (dbInsert) {
         try {
             const table = `pagopro INNER JOIN entities ON pagopro.nit = entities.identificacion`;
             const fields = '*';
-            const params = 'send_email = false AND entities.identificacion = pagopro.nit GROUP BY pagopro.nit';  
+            const params = 'send_email = false AND entities.identificacion = pagopro.nit AND str_to_Date(fecpago, \'%e-%b-%y\') != curdate()';
             return await db.query(table, fields, params);
         } catch (error) {
-            request.error(req, res, error, 404);
+            return request.error(req, res, error, 404);
         }
     }
 
@@ -42,10 +42,10 @@ module.exports = function (dbInsert) {
 
     async function timerEmails(req, res) {
         if (!obtainTimer) {
-            request.error(req, res, {message: "No se encontró la hora programada."}, 400);
+            return request.error(req, res, {message: "No se encontró la hora programada."}, 400);
         }
         const { hour, minute } = obtainTimer;
-        request.success(req, res, { hour, minute }, 200);
+        return request.success(req, res, { hour, minute }, 200);
         };
     
     return {

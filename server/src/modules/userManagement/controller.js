@@ -8,66 +8,82 @@ const table = "users";
 module.exports = function (dbInsert) {
   let db = dbInsert || require("../../db/mysql");
 
-  async function addUsers(data) {
-    const { identificacion, password, ter_cond, rol } = data;
-
-    if (!identificacion || !ter_cond || !password || !rol) {
-      return {
-        status: 400,
-        message: "Todos los campos obligatorios deben ser proporcionados.",
-      };
-    }
-
-    try {
-      const validate = await validateUser(identificacion);
-      if (validate.actividad) {
-        return { status: 400, message: "Registro no disponible.", redirect: "/" };
+    async function addUsers(data) {
+      const { identificacion, password, ter_cond, rol } = data;
+  
+      if (!identificacion || !rol) {
+          return { status: 400, message: "Todos los campos obligatorios deben ser proporcionados." };
       }
+  
+      try {
+          const validate = await validateUser(identificacion);
+          
+          if (validate?.actividad || validate?.usuario_id && !password) {
+              return { status: 400, message: "El usuario tiene ya una cuenta activa." };
+          }
+  
+          const [queryEntities] = await db.query("entities", "*", "identificacion = ?", [identificacion]);
+          if (!queryEntities) {
+              return { status: 404, message: "Acceso denegado, contacte con el administrador." };
+          }
+  
+          let usuario_id = validate?.usuario_id;
+          
+          if (!usuario_id) {
+              usuario_id = await createUserId(rol, identificacion);
+              const userResult = await db.insert("users", {
+                  usuario_id,
+                  entidad_id: queryEntities.entidad_id,
+                  rol,
+                  ter_cond: ter_cond || false
+              });
+  
+              if (userResult.affectedRows === 0) {
+                  return { status: 400, message: "Creación de usuario fallida." };
+              }
+          } else {
+              if (ter_cond !== undefined) {
+                  await db.update("users", `ter_cond = ${ter_cond}`, `usuario_id = '${usuario_id}'`);
+              }
+          }
 
-      const [queryEntities] = await db.query(
-        "entities",
-        "*",
-        `identificacion = ${identificacion}`
-      );
-      if (!queryEntities) {
-        return {
-          status: 404,
-          message: "Acceso denegado, contacte con el administrador."
-        };
-      }
-
-      let usuario_id;
-      if (validate.usuario_id) {
-        usuario_id = validate.usuario_id;
-      } else {
-        usuario_id = await createUserId(rol, identificacion);
-        const userResult = await db.insert(table, {
-          usuario_id,
-          entidad_id: queryEntities.entidad_id,
-          rol,
-          ter_cond
-        });
-
-        if (userResult.affectedRows === 0) {
-          return { status: 400, message: "Creación de usuario fallida." };
+          if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            await db.insert("auth", {
+              usuario_id,
+              password: hashedPassword,
+              actividad: new Date(),
+          });
         }
-      }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-        await db.insert("auth", {
-          usuario_id,
-          pasword: hashedPassword,
-          actividad: new Date(),
-        });
-
         return { status: 200, message: "Registro exitoso." };
-    } catch (error) {
-      return {
-        status: 500,
-        message: `Error al registrar usuario: ${error.message}`,
-      };
-    }
+      } catch (error) {
+          return { status: 500, message: `Error al registrar usuario: ${error.message}` };
+      }
   }
+
+  const addEntity = async (data) => {
+    const { identificacion, nombre, correo } = data;
+    if (!identificacion || !nombre || !correo) {
+      return { status: 400, message: "Todos los campos obligatorios deben ser proporcionados." };
+    }
+    try {
+      const [queryEntities] = await db.query("entities", "identificacion, nombre", "identificacion = ?", [identificacion]);
+      if (queryEntities) {
+        return { status: 400, message: "La entidad ya está registrada." };
+      }
+      const userResult = await db.insert("entities", {
+        identificacion,
+        nombre,
+        correo,
+      });
+      if (userResult.affectedRows === 0) {
+        return { status: 400, message: "Creación de entidad fallida." };
+      }
+      return { status: 200, message: "Registro exitoso." };
+    } catch (error) {
+      return { status: 500, message: `Error al registrar entidad: ${error.message}` };
+    }
+  };
 
   async function automaticRegistration(req, res, data) {
     const { identificacion, rol, password, ter_cond } = data;
@@ -117,7 +133,7 @@ module.exports = function (dbInsert) {
       const dataUser = await confirmToken(token);
       
       if (dataUser.status === 401) {
-        return request.error(req, res, dataUser.message, dataUser.status);
+        return request.error(req, res, {message: dataUser.message,  redirect: dataUser.redirect}, dataUser.status);
       }
 
       const { name, role } = dataUser;
@@ -130,6 +146,7 @@ module.exports = function (dbInsert) {
 
   return {
     addUsers,
+    addEntity,
     automaticRegistration,
     verifyTokenAutoregister,
   };

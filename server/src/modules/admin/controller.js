@@ -8,7 +8,7 @@ module.exports = function(dbInsert) {
     if (!db) {
         db = require('../../db/mysql');
     }
-    async function queryInvoices(req, res, next) {
+    async function queryInvoices(req, res) {
         const fields = [`nit, factura, fecfac, fecvcto, total, retencion, tot,
 	        fecpago, pagfac, pagtot`];
         const params = `fecpago IS NOT NULL`;
@@ -48,6 +48,8 @@ module.exports = function(dbInsert) {
         if (!actividad) {
             return request.error(req, res, { message: "El usuario no esta disponible para asignarle permisos. Debe haber ingresar almenos una vez al sistema para adquirir permisos." }, 400);
         }
+
+        
         
         const validatePermissions = { usuario_id: usuario_id, permits_id: permiso};
         const newPermission = await validateFields(allowedPermissions, validatePermissions);

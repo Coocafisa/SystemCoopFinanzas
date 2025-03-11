@@ -28,7 +28,7 @@ export default function PendingEmails() {
         "nit",
         "factura",
         "fecpago",
-        "razonsoc",
+        "nombre",
         "correo"
     ];
 
@@ -36,7 +36,7 @@ export default function PendingEmails() {
         <>
         <ProtectedRoute allowedRoles={["Administrador"]}/>
         <HoraForm btnEmails={true}/>
-        <ResultTable data={pendingEmails} title={title} headers={headers} fields={fields}/>
+        <ResultTable data={pendingEmails} title={title} headers={headers} fields={fields} keysToSearch={["nit", "factura", "nombre"]}/>
         </>
     );
 }
