@@ -12,7 +12,7 @@ module.exports = function (dbInsert) {
   async function validateUser(user) {
     const SelectTable = `entities LEFT JOIN ${table} ON entities.entidad_id = ${table}.entidad_id
          LEFT JOIN auth ON auth.usuario_id = ${table}.usuario_id`;
-    const fields = "nombre, entities.entidad_id, users.usuario_id, identificacion, usuario, rol, activo, correo, telefono, direcc, sessionId, actividad";
+    const fields = "nombre, entities.entidad_id, users.usuario_id, identificacion, usuario, rol, activo, correo, telefono, direcc, sessionId, actividad ";
     const params = `identificacion = ${user} OR usuario = ${user}`;
     try {
       const [usuario] = await db.query(SelectTable, fields, params);
@@ -66,7 +66,7 @@ module.exports = function (dbInsert) {
 
   async function queryPermits(req, res) {
     const table = "authorizations LEFT JOIN permits ON authorizations.permits_id = permits.permits_id";
-    const fields = "usuario_id, authorizations.permits_id, estado, fech_auth";
+    const fields = "usuario_id, authorizations.permits_id, estado, fech_auth, consec_permit";
     try {
     const data = await db.query(table, fields);
     return request.success(req, res, data, 200);
@@ -82,4 +82,4 @@ module.exports = function (dbInsert) {
     queryEntities,
     queryPermits,
   };
-};
+};   

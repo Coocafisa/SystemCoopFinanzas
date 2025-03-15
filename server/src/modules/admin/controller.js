@@ -28,7 +28,7 @@ module.exports = function(dbInsert) {
             return request.error(req, res, { message: "Campos requeridos no proporcionados." }, 400);
         }
 
-        let allowedPermissions
+        let allowedPermissions;
         if (role === "Administrador") {
             allowedPermissions = {
                 authorizations: [
@@ -36,10 +36,13 @@ module.exports = function(dbInsert) {
                     "permits_id",
                     "estado"
                 ]
-            }
+            };
         } else {
             return request.error(req, res, { message: "No estas autorizado para realizar esta operación." }, 403);
         }
+
+        try {
+            
         const { usuario_id, actividad } = await validateUser(identificacion);
         if (!usuario_id) {
             return request.error(req, res, { message: "Usuario no encontrado." }, 404);
@@ -49,24 +52,29 @@ module.exports = function(dbInsert) {
             return request.error(req, res, { message: "El usuario no esta disponible para asignarle permisos. Debe haber ingresar almenos una vez al sistema para adquirir permisos." }, 400);
         }
 
-        
-        
-        const validatePermissions = { usuario_id: usuario_id, permits_id: permiso};
+        const existingPermission = await db.query("authorizations", ["permits_id"], `usuario_id = '${usuario_id}' AND permits_id = ${permiso}`);
+        if (existingPermission.length > 0) {
+            return request.error(req, res, { message: "No se puede asignar el permiso ya asignado." }, 400);
+        }
+
+        const validatePermissions = { usuario_id: usuario_id, permits_id: permiso };
         const newPermission = await validateFields(allowedPermissions, validatePermissions);
         if (newPermission.error) {
             return request.error(req, res, { message: newPermission.message }, 401);
         }
 
-        try {
-            const assignPermission = await db.insert("authorizations", {usuario_id, permits_id: permiso});
-        if (!assignPermission || assignPermission.affectedRows === 0) {
-            return request.error(req, res, { message: "No se asignó permisos correctamente." }, 400);
-        }
-        return request.success(req, res, { message: "Permisos asignados con éxito." }, 200);
+            const assignPermission = await db.insert("authorizations", { usuario_id, permits_id: permiso });
+            if (!assignPermission || assignPermission.affectedRows === 0) {
+                return request.error(req, res, { message: "No se asignó permisos correctamente." }, 400);
+            }
+            return request.success(req, res, { message: "Permisos asignados con éxito." }, 200);
         } catch (error) {
+            if (error.code === 'ER_DUP_ENTRY') {
+                return request.error(req, res, { message: "El permiso ya está asignado a este usuario." }, 400);
+            }
             return request.error(req, res, { message: "Ocurrió un error al asignar permisos." }, 500);
         }
-}
+    }
 
     return {
         queryInvoices,

@@ -46,7 +46,7 @@ export default function RegisterUser({ isOpen, closeOpen, onAddRecord }) {
             <input
               type="number"
               name="nit"
-              id="identificacion"
+              id="nit"
               value={formValues.nit}
               onChange={handleChange}
               aria-required="true"

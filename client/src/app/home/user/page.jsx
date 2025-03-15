@@ -30,7 +30,7 @@ useEffect(() => {
     const title = "Usuarios";
     const headers = [
         "#",
-        "NIT",
+        "Nit",
         "Rol",
         "Nombre",
         "Correo",

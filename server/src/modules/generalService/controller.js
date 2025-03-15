@@ -90,6 +90,8 @@ module.exports = function (dbInsert) {
           let selectParams
           if (table === "entities") {
             selectParams = `identificacion = ${nit}`
+          } else if (table === "authorizations") {
+            selectParams = `consec_permit = ${nit}`
           } else {
             const {usuario_id} = await validateUser(nit);
             if (!usuario_id) {
@@ -97,7 +99,6 @@ module.exports = function (dbInsert) {
               }
               selectParams = `usuario_id = '${usuario_id}'`
           }
-
           const executionUpdate = await db.update(table, updateFields, selectParams);
           if (executionUpdate.affectedRows > 0) {
             camposActualizados++;
@@ -151,9 +152,36 @@ module.exports = function (dbInsert) {
         return request.error(req, res, { message: "Ocurrió un error al eliminar el registro." }, 500);
     }
 };
+
+async function deletePermits (req, res) {
+  const { consec_permit } = req.body;
+  const { role } = req.auth;
+
+  if (!consec_permit || !role) {
+    return request.error(req, res, { message: "Campos requeridos no proporcionados." }, 400);
+  }
+
+  if (role !== "Administrador") {
+    return request.error(req, res, { message: "No autorizado para realizar esta operación." }, 403);
+  }
+
+  try {
+    const table = "authorizations";
+    const params = `consec_permit = ${consec_permit}`;
+    const executionUpdate = await db.remove(table, params);
+    if (executionUpdate.affectedRows === 0) {
+      return request.error(req, res, { message: "No se encontró el registro para eliminar." }, 404);
+    }
+    return request.success(req, res, { message: "Registro eliminado con éxito." }, 200);
+  } catch (error) {
+    return request.error(req, res, { message: "Ocurrió un error al eliminar el registro." }, 500);
+  }
+};
+
   return {
     addStatusEmails,
     updateRegister,
-    deleteRegister
+    deleteRegister,
+    deletePermits
   };
 };

@@ -24,7 +24,7 @@ module.exports = function (dbInsert) {
   
           const [queryEntities] = await db.query("entities", "*", "identificacion = ?", [identificacion]);
           if (!queryEntities) {
-              return { status: 404, message: "Acceso denegado, contacte con el administrador." };
+              return { status: 404, message: "Registro denegado, contacte con el administrador." };
           }
   
           let usuario_id = validate?.usuario_id;

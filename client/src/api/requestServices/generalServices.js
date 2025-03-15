@@ -26,7 +26,7 @@ async function updateRegister(updateFields, nit) {
     } catch (error) {
         return [];
     }
-}
+};
 
 async function deleteRegister(nit, selectTable) {
     try {
@@ -38,7 +38,7 @@ async function deleteRegister(nit, selectTable) {
     } catch (error) {
         return [];
     }
-}
+};
 
 async function refreshToken () {
     try {
@@ -48,6 +48,17 @@ async function refreshToken () {
     } catch (error) {
         return [];
     }
-}
+};
 
-export { updateRegister, deleteRegister, refreshToken };
+async function deletePermits(consec_permit) {
+    try {
+        const response = await api.post("/generalService/deletePermits", {
+            consec_permit: consec_permit,
+        });
+        return response;
+    } catch (error) {
+        return [];
+    }
+};
+
+export { updateRegister, deleteRegister, deletePermits, refreshToken };
