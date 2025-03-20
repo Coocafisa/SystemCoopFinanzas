@@ -1,29 +1,41 @@
-import React, { useState, useEffect } from "react";
-import '@styles/preloader.css';
+import { useEffect, useState } from "react";
+import "@styles/preloader.css";
 
 export const Loader = ({ type, message, isLoading }) => {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+      setVisible(true);
+  }, []);
+
+  useEffect(() => {
+    return () => setVisible(false);
+  }, []);
+
+
+  if (!visible) return null;
+
   return (
-    <div className="loader-container" style={{
-        boxShadow: isLoading ? "0 4px 12px rgba(0, 0, 0, 0.2)": "none",
-        background: isLoading ? "rgba(255, 255, 255, 0.85)": "none",
-    }}>
-      {isLoading ? (
-        <div className="circle-container">
-          <div className="circle"></div>
-          <div className="circle"></div>
-          <div className="circle"></div>
-          <div className="circle"></div>
-        </div>
-      ) : (
-        <div className={`alert-loader ${type}`}>
-          <span className="icon">
-            {type === "success" && "✔️"}
-            {type === "error" && "⚠️"}
-            {type === "info" && "ℹ️"}
-          </span>
-          <p>{message}</p>
-        </div>
-      )}
+    <div className={`overlay-loader ${visible ? "active" : "fade-out"}`}>
+      <div className={`loader-container ${!isLoading ? "out-content" : ""}`}>
+        {isLoading ? (
+          <div className="circle-container">
+            <div className="circle"></div>
+            <div className="circle"></div>
+            <div className="circle"></div>
+            <div className="circle"></div>
+          </div>
+        ) : (
+          <div className={`alert-loader ${type}`}>
+            <span className="icon">
+              {type === "success" && <i className="bi bi-check-circle-fill text-green-500"></i>}
+              {type === "error" && <i className="bi bi-exclamation-triangle-fill text-red-500"></i>}
+              {type === "info" && <i className="bi bi-info-circle-fill text-blue-500"></i>}
+            </span>
+            <p>{message}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
