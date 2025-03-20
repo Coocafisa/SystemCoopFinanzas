@@ -15,8 +15,7 @@ export default function RegisterUser({ isOpen, closeOpen, onAddRecord }) {
     event.preventDefault();
     const res = await adduser(formValues);
     if (res.status === 200) {
-      const updatedData = await queryUsers();
-      onAddRecord(updatedData);
+      onAddRecord();
       closeOpen(false);
     }
   };

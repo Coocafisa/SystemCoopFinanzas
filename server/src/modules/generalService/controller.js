@@ -1,5 +1,6 @@
 const { validateFields } = require("../../functions/helpers.js");
 const { validateUser } = require("../users/index.js");
+const { validatePermissions } = require("../admin/index.js");
 const request = require("../../red/request");
 
 module.exports = function (dbInsert) {
@@ -91,6 +92,11 @@ module.exports = function (dbInsert) {
           if (table === "entities") {
             selectParams = `identificacion = ${nit}`
           } else if (table === "authorizations") {
+            const data = { consec_permit: nit, permiso: fields.permits_id };
+            const validatePermit = await validatePermissions(data);
+            if (validatePermit) {
+              return request.error(req, res, { message: validatePermit.message }, validatePermit.status);
+            }
             selectParams = `consec_permit = ${nit}`
           } else {
             const {usuario_id} = await validateUser(nit);
@@ -110,6 +116,7 @@ module.exports = function (dbInsert) {
       }
       return request.success( req, res, { message: "Registro actualizado con éxito."}, 200 );     
     } catch (error) {
+      console.log("error: ", error);
       return request.error( req, res, { message: "Ocurrió un error al actualizar el registro." }, 500 );
     }
   };

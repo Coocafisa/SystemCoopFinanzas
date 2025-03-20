@@ -49,16 +49,16 @@ module.exports = function(dbInsert) {
         }
 
         if (!actividad) {
-            return request.error(req, res, { message: "El usuario no esta disponible para asignarle permisos. Debe haber ingresar almenos una vez al sistema para adquirir permisos." }, 400);
+            return request.error(req, res, { message: "El usuario no esta disponible para asignarle permisos. Debe ingresar almenos una vez al sistema para adquirir permisos." }, 400);
         }
 
-        const existingPermission = await db.query("authorizations", ["permits_id"], `usuario_id = '${usuario_id}' AND permits_id = ${permiso}`);
-        if (existingPermission.length > 0) {
-            return request.error(req, res, { message: "No se puede asignar el permiso ya asignado." }, 400);
+        const existingPermission = await validatePermissions({ consec_permit: usuario_id, permiso });
+        if (existingPermission) {
+            return request.error(req, res, { message: existingPermission.message }, existingPermission.status);
         }
 
-        const validatePermissions = { usuario_id: usuario_id, permits_id: permiso };
-        const newPermission = await validateFields(allowedPermissions, validatePermissions);
+        const validatePermits = { usuario_id: usuario_id, permits_id: permiso };
+        const newPermission = await validateFields(allowedPermissions, validatePermits);
         if (newPermission.error) {
             return request.error(req, res, { message: newPermission.message }, 401);
         }
@@ -69,15 +69,35 @@ module.exports = function(dbInsert) {
             }
             return request.success(req, res, { message: "Permisos asignados con éxito." }, 200);
         } catch (error) {
+            console.log("error: ", error);
             if (error.code === 'ER_DUP_ENTRY') {
                 return request.error(req, res, { message: "El permiso ya está asignado a este usuario." }, 400);
             }
             return request.error(req, res, { message: "Ocurrió un error al asignar permisos." }, 500);
         }
+    };
+
+    async function validatePermissions (data) {
+        const { consec_permit, permiso } = data;
+        const table = "authorizations";
+        const fields = "permits_id";
+        const params = `usuario_id IN (SELECT usuario_id FROM authorizations WHERE (consec_permit = '${consec_permit}' OR usuario_id = '${consec_permit}'))`;
+        try {
+            const results = await db.query(table, fields, params);
+            const validate = results.some(item => String(item.permits_id) === String(permiso));
+            if (validate) {
+                return { message: "No se puede asignar el permiso ya asignado.", status: 400 };
+            }
+            return false;
+    } catch (error) {
+        console.log("error: ", error);
+        return { message: "Ocurrió un error al validar los permisos.", status: 500 };
     }
+};
 
     return {
         queryInvoices,
-        assignPermission
+        assignPermission,
+        validatePermissions
     }
 }

@@ -13,7 +13,6 @@ import {
 } from "@/components/utils/validationData";
 import { addPermit } from "@/api/requestAdmin/servicesAdmin";
 import ModalContent from "../../../components/common/modal-content";
-import { isEqual, set } from "lodash";
 import useForm from "@/hooks/useForm";
 import { EditIcon, Trash2Icon } from "lucide-react";
 import AlertPopup from "../../../components/common/alert";
@@ -33,6 +32,7 @@ export function AddRecordPermits({
   const [isDelete, setDelete] = useState(false);
   const [currentRecord, setCurrentRecord] = useState("");
   const [isEdited, setIsEdited] = useState(false);
+  const [updatedValues, setUpdatedValues] = useState([]);
 
   const getFields = (fields) => {
     if (fields.length === 0) return [];
@@ -53,8 +53,13 @@ export function AddRecordPermits({
     });
   };
 
+  console.log("data: ", data);
+
   useEffect(() => {
+    const filteredData = data.filter(item => item.usuario_id === data[0].usuario_id);
+    console.log("result23245; ", filteredData)
     setFormValues(getFields(data));
+    setUpdatedValues(getFields(data));
     setIsEdited(new Array(data.length).fill(false));
   }, [data, setFormValues]);
 
@@ -62,6 +67,11 @@ export function AddRecordPermits({
     const newValue = e.target.value;
     const originalValue = getFields(data)[index][e.target.name];
     handleChange(e, index);
+    setUpdatedValues((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [e.target.name]: newValue };
+      return updated;
+    });
     setIsEdited((prev) => {
       const updated = [...prev];
       updated[index] = String(newValue) !== String(originalValue);
@@ -79,10 +89,21 @@ export function AddRecordPermits({
     formValues[0].acceso === "" ||
     formValues.every(isEmptyObject);
 
+ async function updatedPermits() {
+    const updatedData = await queryPermits();
+      const newData = {
+        credentials: {
+          usuario_id: data[0].usuario_id,
+          identificacion: data[0].identificacion,
+        },
+        permits: updatedData
+    };
+    onUpdateData(newData);      
+  }
   const handleUpdateSave = async (index) => {
-    const record = formValues[index];
+    const record = updatedValues[index];
     const originalRecord = getFields(data)[index];
-    const updatedData = {};
+    const updatedData = {}; 
 
     Object.keys(record).forEach((key) => {
       if (record[key] !== originalRecord[key]) {
@@ -93,8 +114,7 @@ export function AddRecordPermits({
     if (Object.keys(updatedData).length > 0) {
       const res = await updateRegister(updatedData, data[index].consec_permit);
       if (res.status === 200) {
-        const updatedData = await queryPermits();
-        onUpdateData(updatedData);
+        await updatedPermits();
         setIsEdited((prev) => {
           const updated = [...prev];
           updated[index] = false;
@@ -108,16 +128,18 @@ export function AddRecordPermits({
     setNewRegister(true);
     const newData = [{ identificacion: data[0].identificacion, acceso: "" }];
     setFormValues(newData);
+    setUpdatedValues(newData);
   };
 
-  const SaveAddPermits = async (index) => {
-    const updateFields = formValues[index];
+  const SaveAddPermits = async () => {
+    const updateFields = updatedValues[0];
     const newData = {
       acceso: updateFields.acceso,
       identificacion: updateFields.identificacion,
     };
     const res = await addPermit(newData);
     if (res.status === 200) {
+      await updatedPermits();
       setNewRegister(false);
     }
   };
@@ -130,6 +152,7 @@ export function AddRecordPermits({
       closeModal();
     }
     setFormValues(getFields(data));
+    setUpdatedValues(getFields(data));
   };
 
   const getAccessType = (accessNumber) => {
@@ -150,10 +173,7 @@ export function AddRecordPermits({
     if (currentRecord) {
       const res = await deletePermits(currentRecord.consec_permit);
       if ([200, 204].includes(res.status)) {
-        setFormValues((prevData) =>
-          prevData.filter((item) => item.acceso !== currentRecord.permits_id)
-        );
-        onUpdateData(formValues);
+        updatedPermits();
         setDelete(false);
         setCurrentRecord(null);
       }
@@ -214,7 +234,7 @@ export function AddRecordPermits({
                   {selectFields.includes(field) ? (
                     <select
                       name={field}
-                      value={item[field] || ""}
+                      value={updatedValues[index][field] || ""}
                       onChange={(e) => handleChangeWithEdit(e, index)}
                       disabled={
                         rolePermissions[role] &&
@@ -232,7 +252,7 @@ export function AddRecordPermits({
                     <input
                       type="text"
                       name={field}
-                      value={item[field] || ""}
+                      value={updatedValues[index][field] || ""}
                       onChange={(e) => handleChangeWithEdit(e, index)}
                       disabled={
                         (rolePermissions[role] &&
@@ -249,7 +269,7 @@ export function AddRecordPermits({
                 {!newRegister ? (
                   <>
                     <Trash2Icon
-                      className="delete-button"
+                      className="delete-icon"
                       onClick={() => handleDelete(index)}
                     />
                     <EditIcon
