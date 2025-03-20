@@ -1,25 +1,54 @@
 "use client";
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import "@styles/table.css";
 import Search from "./search";
 import { Edit, TrashIcon, ShieldCheck } from "lucide-react";
 import EditRecord from "./edit_record";
 import AlertPopup from "./alert";
 import { deleteRegister } from "@/api/requestServices/generalServices";
-import { AddRecordPermits } from "./add_permits";
+import { AddRecordPermits } from "../../app/home/user/managment-permits";
 import RegisterUser from "@/app/home/user/registerUser";
 import { usePathname } from "next/navigation";
 import RegisterEntity from "@/app/home/user/entities/registerEntitie";
-const ResultTable = ({ data = [], keysToSearch, title, headers = [], fields = [], isAction, rol, editTitle, selectTable, aditionalData = [], children, isPermit, isNewRegister }) => {
-  const [filteredData, setFilteredData] = useState(data);
-  const [currentPage, setCurrentPage] = useState(1);
+import usePagination from "@/hooks/usePagination";
+import useModal from "@/hooks/useModal";
+
+const ResultTable = ({ data = [], resfreshData, keysToSearch, title, headers = [], fields = [], isAction, rol, editTitle, selectTable, aditionalData = [], children, isPermit, isNewRegister }) => {
+  const [filteredData, setFilteredData] = useState([]);
   const [addRegister, setAddRegister] = useState(false);
-  const [isChecking, setIsChecking] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [isDelete, setDelete] = useState(false);
-  const [currentRecord, setCurrentRecord] = useState("");
-  const itemsPerPage = 10;
+  const [permitsData, setPermitsData] = useState([]);
   const location = usePathname();
+
+  const {
+    currentPage,
+    totalPages,
+    paginatedData,
+    getPageRange,
+    handlePrevGroup,
+    handleNextGroup,
+    setCurrentPage,
+  } = usePagination(filteredData, 10, 4);
+
+  const {
+    isOpen: isEditing,
+    currentRecord: editingRecord,
+    openModal: openEditModal,
+    closeModal: closeEditModal,
+  } = useModal();
+
+  const {
+    isOpen: isChecking,
+    currentRecord: checkingRecord,
+    openModal: openCheckModal,
+    closeModal: closeCheckModal,
+  } = useModal();
+
+  const {
+    isOpen: isDelete,
+    currentRecord: deleteRecord,
+    openModal: openDeleteModal,
+    closeModal: closeDeleteModal,
+  } = useModal();
 
   useEffect(() => {
     if (data.length > 0) {
@@ -27,77 +56,48 @@ const ResultTable = ({ data = [], keysToSearch, title, headers = [], fields = []
     }
   }, [data]);
 
-  const totalPages = useMemo(() => Math.max(1, Math.ceil(filteredData.length / itemsPerPage)), [filteredData.length, itemsPerPage]);
-  const maxVisiblePages = 4;
-
-  const paginatedData = useMemo(() =>
-    filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage), [filteredData, currentPage, itemsPerPage]
-  );
-
-  const getPageRange = useMemo(() => {
-    if (totalPages === 0) return [];
-    const start = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    const end = Math.min(totalPages, start + maxVisiblePages - 1);
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-  }, [currentPage, totalPages, maxVisiblePages]);
+  useEffect(() => {
+    if (aditionalData.length > 0) {
+      setPermitsData(aditionalData);
+    }
+  }, [aditionalData]);
 
   const handleFilter = (filtered) => {
     setFilteredData(filtered);
     setCurrentPage(1);
   };
 
-  const handlePrevGroup = useCallback(() => setCurrentPage(prev => Math.max(1, prev - maxVisiblePages)), [maxVisiblePages]);
-  const handleNextGroup = useCallback(() => setCurrentPage(prev => Math.min(totalPages, prev + maxVisiblePages)), [maxVisiblePages, totalPages]);
-
-  const handleadd = () => {
-    setAddRegister(true);
-  }
-
   const handleEditClick = (record) => {
-    setCurrentRecord(record);
-    setIsEditing(true);
+    openEditModal(record);
   };
 
-  const handleUpdateRecord = (updatedRecord) => {
-    setFilteredData((prevData) =>
-        prevData.map((item) =>
-            item.identificacion === updatedRecord.identificacion ? updatedRecord : item
-        )
-    );
-  };
-
-  const handleCheckClick = (record) => {
-    let permitUser = aditionalData.filter(item => item.usuario_id === record.usuario_id).map(item => ({
+  const handleCheckClick = (record, dataPermits) => {
+    let permitUser = dataPermits.filter(item => item.usuario_id === record.usuario_id).map(item => ({
+      ...item,
       identificacion: record.identificacion,
-      acceso: item.permits_id,
-      estado: item.estado,
-      fech_auth: item.fech_auth
     }));
     if (permitUser.length === 0) {
-      permitUser = [{ identificacion: record.identificacion, acceso: "" }];
+      permitUser = [{ identificacion: record.identificacion, acceso: "", usuario_id: record.usuario_id }];
     }
-    setCurrentRecord(permitUser);
-    setIsChecking(true);
+    openCheckModal(permitUser);
   };
 
-  const handleDelete = (recordDelete) => {
-    setDelete(true);
-    setCurrentRecord(recordDelete);
+  const handleUpdatePermits = (updatedPermits) => {
+    const dataUser = updatedPermits.credentials;
+    const permits = updatedPermits.permits;
+    console.log("dataUser: ", permits);
+    setPermitsData(permits);
+    handleCheckClick(dataUser, permits);
   };
 
   const confirmDelete = async (event) => {
     event.preventDefault();
-    if (!currentRecord?.identificacion) return;
-    setDelete(false);
-    const res = await deleteRegister(currentRecord.identificacion, selectTable);
+    if (!deleteRecord?.identificacion) return;
+    closeDeleteModal();
+    const res = await deleteRegister(deleteRecord.identificacion, selectTable);
     if ([200, 204].includes(res.status)) {
-      setFilteredData(prevData => prevData.filter(item => item.identificacion !== currentRecord.identificacion));
-      setCurrentRecord("");
+      resfreshData();
     }
-  };
-
-  const handleAddRecord = async (updatedData) => {
-    setFilteredData(updatedData);
   };
 
   return (
@@ -108,28 +108,29 @@ const ResultTable = ({ data = [], keysToSearch, title, headers = [], fields = []
             <RegisterUser
               isOpen={addRegister}
               closeOpen={() => setAddRegister(false)}
-              onAddRecord={handleAddRecord}
+              onAddRecord={resfreshData}
             />
           ),
           "/home/user/entities": (
             <RegisterEntity
               isOpen={addRegister}
               closeOpen={() => setAddRegister(false)}
-              onAddRecord={handleAddRecord}
+              onAddRecord={resfreshData}
             />
           ),
         }[location] || null
       ) : null}
-      {isEditing && currentRecord && <EditRecord data={currentRecord} role={rol} state={isEditing} closeModal={() => { setIsEditing(false); setCurrentRecord(null); }} editTitle={editTitle} onUpdateRecord={handleUpdateRecord} />}
-      {isChecking && currentRecord && <AddRecordPermits data={currentRecord} role={rol} state={isChecking} closeModal={() => { setIsChecking(false); setCurrentRecord(null); }} />}
-      {isDelete && (<AlertPopup className={`contain ${isDelete ? 'overlay-delete' : ''}`}
-                  message={`Estas seguro de eliminar a: ${currentRecord.nombre}`} type={"info"}>
-                    <div className="alert-buttons">
-                      <button className="alert-button delete-button" onClick={confirmDelete}>Eliminar</button>
-                      <button className="alert-button cancel-button" onClick={() => {setDelete(false), setCurrentRecord("")}}>
-                        Cancelar</button>
-                    </div>
-                    </AlertPopup>)}
+      {isEditing && editingRecord && <EditRecord data={editingRecord} role={rol} state={isEditing} closeModal={closeEditModal} editTitle={editTitle} onUpdateRecord={resfreshData} />}
+      {isChecking && checkingRecord && <AddRecordPermits data={checkingRecord} role={rol} state={isChecking} onUpdateData={handleUpdatePermits} closeModal={closeCheckModal} />}
+      {isDelete && deleteRecord && (
+        <AlertPopup className={`contain ${isDelete ? 'overlay-delete' : ''}`}
+                    message={`Estas seguro de eliminar a: ${deleteRecord.nombre}`} type={"info"}>
+          <div className="alert-buttons">
+            <button className="alert-button delete-button" onClick={confirmDelete}>Eliminar</button>
+            <button className="alert-button cancel-button" onClick={closeDeleteModal}>Cancelar</button>
+          </div>
+        </AlertPopup>
+      )}
       <div className="container">
         <div className="header">
           <div className="title-search">
@@ -138,7 +139,7 @@ const ResultTable = ({ data = [], keysToSearch, title, headers = [], fields = []
           </div>
         </div>
         {isNewRegister && <div className="new-register">
-          <span onClick={handleadd}>Nuevo Registro</span>
+          <span onClick={() => setAddRegister(true)}>Nuevo Registro</span>
         </div>}
         {filteredData.length === 0 ? (
           <div className="loading-message">No hay datos disponibles...</div>
@@ -159,9 +160,9 @@ const ResultTable = ({ data = [], keysToSearch, title, headers = [], fields = []
                         <Edit className="edit-icon" onClick={() => handleEditClick(item)} aria-label="Editar">
                           <span className="tooltip">Editar</span>
                         </Edit>
-                        {isPermit && <ShieldCheck className="check-icon" onClick={() => handleCheckClick(item)} aria-label="Ver permisos" />}
+                        {isPermit && <ShieldCheck className="check-icon" onClick={() => handleCheckClick(item, permitsData)} aria-label="Ver permisos" />}
                         {["Administrador", "Supervisor"].includes(rol) && (
-                          <TrashIcon className="delete-icon" onClick={() => handleDelete(item)} aria-label="Eliminar"/>)}
+                          <TrashIcon className="delete-icon" onClick={() => openDeleteModal(item)} aria-label="Eliminar"/>)}
                         {children}
                       </td>
                     )}
