@@ -1,4 +1,3 @@
-const { formatDate } = require("../../functions/helpers.js");
 const request = require("../../red/request.js");
 
 const table = "users";

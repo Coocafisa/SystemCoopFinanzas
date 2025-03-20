@@ -51,7 +51,7 @@ export default function EditRecord({
             ...updateFields,
         };
         setFormValues(updatedData);
-        onUpdateRecord(updatedData);
+        onUpdateRecord();
         closeModal();
     }
   };

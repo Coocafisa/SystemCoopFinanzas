@@ -70,7 +70,8 @@ input[type="number"]::-webkit-outer-spin-button {
     margin: 0;
 }
 
-.btn_registrar:disabled, .btn_enviar:disabled, .save-button:disabled, .btn-edit:disabled {
+.btn_registrar:disabled, .btn_enviar:disabled, .save-button:disabled, .btn-edit:disabled,
+.edit-button.disabled {
   background-color: #ccc;
   color: #666;
   cursor: not-allowed;

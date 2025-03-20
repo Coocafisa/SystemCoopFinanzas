@@ -224,7 +224,6 @@
 }
 
 @media (max-width: 600px) {
-  .edit-button,
   .save-button,
   .cancel-button {
     font-size: 0.9rem;
