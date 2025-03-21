@@ -37,6 +37,7 @@ async function fetchPendingAndEmails() {
 }
 
 function scheduleJob() {
+    console.warn("Programando envío de correos...");
     const scheduleConfig = loadScheduleConfig();
     if (!scheduleConfig) return;
 

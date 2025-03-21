@@ -30,6 +30,20 @@ app.use(cors({
 }));
 app.set('trust proxy', 1);
 
+const fs = require("fs");
+const path = require("path");
+
+function listProjectFiles() {
+    const dir = path.resolve(__dirname);
+    console.log("Archivos en el servidor:");
+    fs.readdirSync(dir).forEach(file => {
+        console.log(file);
+    });
+}
+
+listProjectFiles();
+
+
 scheduleJob();
 app.use('/auth', auth);
 app.use('/session', session);
