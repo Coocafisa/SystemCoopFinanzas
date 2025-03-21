@@ -8,23 +8,29 @@ module.exports = function (dbInsert) {
   if (!db) {
     db = require("../../db/mysql.js");
   }
-
-  async function addStatusEmails(nit, factura) {
-    try {
-      const table = "pagopro";
-      const fields = "send_email = true";
-      const params = `nit = ${nit} AND factura = '${factura}'`;
-      const result = await db.update(table, fields, params);
-      if (result.affectedRows === 0) {
-        throw new Error(
-          "No se encontró el registro para actualizar el estado de correo."
-        );
-      }
-      return { message: "Correo actualizado con éxito." };
-    } catch (error) {
-      return { message: error.message };
-    }
-  }
+      async function addStatusEmails(facturas) {
+        try {
+            if (!Array.isArray(facturas) || facturas.length === 0) {
+                throw new Error("Debe proporcionar al menos una factura válida.");
+            }
+    
+            const table = "pagopro";
+            const fields = "send_email = true";
+            const params = `factura IN (${facturas.map(factura => `'${factura}'`).join(", ")})`;
+    
+            const result = await db.update(table, fields, params);
+    
+            if (!result || result.affectedRows === 0) {
+                throw new Error("No se encontró ningún registro para actualizar.");
+            }
+    
+            return { message: `Se actualizaron ${result.affectedRows} correos con éxito.` };
+    
+        } catch (error) {
+            console.error("Error actualizando el estado de los correos:", error);
+            return { message: error.message };
+        }
+    };
 
   async function updateRegister(req, res) {
     const { nit, fields } = req.body;
@@ -116,7 +122,6 @@ module.exports = function (dbInsert) {
       }
       return request.successRequest( req, res, { message: "Registro actualizado con éxito."}, 200 );     
     } catch (error) {
-      console.log("error: ", error);
       return request.faultRequest( req, res, { message: "Ocurrió un error al actualizar el registro." }, 500 );
     }
   };

@@ -53,11 +53,7 @@ export function AddRecordPermits({
     });
   };
 
-  console.log("data: ", data);
-
   useEffect(() => {
-    const filteredData = data.filter(item => item.usuario_id === data[0].usuario_id);
-    console.log("result23245; ", filteredData)
     setFormValues(getFields(data));
     setUpdatedValues(getFields(data));
     setIsEdited(new Array(data.length).fill(false));

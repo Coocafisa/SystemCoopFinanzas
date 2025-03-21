@@ -87,7 +87,7 @@ export const useAxiosWithLoader = (
 
   const handleAlert = (message, type, duration, redirect) => {
     if (message) {
-      console.log("Mostrando alerta:", message, "Tipo:", type);
+    
       setAlert(message);
       setType(type);
     }

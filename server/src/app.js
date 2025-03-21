@@ -28,13 +28,6 @@ app.use(cors({
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
-app.set('port', config.app.port);
-app.set('MYSQL', {
-    host: config.mysql.host,
-    user: config.mysql.user,
-    password: config.mysql.password,
-    database: config.mysql.database
-});
 app.set('trust proxy', 1);
 
 scheduleJob();

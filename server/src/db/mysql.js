@@ -16,7 +16,7 @@ const dbConfig = {
 
 const connection = mysql.createPool(dbConfig);
 connection.on('error', (err) => {
-    return {status: 500, message: `Error en la conexión con MySQL: ${err.message}`};
+    throw new {status: 500, message: `Error en la conexión con MySQL: ${err.message}`};
 });
 
 async function query(table, fields = '*', params = '', values = []) {
@@ -43,7 +43,7 @@ async function query(table, fields = '*', params = '', values = []) {
             });
         return formatedResults;
     } catch (error) {
-        return { error: `Error en la base de datos: ${error.message}` };
+        throw new { error: `Error en la base de datos: ${error.message}` };
     }
 }
 
@@ -52,7 +52,7 @@ async function insert(table, data) {
     const [result] = await connection.query(`INSERT INTO ${table} SET ?`, data);
     return result;
     } catch (error) {
-        return { error: `Error en la base de datos: ${error.message}` };
+        throw new { error: `Error en la base de datos: ${error.message}` };
     }
 }
 
@@ -61,7 +61,7 @@ async function update(table, data, params) {
         const [result] = await connection.query(`UPDATE ${table} SET ${data} WHERE ${params}`);
         return result;
     } catch (error) {
-        return { error: `Error en la base de datos: ${error.message}` };
+        throw new { error: `Error en la base de datos: ${error.message}` };
     }
 }
 
@@ -70,7 +70,7 @@ async function remove (table, params) {
         const [result] = await connection.query(`DELETE FROM ${table} WHERE ${params}`);
         return result;
     } catch (error) {
-        return { error: `Error en la base de datos: ${error.message}` };
+        throw new { error: `Error en la base de datos: ${error.message}` };
     }
 }
 

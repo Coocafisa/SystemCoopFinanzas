@@ -34,8 +34,9 @@ module.exports = function (dbInsert) {
     async function resendEmails (req, res) {
         const results = await pendingEmails(req, res);
         if (results.length > 0) {
-            const send_email = await obtainData(results);
-            return request.successRequest(req, res, send_email.message, send_email.status);
+            obtainData(results)
+            .catch(error => console.error(`Error en el envío de correos: ${error.message}`));
+            return request.successRequest(req, res, {message: "Envio de correos iniciado."}, 200);
         }
         return request.faultRequest(req, res, {message: "No hay correos pendientes."}, 400);
     }

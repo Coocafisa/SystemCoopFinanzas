@@ -85,7 +85,6 @@ const ResultTable = ({ data = [], resfreshData, keysToSearch, title, headers = [
   const handleUpdatePermits = (updatedPermits) => {
     const dataUser = updatedPermits.credentials;
     const permits = updatedPermits.permits;
-    console.log("dataUser: ", permits);
     setPermitsData(permits);
     handleCheckClick(dataUser, permits);
   };
