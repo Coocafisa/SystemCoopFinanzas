@@ -89,7 +89,7 @@ module.exports = function (dbInsert) {
     const { identificacion, rol, password, ter_cond } = data;
 
     if (!identificacion || !rol || !password || !ter_cond) {
-      return request.error(
+      return request.faultRequest(
         req,
         res,
         {message: "Información requerida no proporcionada.", data},
@@ -99,7 +99,7 @@ module.exports = function (dbInsert) {
 
     const verifyExistUser = await validateUser(identificacion);
     if (verifyExistUser.actividad) {
-      return request.error(req, res, { message: "La entidad ya está registrada.", redirect: "/"}, 400);
+      return request.faultRequest(req, res, { message: "La entidad ya está registrada.", redirect: "/"}, 400);
     }
     try {
       const dataUser = {
@@ -110,10 +110,10 @@ module.exports = function (dbInsert) {
       };
      const register = await addUsers(dataUser);
       return register.status === 200
-        ? request.success(req, res, { message: register.message, redirect: "/"}, register.status)
-        : request.error(req, res, { message: register.message, redirect: "/"}, register.status);
+        ? request.successRequest(req, res, { message: register.message, redirect: "/"}, register.status)
+        : request.faultRequest(req, res, { message: register.message, redirect: "/"}, register.status);
     } catch (error) {
-      return request.error(
+      return request.faultRequest(
         req,
         res,
         {message: `Error al procesar registro automático: ${error.message}`},
@@ -126,20 +126,20 @@ module.exports = function (dbInsert) {
     const token = req.query.token;
     
     if (!token) {
-      return request.error(req, res, {message: "Token no proporcionado."}, 400);
+      return request.faultRequest(req, res, {message: "Token no proporcionado."}, 400);
     }
     
     try {
       const dataUser = await confirmToken(token);
       
       if (dataUser.status === 401) {
-        return request.error(req, res, {message: dataUser.message,  redirect: dataUser.redirect}, dataUser.status);
+        return request.faultRequest(req, res, {message: dataUser.message,  redirect: dataUser.redirect}, dataUser.status);
       }
 
       const { name, role } = dataUser;
-      return request.success(req, res, { identificacion: name, rol: role });
+      return request.successRequest(req, res, { identificacion: name, rol: role });
     } catch (error) {
-      return request.error(req, res, {message: "Error al validar el token."}, 500);
+      return request.faultRequest(req, res, {message: "Error al validar el token."}, 500);
     }
   }
   

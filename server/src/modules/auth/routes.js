@@ -16,7 +16,7 @@ async function Auth(req, res, next) {
 
 router.get('/actividad', (req, res) => {
     const hora = new Date();
-    request.success(req, res, { hora }, 200);
+    request.successRequest(req, res, { hora }, 200);
 });
 
 router.post('/emailresetpass', (req, res) => {

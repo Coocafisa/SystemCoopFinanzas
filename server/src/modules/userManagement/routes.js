@@ -11,10 +11,10 @@ router.post('/addUsers', verifyToken, async (req, res) => {
     const data = req.body;
     const register = await controller.addUsers(data);
     return register.status === 200
-            ? request.success(req, res, {message: register.message}, register.status)
-            : request.error(req, res, {message: register.message}, register.status);
+            ? request.successRequest(req, res, {message: register.message}, register.status)
+            : request.faultRequest(req, res, {message: register.message}, register.status);
   } catch (error) {
-    return request.error(req, res, {message: `Error al procesar la solicitud: ${error.message}`}, 500);
+    return request.faultRequest(req, res, {message: `Error al procesar la solicitud: ${error.message}`}, 500);
   }
 });
 
@@ -23,10 +23,10 @@ router.post('/addEntity', verifyToken, async (req, res) => {
     const data = req.body;
     const register = await controller.addEntity(data);
     return register.status === 200
-            ? request.success(req, res, {message: register.message}, register.status)
-            : request.error(req, res, {message: register.message}, register.status);
+            ? request.successRequest(req, res, {message: register.message}, register.status)
+            : request.faultRequest(req, res, {message: register.message}, register.status);
   } catch (error) {
-    return request.error(req, res, {message: `Error al procesar la solicitud: ${error.message}`}, 500);
+    return request.faultRequest(req, res, {message: `Error al procesar la solicitud: ${error.message}`}, 500);
   }
 });
 
@@ -35,7 +35,7 @@ router.post('/automaticRegistration', async (req, res) => {
     const data = req.body;
     await controller.automaticRegistration(req, res, data);
   } catch (error) {
-    return request.error(req, res, {message: `Error al procesar la solicitud: ${error.message}`}, 500);
+    return request.faultRequest(req, res, {message: `Error al procesar la solicitud: ${error.message}`}, 500);
   }
 });
 

@@ -14,9 +14,9 @@ module.exports = function(dbInsert) {
         const params = `fecpago IS NOT NULL`;
         try {
             const results = await db.query(table, fields, params);
-            return request.success(req, res, results, 200);
+            return request.successRequest(req, res, results, 200);
         } catch (error) {
-            return request.error(req, res, error, 404);
+            return request.faultRequest(req, res, error, 404);
         }
     };
     
@@ -25,7 +25,7 @@ module.exports = function(dbInsert) {
         const { role } = req.auth;
 
         if (!identificacion || !permiso || !role) {
-            return request.error(req, res, { message: "Campos requeridos no proporcionados." }, 400);
+            return request.faultRequest(req, res, { message: "Campos requeridos no proporcionados." }, 400);
         }
 
         let allowedPermissions;
@@ -38,42 +38,41 @@ module.exports = function(dbInsert) {
                 ]
             };
         } else {
-            return request.error(req, res, { message: "No estas autorizado para realizar esta operación." }, 403);
+            return request.faultRequest(req, res, { message: "No estas autorizado para realizar esta operación." }, 403);
         }
 
         try {
             
         const { usuario_id, actividad } = await validateUser(identificacion);
         if (!usuario_id) {
-            return request.error(req, res, { message: "Usuario no encontrado." }, 404);
+            return request.faultRequest(req, res, { message: "Usuario no encontrado." }, 404);
         }
 
         if (!actividad) {
-            return request.error(req, res, { message: "El usuario no esta disponible para asignarle permisos. Debe ingresar almenos una vez al sistema para adquirir permisos." }, 400);
+            return request.faultRequest(req, res, { message: "El usuario no esta disponible para asignarle permisos. Debe ingresar almenos una vez al sistema para adquirir permisos." }, 400);
         }
 
         const existingPermission = await validatePermissions({ consec_permit: usuario_id, permiso });
         if (existingPermission) {
-            return request.error(req, res, { message: existingPermission.message }, existingPermission.status);
+            return request.faultRequest(req, res, { message: existingPermission.message }, existingPermission.status);
         }
 
         const validatePermits = { usuario_id: usuario_id, permits_id: permiso };
         const newPermission = await validateFields(allowedPermissions, validatePermits);
         if (newPermission.error) {
-            return request.error(req, res, { message: newPermission.message }, 401);
+            return request.faultRequest(req, res, { message: newPermission.message }, 401);
         }
 
             const assignPermission = await db.insert("authorizations", { usuario_id, permits_id: permiso });
             if (!assignPermission || assignPermission.affectedRows === 0) {
-                return request.error(req, res, { message: "No se asignó permisos correctamente." }, 400);
+                return request.faultRequest(req, res, { message: "No se asignó permisos correctamente." }, 400);
             }
-            return request.success(req, res, { message: "Permisos asignados con éxito." }, 200);
+            return request.successRequest(req, res, { message: "Permisos asignados con éxito." }, 200);
         } catch (error) {
-            console.log("error: ", error);
             if (error.code === 'ER_DUP_ENTRY') {
-                return request.error(req, res, { message: "El permiso ya está asignado a este usuario." }, 400);
+                return request.faultRequest(req, res, { message: "El permiso ya está asignado a este usuario." }, 400);
             }
-            return request.error(req, res, { message: "Ocurrió un error al asignar permisos." }, 500);
+            return request.faultRequest(req, res, { message: "Ocurrió un error al asignar permisos." }, 500);
         }
     };
 
@@ -90,7 +89,6 @@ module.exports = function(dbInsert) {
             }
             return false;
     } catch (error) {
-        console.log("error: ", error);
         return { message: "Ocurrió un error al validar los permisos.", status: 500 };
     }
 };

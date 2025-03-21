@@ -16,7 +16,7 @@ module.exports = function (dbInsert) {
         str_to_Date(fecpago, '%e-%b-%y') = curdate()`;
         return await db.query(table, fields, params);
         } catch (error) {
-            return request.error(req, res, error, 404);
+            return request.faultRequest(req, res, error, 404);
         }
     }
 
@@ -27,7 +27,7 @@ module.exports = function (dbInsert) {
             const params = 'send_email = false AND entities.identificacion = pagopro.nit AND str_to_Date(fecpago, \'%e-%b-%y\') != curdate()';
             return await db.query(table, fields, params);
         } catch (error) {
-            return request.error(req, res, error, 404);
+            return request.faultRequest(req, res, error, 404);
         }
     }
 
@@ -35,17 +35,17 @@ module.exports = function (dbInsert) {
         const results = await pendingEmails(req, res);
         if (results.length > 0) {
             const send_email = await obtainData(results);
-            return request.success(req, res, send_email.message, send_email.status);
+            return request.successRequest(req, res, send_email.message, send_email.status);
         }
-        return request.error(req, res, {message: "No hay correos pendientes."}, 400);
+        return request.faultRequest(req, res, {message: "No hay correos pendientes."}, 400);
     }
 
     async function timerEmails(req, res) {
         if (!obtainTimer) {
-            return request.error(req, res, {message: "No se encontró la hora programada."}, 400);
+            return request.faultRequest(req, res, {message: "No se encontró la hora programada."}, 400);
         }
         const { hour, minute } = obtainTimer;
-        return request.success(req, res, { hour, minute }, 200);
+        return request.successRequest(req, res, { hour, minute }, 200);
         };
     
     return {

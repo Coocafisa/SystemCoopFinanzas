@@ -15,9 +15,9 @@ module.exports = function (dbInsert) {
         const params = `nit = ${user}`;
         try {
             const data = await db.query(selectTable, fields, params);
-            return request.success(req, res, data, 200);
+            return request.successRequest(req, res, data, 200);
         } catch (error) {
-            return request.error(req, res, error, 404);
+            return request.faultRequest(req, res, error, 404);
         }
     }
 
@@ -28,9 +28,9 @@ module.exports = function (dbInsert) {
         const params = `nit = ${user} AND fecpago IS NOT NULL`;
         try {
             const data = await db.query(selectTable, fields, params);
-            return request.success(req, res, data, 200);
+            return request.successRequest(req, res, data, 200);
         } catch (error) {
-            return request.error(req, res, error, 404);
+            return request.faultRequest(req, res, error, 404);
         }
     }
 
@@ -41,9 +41,9 @@ module.exports = function (dbInsert) {
         const params = `nit = ${user} AND fecpago IS NULL`;
         try {
             const data = await db.query(selectTable, fields, params);
-            return request.success(req, res, data, 200);
+            return request.successRequest(req, res, data, 200);
             } catch (error) {
-             return request.error(req, res, error, 404);
+             return request.faultRequest(req, res, error, 404);
             }
         }
     

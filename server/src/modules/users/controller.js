@@ -46,9 +46,9 @@ module.exports = function (dbInsert) {
     const fields = "identificacion, rol, nombre, correo, activo, entities.fech_reg, users.usuario_id";
     try {
       const data = await db.query(table, fields);
-      request.success(req, res, data, 200);
+      request.successRequest(req, res, data, 200);
     } catch (error) {
-      request.error(req, res, error, 404);
+      request.faultRequest(req, res, error, 404);
     }
   }
 
@@ -57,9 +57,9 @@ module.exports = function (dbInsert) {
       "identificacion, nombre, direcc, correo, telefono, fech_reg";
     try {
       const data = await db.query("entities", fields);
-      request.success(req, res, data, 200);
+      request.successRequest(req, res, data, 200);
     } catch (error) {
-      request.error(req, res, error, 404);
+      request.faultRequest(req, res, error, 404);
     }
   }
 
@@ -68,9 +68,9 @@ module.exports = function (dbInsert) {
     const fields = "usuario_id, authorizations.permits_id, estado, fech_auth, consec_permit";
     try {
     const data = await db.query(table, fields);
-    return request.success(req, res, data, 200);
+    return request.successRequest(req, res, data, 200);
     } catch (error) {
-      return request.error(req, res, error, 404);
+      return request.faultRequest(req, res, error, 404);
     }
   }
 

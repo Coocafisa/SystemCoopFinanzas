@@ -50,7 +50,7 @@ const emailSend = async (data, pdfBuffer, next) => {
         };
         await transport.sendMail(mailOptions);
     } catch (error) {
-        request.error(req, res, error, 500);
+        request.faultRequest(req, res, error, 500);
         next(error);
     }
 };
