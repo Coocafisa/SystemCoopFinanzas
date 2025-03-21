@@ -14,7 +14,6 @@ export default function LoaderWithMessage() {
     setData(false);
     await deleteSession(data);
   }
-
   return (
     <>
     {initAlert && <Loader type={type} message={alert} isLoading={loading}/>}

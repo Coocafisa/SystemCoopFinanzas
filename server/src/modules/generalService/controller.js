@@ -154,7 +154,7 @@ module.exports = function (dbInsert) {
         if (executionUpdate.affectedRows === 0) {
           return request.error(req, res, { message: "No se encontró el registro para eliminar." }, 404);
       }
-        return request.success(req, res, { message: "Registro eliminado con éxito." }, 200);
+        return request.success(req, res, { message: 'Registro eliminado con éxito.' }, 200);
     } catch (error) {
         return request.error(req, res, { message: "Ocurrió un error al eliminar el registro." }, 500);
     }

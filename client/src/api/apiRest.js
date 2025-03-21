@@ -62,10 +62,8 @@ export const useAxiosWithLoader = (
     (response) => {
       if (!response.config?.skipAlert) {
         const message = response.data?.body?.message || "";
-        if (message) {
-          setLoading(false);
-        }
         const redirect = response.data?.body?.redirect || "";
+        setLoading(false);
         handleAlert(message, "success", timeout, redirect);
       }
       return response;
@@ -89,8 +87,9 @@ export const useAxiosWithLoader = (
 
   const handleAlert = (message, type, duration, redirect) => {
     if (message) {
-      setType(type);
+      console.log("Mostrando alerta:", message, "Tipo:", type);
       setAlert(message);
+      setType(type);
     }
     setTimeout(() => {
       setAlert("");
