@@ -5,7 +5,6 @@ import {
   queryPermits,
   queryUsers,
 } from "@/api/requestUsers/queryUsers";
-import { ProtectedRoute } from "@/components/middleware/protecte-route";
 import { getSession } from "@/api/requestServices/sessionService";
 
 export default function Users() {
@@ -54,7 +53,6 @@ export default function Users() {
   ];
   return (
     <>
-      <ProtectedRoute allowedRoles={["Administrador"]} />
       <ResultTable
         title={title}
         headers={headers}

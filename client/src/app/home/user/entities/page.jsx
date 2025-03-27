@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import ResultTable from "@/components/common/result_table";
 import { queryEntities } from "@/api/requestUsers/queryUsers";
-import { ProtectedRoute } from "@/components/middleware/protecte-route";
 import { getSession } from "@/api/requestServices/sessionService";
 
 export default function Entities() {
@@ -49,7 +48,6 @@ export default function Entities() {
   ];
   return (
     <>
-      <ProtectedRoute allowedRoles={["Administrador"]} />
       <ResultTable
         title={title}
         headers={headers}

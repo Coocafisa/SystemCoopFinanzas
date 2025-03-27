@@ -27,9 +27,8 @@ module.exports = function(dbInsert) {
 
      async function logout(dataSession) {
         if (!dataSession) {
-            return { message: 'Imformacion invalidad para cerrar sesión.', status: 400 };
+            return { message: 'Informacion invalidad para cerrar sesión.', status: 400 };
         }
-
         try {
         const cierreSesion =await db.update('auth', 'sessionId = 0', `sessionId = '${dataSession}'`);
         if (cierreSesion.affectedRows === 0) {

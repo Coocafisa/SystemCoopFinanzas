@@ -8,7 +8,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 1500;
 }
 
 .alert-popup.timer {
@@ -16,7 +16,7 @@
     backdrop-filter: blur(8px);
     border-radius: 12px;
     padding: 20px;
-    z-index: 1000;
+    z-index: 1500;
     max-width: 400px;
     min-width: 280px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
@@ -71,6 +71,11 @@
     border: none;
     cursor: pointer;
     transition: all 0.3s ease;
+  }
+
+  .btn-alert:hover {
+    background: #ddd;
+    transform: scale(1.05);
   }
   
   @keyframes fadeInUp {

@@ -9,7 +9,7 @@ import {
   renamedLabels,
 } from "@/components/utils/validationData";
 import ModalContent from "./modal-content";
-import { isEqual } from "lodash";
+import { isEqual, set } from "lodash";
 import useForm from "@/hooks/useForm";
 
 export default function EditRecord({
@@ -22,6 +22,38 @@ export default function EditRecord({
 }) {
   const { formValues, message, handleChange, isValid, setFormValues } = useForm({});
   const [restrictedFields, setRestrictedFields] = useState([]);
+
+  useEffect(() => {
+    if (!role) return;
+  
+    setFormValues({ ...data });
+  
+    // Convertir `role` en array si es necesario
+    const rolesArray = Array.isArray(role)
+      ? role
+      : typeof role === "string"
+      ? role.split(",").map((r) => r.trim())
+      : [];
+  
+    // Obtener las restricciones de cada rol
+    const roleRestrictions = rolesArray
+      .map((currentRole) => rolePermissions[currentRole] || [])
+      .filter((fields) => fields.length > 0); // Filtrar roles sin restricciones
+  
+    // Si no hay restricciones, no se bloquea nada
+    if (roleRestrictions.length === 0) {
+      setRestrictedFields([]);
+      return;
+    }
+  
+    // Encontrar los campos que están bloqueados en **todos** los roles (intersección)
+    const commonRestrictedFields = roleRestrictions.reduce((acc, fields) => 
+      acc.filter((field) => fields.includes(field))
+    );
+  
+    setRestrictedFields(commonRestrictedFields);
+  }, [data, role, rolePermissions]);
+  
 
   const getFields = (fields) => {
     if (!fields) return [];
@@ -37,11 +69,6 @@ export default function EditRecord({
     }
     return acc;
   }, {});
-
-  useEffect(() => {
-    setFormValues({ ...data });
-    setRestrictedFields(rolePermissions[role] || []);
-  }, [data, role, setFormValues]);
 
   const handleSave = async () => {
     const res = await updateRegister(updateFields, data.identificacion);
@@ -77,7 +104,11 @@ export default function EditRecord({
                       ? formValues[item]
                       : data[item] || "Seleccionar"
                   }
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    const selectedValue = e.target.value;
+                    const parsedValue = isNaN(selectedValue) ? selectedValue : Number(selectedValue);
+                    handleChange({ target: { name: item, value: parsedValue } });
+                  }}
                   className="input-field"
                 >
                   {!selectOptions[item]?.some(

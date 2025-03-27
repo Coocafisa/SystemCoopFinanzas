@@ -75,10 +75,11 @@ module.exports = function (dbInsert) {
       ]
     };
     
+    const roles = role.split(',');
     let allowedFields
-    if (role === "Administrador") {
+    if (roles.some(r => ["Administrador", "Supervisor"].includes(r))) {
       allowedFields = updateForAdmin;
-    } else if (role === "Usuario") {
+    } else if (roles.includes("Usuario")) {
       allowedFields = updateForUser;
     } else {
       return request.faultRequest( req, res, { message: "Rol no autorizado para realizar la operación." }, 400 );

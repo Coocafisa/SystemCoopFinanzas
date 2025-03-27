@@ -66,7 +66,7 @@ export default function RegisterEntity({ isOpen, closeOpen, onAddRecord }) {
         </div>
 
         <div className="btn_butones">
-          <button type="button" className="btn_cancelar" onClick={() => closeOpen(false)}>
+          <button type="button" className="cancel-button" onClick={() => closeOpen(false)}>
             Cancelar
           </button>
           <button type="submit" className="btn_registrar" disabled={!isValid}>

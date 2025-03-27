@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Menu from "./navigation_menu";
-import { getSession, dateUser } from "@/api/requestServices/sessionService";
+import { dateUser } from "@/api/requestServices/sessionService";
 import "@styles/header.css";
 import { updateRegister } from "@/api/requestServices/generalServices";
 import { CircleUser, X } from "lucide-react";
@@ -55,15 +55,6 @@ export default function Header({ menuOptions }) {
     fetchData();
   }, [setFormValues]);
 
-  const handleClick = async() => {
-    var { role } = await getSession();
-    if (role === "Administrador") {
-        window.location.href = "/home";
-    } else {
-        window.location.href = "/home/suppliers";
-    }
-  };
-
   const toogleDetalles = () => {
     setIsVisible(!isVisible);
   }
@@ -115,7 +106,6 @@ export default function Header({ menuOptions }) {
           src="/images/Logo.cooperativa.png"
           alt="logo"
           className="imglogoindex"
-          onClick={handleClick}
         />
       <h1 className="text-header">CoopFinanzas</h1>      
       <div className="perfil">

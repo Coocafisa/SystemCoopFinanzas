@@ -2,11 +2,12 @@ const jwt = require("jsonwebtoken");
 const config = require("../config");
 const { validateUser } = require("../modules/users");
 const request = require("../red/request");
+const users = require("../modules/users");
 
 async function verifyToken(req, res, next) {
-    let token = req.headers.authorization?.split(" ")[1] || req.cookies?.token;
+    let token = req.headers.authorization?.split(" ")[1] || req.cookies.token;
     if (!token) {
-        return request.faultRequest(req, res, { message: "No estás autenticado. Token no encontrado." }, 403);
+        return request.faultRequest(req, res, { message: "No estás autenticado.", redirect: "/" }, 403);
     }
 
     try {
@@ -17,13 +18,17 @@ async function verifyToken(req, res, next) {
             return request.faultRequest(req, res, { message: "Usuario no encontrado." }, 401);
         }
 
-        if (decoded.exp && decoded.exp < Math.floor(Date.now() / 1000)) {
-            return request.faultRequest(req, res, { message: "Token expirado." }, 401);
-        }
-        req.auth = decoded;
+        const accesos = Array.from(new Set([].concat(user.acceso || [], user.rol).filter(Boolean)));
+        const roles = accesos.join(",");
+        
+        req.auth = {
+            ...decoded,
+            role: roles,
+        };
+        console.log("Auth: ", req.auth);
         next();
     } catch (error) {
-        return request.faultRequest(req, res, { message: "Inicia sesión nuevamente para continuar.", redirect: "/" }, 401);
+        return request.faultRequest(req, res, { redirect: "/" }, 401);
     }
 }
 

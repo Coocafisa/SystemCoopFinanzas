@@ -1,6 +1,5 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import { ProtectedRoute } from "@/components/middleware/protecte-route";
 import TableInvoices from "@/components/common/table_invoices";
 import { queryinvoicepending } from "@/api/requestUsers/invoiceService";
 

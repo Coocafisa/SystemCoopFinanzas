@@ -6,7 +6,7 @@ import "@styles/alertInativity.css";
 import { calculateCountdown, useUserActivity } from "../utils/timerUtils";
 import { refreshToken } from "@/api/requestServices/generalServices";
 import { logout } from "@/api/requestServices/logout";
-import { logError } from "@/components/utils/logger"; // Importar la utilidad de registro de errores
+import { logError } from "@/components/utils/logger";
 
 const SESSION_STATES = {
   ACTIVE: "active",
@@ -105,8 +105,8 @@ export default function InactivityHandler({ timeRemaining }) {
               </div>
             </div>
             <div className="alert-buttons">
-              <button onClick={handleLogout}>No</button>
-              <button onClick={refreshSession}>Sí</button>
+              <button onClick={handleLogout} className="btn-alert">No</button>
+              <button onClick={refreshSession} className="btn-alert">Sí</button>
             </div>
           </AlertPopup>
         </div>

@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import ResultTable from "@/components/common/result_table";
 import { queryEmails } from "@/api/requestAdmin/querysAdmin";
 import HoraForm from "@/components/layout/form_hour_email";
-import { ProtectedRoute } from "../../../../components/middleware/protecte-route";
 
 export default function Emails() {
     const [email, setEmail] = useState([]);
@@ -35,7 +34,6 @@ export default function Emails() {
 
     return (
         <>
-        <ProtectedRoute allowedRoles={["Administrador"]}/>
         <ResultTable data={email} title={title} headers={headers} fields={fields} keysToSearch={["identificacion", "factura", "nombre"]}/>
         <HoraForm/>
         </>

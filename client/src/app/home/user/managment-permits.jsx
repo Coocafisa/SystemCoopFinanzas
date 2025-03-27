@@ -231,7 +231,11 @@ export function AddRecordPermits({
                     <select
                       name={field}
                       value={updatedValues[index][field] || ""}
-                      onChange={(e) => handleChangeWithEdit(e, index)}
+                      onChange={(e) => {
+                        const selectedValue = e.target.value;
+                        const parsedValue = isNaN(selectedValue) ? selectedValue : Number(selectedValue);
+                        handleChangeWithEdit({ target: { name: field, value: parsedValue } }, index);
+                      }}
                       disabled={
                         rolePermissions[role] &&
                         rolePermissions[role].includes(field)

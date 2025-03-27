@@ -38,8 +38,13 @@ const emailSend = async (data, pdfBuffer, next) => {
         const mailOptions = {
             from: "contacto@coocafisa.com",
             to: correo,
-            subject: "Informe diario",
-            text: "El presente correo contiene un informe PDF de sus registros que tienen por fecha de pago el día de hoy.",
+            subject: "Compendio de Pagos Realizados por la Cooperativa de Caficultores de Salgar",
+            text: `Estimad@ ${nombre}, 
+      Por medio del presente correo, se le comparte un compendio detallado de todos
+      los pagos efectuados por la Cooperativa hasta la fecha actual. Este documento ha
+      sido elaborado con el propósito de proporcionar un resumen claro y transparente de
+      las transacciones realizadas, facilitando su consulta y análisis. 
+      Quedamos atentos a cualquier duda o información adicional que puedan requerir.`,
             attachments: [
                 {
                     filename: `${identificacion}_${nombre}_${fecpago}.pdf`,

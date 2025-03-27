@@ -7,6 +7,7 @@ export const logout = async () => {
     return [];
   } finally {
     sessionStorage.removeItem('token');
+    
     window.location.href = '/';
   }
 }

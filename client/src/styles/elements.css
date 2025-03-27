@@ -54,7 +54,7 @@
     gap: 1rem;
 }
 
-.save-button, .cancel-button, .btn-crear, .btn-edit{
+.save-button, .cancel-button, .btn-crear, .btn-edit, .btn_registrar{
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
@@ -63,7 +63,7 @@
     font-size: 1rem;
 }
 
-.save-button, .btn-crear, .btn-edit {
+.save-button, .btn-crear, .btn-edit, .btn_registrar {
     background: #007bff;
     color: white;
 }
@@ -73,7 +73,7 @@
     color: white;
 }
 
-.save-button:hover{
+.save-button:hover, .btn-crear:hover, .btn-edit:hover, .btn_registrar:hover {
     background: #0056b3;
 }
 
@@ -106,10 +106,14 @@
 
 .delete-button {
     align-self: flex-end;
-    background-color: transparent;
+    background-color: #ddd;
     border: none;
     cursor: pointer;
     color: red;
+}
+
+.delete-button:hover {
+    background-color: #ccc;
 }
 
 @media (min-width: 768px) {

@@ -12,12 +12,14 @@ import { usePathname } from "next/navigation";
 import RegisterEntity from "@/app/home/user/entities/registerEntitie";
 import usePagination from "@/hooks/usePagination";
 import useModal from "@/hooks/useModal";
+import getRolePermissions from "../middleware/permits-actions";
 
-const ResultTable = ({ data = [], resfreshData, keysToSearch, title, headers = [], fields = [], isAction, rol, editTitle, selectTable, aditionalData = [], children, isPermit, isNewRegister }) => {
+const ResultTable = ({ data = [], resfreshData, keysToSearch, title, headers = [], fields = [], isAction, rol = "None", editTitle, selectTable, aditionalData = [], children, isPermit, isNewRegister }) => {
   const [filteredData, setFilteredData] = useState([]);
   const [addRegister, setAddRegister] = useState(false);
   const [permitsData, setPermitsData] = useState([]);
   const location = usePathname();
+  const { canEdit, canDelete, canCheck, canAddRegister } = getRolePermissions(rol);
 
   const {
     currentPage,
@@ -101,7 +103,7 @@ const ResultTable = ({ data = [], resfreshData, keysToSearch, title, headers = [
 
   return (
     <>
-      {addRegister ? (
+      {addRegister && canAddRegister ? (
         {
           "/home/user": (
             <RegisterUser
@@ -119,8 +121,8 @@ const ResultTable = ({ data = [], resfreshData, keysToSearch, title, headers = [
           ),
         }[location] || null
       ) : null}
-      {isEditing && editingRecord && <EditRecord data={editingRecord} role={rol} state={isEditing} closeModal={closeEditModal} editTitle={editTitle} onUpdateRecord={resfreshData} />}
-      {isChecking && checkingRecord && <AddRecordPermits data={checkingRecord} role={rol} state={isChecking} onUpdateData={handleUpdatePermits} closeModal={closeCheckModal} />}
+      {isEditing && editingRecord ? <EditRecord data={editingRecord} role={rol} state={isEditing} closeModal={closeEditModal} editTitle={editTitle} onUpdateRecord={resfreshData} /> : null}
+      {isChecking && checkingRecord ? <AddRecordPermits data={checkingRecord} role={rol} state={isChecking} onUpdateData={handleUpdatePermits} closeModal={closeCheckModal} /> : null}
       {isDelete && deleteRecord && (
         <AlertPopup className={`contain ${isDelete ? 'overlay-delete' : ''}`}
                     message={`Estas seguro de eliminar a: ${deleteRecord.nombre}`} type={"info"}>
@@ -156,12 +158,10 @@ const ResultTable = ({ data = [], resfreshData, keysToSearch, title, headers = [
                     {fields.map((field, colIndex) => <td key={colIndex} data-label={headers[colIndex]}>{field === "num" ? rowIndex + 1 : item[field] || "N/A"}</td>)}
                     {isAction && (
                       <td className="actions">
-                        <Edit className="edit-icon" onClick={() => handleEditClick(item)} aria-label="Editar">
-                          <span className="tooltip">Editar</span>
-                        </Edit>
-                        {isPermit && <ShieldCheck className="check-icon" onClick={() => handleCheckClick(item, permitsData)} aria-label="Ver permisos" />}
-                        {["Administrador", "Supervisor"].includes(rol) && (
-                          <TrashIcon className="delete-icon" onClick={() => openDeleteModal(item)} aria-label="Eliminar"/>)}
+                        { canEdit ? (<Edit className="edit-icon" onClick={() => handleEditClick(item)} aria-label="Editar"></Edit>) : null}
+                        {isPermit && canCheck ? (<ShieldCheck className="check-icon" onClick={() => handleCheckClick(item, permitsData)} aria-label="Ver permisos" />) : null}
+                        {canDelete ? (
+                          <TrashIcon className="delete-icon" onClick={() => openDeleteModal(item)} aria-label="Eliminar"/>): null}
                         {children}
                       </td>
                     )}

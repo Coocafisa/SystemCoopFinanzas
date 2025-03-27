@@ -81,6 +81,18 @@ module.exports = function (dbInsert) {
         );
       }
 
+      if (usuario?.activo === 0) {
+        return request.faultRequest(
+          req,
+          res,
+          {
+            message:
+              "Tu cuenta está deshabilitada. Contacta con el administrador.",
+          },
+          400
+        );
+      }
+
       const tiempoInactividad =
         Date.now() - new Date(usuario.actividad).getTime();
       const validarInactividad = tiempoInactividad < 2 * 60 * 1000;
@@ -181,7 +193,12 @@ module.exports = function (dbInsert) {
         maxAge: 4 * 60 * 1000,
       });
 
-      return request.successRequest(req, res, { token, redirect: redirectPath }, 200);
+      return request.successRequest(
+        req,
+        res,
+        { token, redirect: redirectPath },
+        200
+      );
     } catch (error) {
       console.error("Error: ", error.message);
       return request.faultRequest(
@@ -210,7 +227,9 @@ module.exports = function (dbInsert) {
       const params = "identificacion = ?";
       const [userResult] = await db.query(table, fields, params, [data.nit]);
       if (!userResult) {
-        return request.faultRequest(req, res, { message: "Usuario no encontrado." });
+        return request.faultRequest(req, res, {
+          message: "Usuario no encontrado.",
+        });
       }
       const gmail = userResult.correo;
       const registerToken = await db.update(
@@ -412,7 +431,7 @@ module.exports = function (dbInsert) {
         );
       }
 
-      res.cookie("token", newToken, { httpOnly: true, sameSite: "Strict" });
+      res.cookie("token", newToken, { httpOnly: true, sameSite: "lax" });
       return request.successRequest(req, res, { token: newToken }, 200);
     } catch (error) {
       return request.faultRequest(

@@ -13,7 +13,8 @@ router.post('/logout', verifyToken, async(req, res) => {
     if (logout.status !== 200) {
         return request.faultRequest(req, res, { message: logout.message }, logout.status);
     }
-    request.successRequest(req, res, { message: logout.message }, logout.status);
+    res.clearCookie('token');
+    return request.successRequest(req, res, { message: logout.message }, logout.status);
   });
 
 router.post('/deleteSession', async (req, res) => {
@@ -25,7 +26,8 @@ router.post('/deleteSession', async (req, res) => {
     if (logout.status !== 200) {
         return request.faultRequest(req, res, { message: logout.message }, logout.status);
     }
-    request.successRequest(req, res, { message: logout.message }, logout.status);
+    res.clearCookie('token');
+    return request.successRequest(req, res, { message: logout.message }, logout.status);
 });
 
 module.exports = router;

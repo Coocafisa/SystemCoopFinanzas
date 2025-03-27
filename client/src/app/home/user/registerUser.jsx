@@ -36,6 +36,7 @@ export default function RegisterUser({ isOpen, closeOpen, onAddRecord }) {
               <option value="">Seleccionar</option>
               <option value="Usuario">Usuario</option>
               <option value="Administrador">Administrador</option>
+              <option value="Supervisor">Supervisor</option>
             </select>
             <ErrorMessage message={message.rol} />
           </div>

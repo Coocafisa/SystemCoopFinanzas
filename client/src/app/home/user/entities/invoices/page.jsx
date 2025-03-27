@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { queryInvoices } from "@/api/requestUsers/invoiceService";
-import { ProtectedRoute } from "@/components/middleware/protecte-route";
 import TableInvoices from "@/components/common/table_invoices";
 
 export default function Invoices() {

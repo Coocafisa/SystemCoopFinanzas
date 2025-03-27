@@ -10,8 +10,8 @@ module.exports = function (dbInsert) {
 
   async function validateUser(user) {
     const SelectTable = `entities LEFT JOIN ${table} ON entities.entidad_id = ${table}.entidad_id
-         LEFT JOIN auth ON auth.usuario_id = ${table}.usuario_id`;
-    const fields = "nombre, entities.entidad_id, users.usuario_id, identificacion, usuario, rol, activo, correo, telefono, direcc, sessionId, actividad ";
+         LEFT JOIN auth ON auth.usuario_id = ${table}.usuario_id LEFT JOIN authorizations ON authorizations.usuario_id = ${table}.usuario_id LEFT JOIN permits ON permits.permits_id = authorizations.permits_id`;
+    const fields = "nombre, entities.entidad_id, users.usuario_id, identificacion, usuario, rol, activo, correo, telefono, direcc, sessionId, actividad, acceso ";
     const params = `identificacion = ${user} OR usuario = ${user}`;
     try {
       const [usuario] = await db.query(SelectTable, fields, params);
@@ -28,7 +28,7 @@ module.exports = function (dbInsert) {
         nombre: dateUser.nombre || "Nombre",
         nit: req.auth.name || "Nit",
         user: dateUser.usuario || "Usuario",
-        rol: req.auth.role || "Rol",
+        rol: dateUser.rol || "Rol",
         estado: dateUser.activo || "N/A",
         correo: dateUser.correo || "Correo",
         telefono: dateUser.telefono || "Telefono",

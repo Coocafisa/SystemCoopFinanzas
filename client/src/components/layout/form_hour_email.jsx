@@ -5,11 +5,13 @@ import "@styles/programhour.css";
 import { timerEmails } from "@/api/requestAdmin/querysAdmin";
 import { programmatEmails, resendEmails } from "@/api/requestAdmin/servicesAdmin";
 
-const HoraForm = ({ btnEmails }) => {
-  const [hora, setHora] = useState("");
-  const [minuto, setMinuto] = useState("");
+const HoraForm = ({ btnEmails, ofAction }) => {
+  const [hora, setHora] = useState("00");
+  const [minuto, setMinuto] = useState("00");
   const [isVisible, setIsVisible] = useState(false);
   const [timer, setTimer] = useState({ hours: "00", minutes: "00", seconds: "00" });
+  const [disabled, setDisabled] = useState(false);
+  const [newHour, setNewHour] = useState({ hora: "00", minuto: "00" });
 
   useEffect(() => {
     const getTime = async () => {
@@ -31,11 +33,19 @@ const HoraForm = ({ btnEmails }) => {
         const date = selectedDates[0];
         const newHour = String(date.getHours()).padStart(2, "0");
         const newMinute = String(date.getMinutes()).padStart(2, "0");
-        setHora(newHour);
-        setMinuto(newMinute);
+        setNewHour({ hora: newHour, minuto: newMinute });
       },
     });
   }, []);
+
+  useEffect(() => {
+    console.log("Validacion de hora: ","Original: ", hora, minuto , "Nueva: ", newHour.hora, newHour.minuto);
+    if (newHour.hora !== String(hora) || newHour.minuto !== String(minuto)) {
+      setDisabled(true);
+    } else {
+      setDisabled(false);
+    }
+  }, [newHour]);
 
 useEffect(() => {
     const intervalTime = setInterval(() => {
@@ -65,8 +75,13 @@ useEffect(() => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await programmatEmails(hora, minuto);
-    calculateCountdown(hora, minuto);
+    const result = await programmatEmails(newHour.hora, newHour.minuto);
+    if (result.status === 200) {
+      setHora(newHour.hora);
+      setMinuto(newHour.minuto);
+      setDisabled(false);
+    }
+    calculateCountdown(newHour.hora, newHour.minuto);
   };
 
   const toggleFormVisibility = () => {
@@ -88,7 +103,8 @@ useEffect(() => {
         <i className="bi bi-x-lg" onClick={toggleFormVisibility}></i> 
         </div> 
         <h2>Programar Correos</h2>
-        <h3 className="next-send">Próximo envío en:</h3>
+        <h4 className="next-send"> Hora Programada: {hora}:{minuto} </h4>
+        <h3 className="next-send"> Tiempo para el envío: </h3>
         <div className="timer-container">
           <div className="time-box">
             <span id="hours">{timer.hours}</span>
@@ -115,8 +131,8 @@ useEffect(() => {
           </div>
         </form>
         <div className="group-btn-emails-clock">
-          <button type="submit" className="btn-submit" onClick={handleSubmit}>Guardar</button>
-          { btnEmails ? <button className="btn-resend" onClick={handleResend}> Enviar Emails </button> : null }
+          <button type="submit" className="btn-submit" disabled={!disabled} onClick={handleSubmit}>Guardar</button>
+          { btnEmails ? <button className="btn-resend" disabled={!ofAction} onClick={handleResend}> Enviar Emails </button> : null }
           </div>
       </div>
     </div>

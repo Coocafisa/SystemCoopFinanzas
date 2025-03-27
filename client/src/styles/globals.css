@@ -71,7 +71,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .btn_registrar:disabled, .btn_enviar:disabled, .save-button:disabled, .btn-edit:disabled,
-.edit-button.disabled {
+.edit-button.disabled, .btn-submit:disabled, .btn-resend:disabled {
   background-color: #ccc;
   color: #666;
   cursor: not-allowed;

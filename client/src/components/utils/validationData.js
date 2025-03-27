@@ -1,18 +1,18 @@
   const selectOptions = {    
-    rol: [
+  rol: [
     { value: "Usuario", label: "Usuario" },
     { value: "Supervisor", label: "Supervisor" },
     { value: "Administrador", label: "Administrador" },
     ],
   
-    activo:[
-      { value: "1", label: "Activo" },
-      { value: "0", label: "Inactivo" },
+  activo:[
+      { value: 1, label: "Activo" },
+      { value: 0, label: "Inactivo" },
   ],
   
   estado: [
-    { value: "1", label: "Habilitado" },
-    { value: "0", label: "Deshabilitado" },
+    { value: 1, label: "Habilitado" },
+    { value: 0, label: "Deshabilitado" },
   ],
   
   acceso: [
@@ -25,8 +25,8 @@
 
   const rolePermissions = {
     Administrador: ["fech_reg", "fech_auth", "usuario_id"],
-    Supervisor: ["fech_reg", "fech_auth", "usuario_id"],
-    Usuario: ["identificacion", "rol", "nombre", "correo", "estado", "acceso", "Activo", "usuario_id"]
+    Supervisor: ["fech_reg", "fech_auth", "usuario_id", "rol"],
+    Usuario: ["identificacion", "rol", "nombre", "correo", "estado", "acceso", "Activo", "usuario_id", "fech_reg", "fech_auth"],
   }
   
   const selectFields = ["activo", "estado", "rol", "acceso"];
