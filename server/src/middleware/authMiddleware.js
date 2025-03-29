@@ -25,7 +25,6 @@ async function verifyToken(req, res, next) {
             ...decoded,
             role: roles,
         };
-        console.log("Auth: ", req.auth);
         next();
     } catch (error) {
         return request.faultRequest(req, res, { redirect: "/" }, 401);

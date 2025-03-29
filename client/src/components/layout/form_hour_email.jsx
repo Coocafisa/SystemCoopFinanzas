@@ -39,7 +39,6 @@ const HoraForm = ({ btnEmails, ofAction }) => {
   }, []);
 
   useEffect(() => {
-    console.log("Validacion de hora: ","Original: ", hora, minuto , "Nueva: ", newHour.hora, newHour.minuto);
     if (newHour.hora !== String(hora) || newHour.minuto !== String(minuto)) {
       setDisabled(true);
     } else {
@@ -93,6 +92,10 @@ useEffect(() => {
     await resendEmails();
   }
 
+  const period = hora >= 12 ? "PM" : "AM";
+const formattedHour = hora > 12 ? String(hora - 12).padStart(2, "0") : String(hora).padStart(2, "0");
+const horaEnvio = `Hora Programada: ${formattedHour}:${minuto} ${period}`;
+
   return (
     <div>
       <div className="icon-container-clock" onClick={toggleFormVisibility}>
@@ -103,7 +106,7 @@ useEffect(() => {
         <i className="bi bi-x-lg" onClick={toggleFormVisibility}></i> 
         </div> 
         <h2>Programar Correos</h2>
-        <h4 className="next-send"> Hora Programada: {hora}:{minuto} </h4>
+        <h4 className="next-send">{horaEnvio} </h4>
         <h3 className="next-send"> Tiempo para el envío: </h3>
         <div className="timer-container">
           <div className="time-box">

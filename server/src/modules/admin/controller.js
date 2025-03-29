@@ -43,13 +43,17 @@ module.exports = function(dbInsert) {
 
         try {
             
-        const { usuario_id, actividad } = await validateUser(identificacion);
+        const { usuario_id, actividad, rol } = await validateUser(identificacion);
         if (!usuario_id) {
             return request.faultRequest(req, res, { message: "Usuario no encontrado." }, 404);
         }
 
         if (!actividad) {
             return request.faultRequest(req, res, { message: "El usuario no esta disponible para asignarle permisos. Debe ingresar almenos una vez al sistema para adquirir permisos." }, 400);
+        }
+
+        if(rol === "Administrador") {
+            return request.faultRequest(req, res, { message: "No puedes asignar permisos a un administrador." }, 400);
         }
 
         const existingPermission = await validatePermissions({ consec_permit: usuario_id, permiso });

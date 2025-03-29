@@ -12,7 +12,6 @@ export default function useForm(initialValues) {
 
   const handleChange = (event, index) => {
     const { name, value } = event.target;
-    console.log("Name: ", name, " Value: ", value);
     if (Array.isArray(formValues)) {
       setFormValues((prev) => {
         const updatedFormValues = [...prev];

@@ -3,8 +3,6 @@ const request = require("../../red/request.js");
 const { validateUser } = require("../users/index.js");
 const { createUserId, confirmToken } = require("../../functions/utils.js");
 
-const table = "users";
-
 module.exports = function (dbInsert) {
   let db = dbInsert || require("../../db/mysql");
 

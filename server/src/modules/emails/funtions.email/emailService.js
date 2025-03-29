@@ -38,10 +38,10 @@ const emailSend = async (data, pdfBuffer, next) => {
         const mailOptions = {
             from: "contacto@coocafisa.com",
             to: correo,
-            subject: "Compendio de Pagos Realizados por la Cooperativa de Caficultores de Salgar",
+            subject: "Pago a Proveedores",
             text: `Estimad@ ${nombre}, 
       Por medio del presente correo, se le comparte un compendio detallado de todos
-      los pagos efectuados por la Cooperativa hasta la fecha actual. Este documento ha
+      los pagos efectuados por la Cooperativa de Caficultores de Salgar hasta la fecha actual. Este documento ha
       sido elaborado con el propósito de proporcionar un resumen claro y transparente de
       las transacciones realizadas, facilitando su consulta y análisis. 
       Quedamos atentos a cualquier duda o información adicional que puedan requerir.`,

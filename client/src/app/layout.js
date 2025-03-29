@@ -7,6 +7,7 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const currentYear = new Date().getFullYear();
   return (
     <html lang="es" className="h-full bg-white">
       <head>
@@ -22,10 +23,11 @@ export default function RootLayout({ children }) {
         <LoaderWithMessage/>
         {children}
         <footer>
-          <h5>
+          <h4>
             <img src="/images/Drau.png" alt="imgautor" className="imgautors" />
-            Todos los derechos reservados de coocafisa
-          </h5>
+            Todos los derechos reservados de coocafisa {currentYear}
+          </h4>
+          <h5>Servicio tecnico: contacto@coocafisa.com</h5>
         </footer>
       </body>
     </html>

@@ -10,73 +10,6 @@
   align-items: center;
   z-index: 1500;
 }
-
-.alert-popup.timer {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(8px);
-    border-radius: 12px;
-    padding: 20px;
-    z-index: 1500;
-    max-width: 400px;
-    min-width: 280px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    font-family: "Arial", sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    animation: fadeInUp 0.4s ease-out;
-    border-left: 6px solid;
-  }
-  
-  .timer-container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
-    padding: 12px;
-    background: rgba(255, 255, 255, 0.85);
-    border-radius: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .time-box {
-    text-align: center;
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: #333;
-    padding: 10px;
-  }
-  
-  .label-timer {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: #555;
-    opacity: 0.9;
-  }
-  
-  .alert-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 2px;
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .alert-button {
-    padding: 5px 16px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .btn-alert:hover {
-    background: #ddd;
-    transform: scale(1.05);
-  }
   
   @keyframes fadeInUp {
     from {
@@ -87,12 +20,6 @@
       opacity: 1;
       transform: translate(-50%, -50%);
     }
-  }
-
-  .time-critical {
-    color: red;
-    font-weight: bold;
-    animation: pulse 1s infinite;
   }
   
   @keyframes pulse {

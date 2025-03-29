@@ -15,6 +15,13 @@ export default function PendingEmails() {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        if (pendingEmails.length > 0) {
+            setResendEmails(true);
+        }
+    }, [pendingEmails]);
+    
+
     const title = "Correos Pendientes";
     const headers = [
         "NIT",
@@ -31,10 +38,6 @@ export default function PendingEmails() {
         "nombre",
         "correo"
     ];
-
-    if (pendingEmails.length > 0) {
-        setResendEmails(true);
-    }
 
     return (
         <>

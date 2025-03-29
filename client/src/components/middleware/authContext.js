@@ -3,7 +3,6 @@ import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { getSession } from "../../api/requestServices/sessionService";
 import InactivityHandler from "@/components/middleware/InactivityHandler";
 import { Loader } from "@/components/common/preloader";
-import { logError } from "../utils/logger";
 
 const AuthContext = createContext();
 
@@ -33,7 +32,7 @@ export default function AuthProvider({ children }) {
                 resetAuth();
             }
         } catch (error) {
-            logError(error);
+            return resetAuth();
         }
     };
 

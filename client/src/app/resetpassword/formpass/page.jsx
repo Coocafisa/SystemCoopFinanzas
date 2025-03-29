@@ -74,7 +74,7 @@ export default function Formresetpass() {
                 <Message type="error-message" text={message.confpass}/> 
               </div>
               <div className="btn">
-                <button type="submit" disabled={!isValid}>Restablecer</button> 
+                <button type="submit" disabled={!isValid} className="btn_registrar">Restablecer</button> 
               </div>
             </form>
           </div>

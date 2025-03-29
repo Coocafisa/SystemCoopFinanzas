@@ -200,7 +200,6 @@ module.exports = function (dbInsert) {
         200
       );
     } catch (error) {
-      console.error("Error: ", error.message);
       return request.faultRequest(
         req,
         res,
