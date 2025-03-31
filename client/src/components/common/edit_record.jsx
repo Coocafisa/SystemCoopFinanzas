@@ -9,7 +9,7 @@ import {
   renamedLabels,
 } from "@/components/utils/validationData";
 import ModalContent from "./modal-content";
-import { isEqual, set } from "lodash";
+import { isEqual } from "lodash";
 import useForm from "@/hooks/useForm";
 
 export default function EditRecord({
@@ -28,25 +28,21 @@ export default function EditRecord({
   
     setFormValues({ ...data });
   
-    // Convertir `role` en array si es necesario
     const rolesArray = Array.isArray(role)
       ? role
       : typeof role === "string"
       ? role.split(",").map((r) => r.trim())
       : [];
   
-    // Obtener las restricciones de cada rol
     const roleRestrictions = rolesArray
       .map((currentRole) => rolePermissions[currentRole] || [])
-      .filter((fields) => fields.length > 0); // Filtrar roles sin restricciones
+      .filter((fields) => fields.length > 0);
   
-    // Si no hay restricciones, no se bloquea nada
     if (roleRestrictions.length === 0) {
       setRestrictedFields([]);
       return;
     }
   
-    // Encontrar los campos que están bloqueados en **todos** los roles (intersección)
     const commonRestrictedFields = roleRestrictions.reduce((acc, fields) => 
       acc.filter((field) => fields.includes(field))
     );
@@ -57,10 +53,8 @@ export default function EditRecord({
 
   const getFields = (fields) => {
     if (!fields) return [];
-    const cardFields = Object.keys(fields).filter((key) => String(fields[key]));
-    return cardFields.length === 0
-      ? []
-      : cardFields.filter((item) => !restrictedFields.includes(item));
+    const cardFields = Object.keys(fields);
+    return cardFields.filter((item) => !restrictedFields.includes(item));
   };
 
   const updateFields = Object.keys(formValues).reduce((acc, key) => {
