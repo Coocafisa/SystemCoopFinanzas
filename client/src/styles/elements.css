@@ -1,0 +1,134 @@
+.container-modal-content {
+    display: flex;
+    flex-wrap: wrap;
+    text-align: center;
+    gap: 10px;
+  }
+  
+.title-perfil {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #34495e;
+  }
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    border-bottom: 1.5px solid #ddd;
+    margin-bottom: 15px;
+}
+
+.modal-header h2 {
+    font-size: 20px;
+    color: #1c8342;
+}
+
+.card {
+    background: #f9f9f9;
+    padding: 7px;
+    border-radius: 8px;
+    margin-bottom: 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    background-color: #f9f9f9;
+}
+
+.label {
+    font-weight: bold;
+    color: #1c8342;
+}
+
+.data {
+    color: #333;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    gap: 1rem;
+}
+
+.save-button, .cancel-button, .btn-crear, .btn-edit, .btn_registrar{
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.save-button, .btn-crear, .btn-edit, .btn_registrar {
+    background: #007bff;
+    color: white;
+}
+
+.cancel-button {
+    background: #dc3545;
+    color: white;
+}
+
+.save-button:hover, .btn-crear:hover, .btn-edit:hover, .btn_registrar:hover {
+    background: #0056b3;
+}
+
+.cancel-button:hover {
+    background: #a71d2a;
+}
+
+.permits-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.permits-container.has-permits {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.list-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.input-field {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+}
+
+.delete-button {
+    align-self: flex-end;
+    background-color: #ddd;
+    border: none;
+    cursor: pointer;
+    color: red;
+}
+
+.delete-button:hover {
+    background-color: #ccc;
+}
+
+@media (min-width: 768px) {
+    .permits-container.has-permits {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .card {
+        flex: 1 1 calc(0% - 1rem);
+    }
+}
+
+@media (min-width: 1024px) {
+    .card {
+        flex: 1 1 calc(33.333% - 1rem);
+    }
+}

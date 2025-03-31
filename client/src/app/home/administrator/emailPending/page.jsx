@@ -1,26 +1,26 @@
 "use client";
 import ResultTable from "@/components/common/result_table";
 import { useState, useEffect } from "react";
-import { getEmailsPending } from "@/api/authenticated/adminService";
-import HoraForm from "@/components/layout/formhouremail";
-import { ProtectedRoute } from "../../../../components/middleware";
-import { resendEmails } from "@/api/authenticated/adminService";
-import { Loader } from "@/components/common/preloader";
+import { queryEmailsPending } from "@/api/requestAdmin/querysAdmin";
+import HoraForm from "@/components/layout/form_hour_email";
 
 export default function PendingEmails() {
     const [pendingEmails, setPendingEmails] = useState([]);
-    const [alert, setAlert] = useState("");
-    const [type, setType] = useState("");
-    const [message, setMessage] = useState("");
-    const [loading, setLoading] = useState(false);
-
+    const [resendEmails, setResendEmails] = useState(false);
     useEffect(() => {
         const fetchData = async () => {
-            const pendingEmailsData = await getEmailsPending(setAlert);
+            const pendingEmailsData = await queryEmailsPending();
             setPendingEmails(pendingEmailsData);
         }
         fetchData();
     }, []);
+
+    useEffect(() => {
+        if (pendingEmails.length > 0) {
+            setResendEmails(true);
+        }
+    }, [pendingEmails]);
+    
 
     const title = "Correos Pendientes";
     const headers = [
@@ -35,22 +35,14 @@ export default function PendingEmails() {
         "nit",
         "factura",
         "fecpago",
-        "razonsoc",
+        "nombre",
         "correo"
     ];
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        setLoading(true);
-        await resendEmails(setMessage, setType, setLoading);
-    }
-
     return (
         <>
-        <button onClick={handleSubmit} className="btn-resend"> Enviar Emails </button>
-        <HoraForm/>
-        <ResultTable data={pendingEmails} title={title} headers={headers} fields={fields} error={alert} />
-        {loading && <Loader alert={message} type={type}/>}
+        <HoraForm btnEmails={true} ofAction={resendEmails}/>
+        <ResultTable data={pendingEmails} title={title} headers={headers} fields={fields} keysToSearch={["nit", "factura", "nombre"]}/>
         </>
     );
 }

@@ -1,0 +1,274 @@
+.principal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #34495e, #2ecc71);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 10px 35px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  transition: all 0.3s ease-in-out;
+}
+
+.principal.scrolled {
+  padding: 6px 25px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #2c3e50, #27ae60);
+}
+
+.imglogoindex {
+  width: 100px;
+  max-width: 120px;
+}
+
+.text-header {
+  font-size: 1.5rem;
+  color: white;
+  font-weight: bold;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.text_user {
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.text_user:hover {
+  color: #2ecc71;
+  transform: scale(1.1);
+}
+
+.detalle-perfil {
+  display: none;
+  position: absolute;
+  background: white;
+  color: #2c3e50;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  top: 80px;
+  right: 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(-10px);
+  z-index: 999;
+}
+
+.icono-perfil {
+  position: relative;
+  top: 5px;
+  left: 6px;
+}
+
+.detalle-perfil.visible {
+  display: block;
+  background: white;
+  width: 250px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.person-perfil {
+  font-size: 28px; 
+  color: #1c8342;
+  margin-right: 10px; 
+}
+
+.title-perfil {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #34495e;
+}
+
+.profile-card {
+  background: #f9f9f9;
+  padding: 7px;
+  border-radius: 8px;
+  margin-bottom: 7px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-field-perfil {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  width: 100%;
+}
+
+.modal-content-perfil.editing {
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+  gap: 10px;
+}
+
+.profile-card.editing {
+  width: calc(50% - 8px);
+}
+
+.detalle-perfil.editing {
+  position: initial;
+  width: 50vw;
+}
+
+.modal-overlay.editing {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button-perfil {
+  position: absolute;
+  cursor: pointer;
+  left: 210px;
+  top: 12.1px;
+}
+
+.close-button-perfil.editing {
+  display: none;
+}
+
+.close-button-perfil:hover {
+  transform: scale(1.5);
+}
+
+.title-perfil {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #34495e;
+}
+
+.modal-header-perfil {
+  display: flex;
+  align-items: center;
+  border-bottom: 1.5px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.modal-header-perfil h2 {
+  font-size: 20px;
+  color: #1c8342;
+}
+
+.card {
+  background: #f9f9f9;
+  padding: 7px;
+  border-radius: 8px;
+  margin-bottom: 7px;
+}
+
+.label {
+  font-weight: bold;
+  color: #1c8342;
+}
+
+.data {
+  color: #333;
+}
+
+.modal-footer-perfil {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.save-button, .cancel-button, .btn-crear, .btn-edit{
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.save-button, .btn-crear, .btn-edit {
+  background: #007bff;
+  color: white;
+}
+
+.cancel-button {
+  background: #dc3545;
+  color: white;
+}
+
+.save-button:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.save-button:hover{
+  background: #0056b3;
+}
+
+.cancel-button:hover {
+  background: #a71d2a;
+}
+
+@media (max-width: 600px) {
+  .save-button,
+  .cancel-button {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+
+  .modal-content-perfil.editing {
+    flex-direction: column;
+  }
+
+  .profile-card, .profile-card.editing {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .principal {
+    flex-direction: column;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .imglogoindex {
+    width: 70px;
+  }
+
+  .text-header {
+    font-size: 2rem;
+  }
+
+  .perfil {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .detalle-perfil {
+    top: 70px;
+    right: 10px;
+    width: 80vw;
+  }
+}
+
+@media (max-width: 480px) {
+  .detalle-perfil {
+    width: 90vw;
+    right: 5vw;
+  }
+}

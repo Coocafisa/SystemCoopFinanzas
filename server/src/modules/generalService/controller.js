@@ -1,0 +1,200 @@
+const { validateFields } = require("../../functions/helpers.js");
+const { validateUser } = require("../users/index.js");
+const { validatePermissions } = require("../admin/index.js");
+const request = require("../../red/request");
+
+module.exports = function (dbInsert) {
+  let db = dbInsert;
+  if (!db) {
+    db = require("../../db/mysql.js");
+  }
+      async function addStatusEmails(facturas) {
+        try {
+            if (!Array.isArray(facturas) || facturas.length === 0) {
+                throw new Error("Debe proporcionar al menos una factura válida.");
+            }
+    
+            const table = "pagopro";
+            const fields = "send_email = true";
+            const params = `factura IN (${facturas.map(factura => `'${factura}'`).join(", ")})`;
+    
+            const result = await db.update(table, fields, params);
+    
+            if (!result || result.affectedRows === 0) {
+                throw new Error("No se encontró ningún registro para actualizar.");
+            }
+    
+            return { message: `Se actualizaron ${result.affectedRows} correos con éxito.` };
+    
+        } catch (error) {
+            console.error("Error actualizando el estado de los correos:", error);
+            return { message: error.message };
+        }
+    };
+
+  async function updateRegister(req, res) {
+    const { nit, fields } = req.body;
+    const { role } = req.auth;
+
+    if (fields.length === 0 || !nit || !role) {
+      return request.faultRequest( req, res, { message: "Campos requeridos no proporcionados." }, 400 );
+    }
+
+    const updateForAdmin = {
+    entities: [
+      "identificacion",
+      "nombre",
+      "telefono",
+      "direcc",
+      "correo",
+    ],
+    users: [
+      "usuario",
+      "rol",
+      "activo",
+    ],
+    auth: [
+      "sessionId",
+    ],
+    authorizations: [
+      "permits_id",
+      "estado"
+    ]
+  };
+
+    const updateForUser = {
+      entities: [
+        "nombre",
+        "telefono",
+        "direcc",
+        "correo",
+      ],
+
+      users: [
+        "usuario",
+      ]
+    };
+    
+    const roles = role.split(',');
+    let allowedFields
+    if (roles.some(r => ["Administrador", "Supervisor"].includes(r))) {
+      allowedFields = updateForAdmin;
+    } else if (roles.includes("Usuario")) {
+      allowedFields = updateForUser;
+    } else {
+      return request.faultRequest( req, res, { message: "Rol no autorizado para realizar la operación." }, 400 );
+    } 
+
+    const dataFields = validateFields(allowedFields, fields);
+    if (dataFields.error) {
+      return request.faultRequest( req, res, { message: dataFields.message }, 401);
+    }
+
+  try {      
+      let camposActualizados = 0;
+      for (const table of Object.keys(dataFields)) {
+        const updateFields = dataFields[table];
+        if (updateFields && Object.keys(updateFields).length > 0) {
+          let selectParams
+          if (table === "entities") {
+            selectParams = `identificacion = ${nit}`
+          } else if (table === "authorizations") {
+            const data = { consec_permit: nit, permiso: fields.permits_id };
+            const validatePermit = await validatePermissions(data);
+            if (validatePermit) {
+              return request.faultRequest(req, res, { message: validatePermit.message }, validatePermit.status);
+            }
+            selectParams = `consec_permit = ${nit}`
+          } else {
+            const {usuario_id} = await validateUser(nit);
+            if (!usuario_id) {
+              return request.faultRequest(req, res, { message: "Usuario no encontrado." }, 404);
+              }
+              selectParams = `usuario_id = '${usuario_id}'`
+          }
+          const executionUpdate = await db.update(table, updateFields, selectParams);
+          if (executionUpdate.affectedRows > 0) {
+            camposActualizados++;
+          }
+        }
+      }
+      if (camposActualizados === 0) {
+        return request.faultRequest( req, res, { message: "No se encontró el registro para actualizar." }, 400 );
+      }
+      return request.successRequest( req, res, { message: "Registro actualizado con éxito."}, 200 );     
+    } catch (error) {
+      return request.faultRequest( req, res, { message: "Ocurrió un error al actualizar el registro." }, 500 );
+    }
+  };
+
+  async function deleteRegister(req, res) {
+    try {
+        const { nit, selectTable } = req.body;
+        const { role } = req.auth;
+
+        if (!role || role !== "Administrador") {
+          return request.faultRequest(req, res, { message: "No autorizado para realizar esta operación." }, 403);
+      }
+
+        if (!nit || !selectTable) {
+            return request.faultRequest(req, res, { message: "Campos requeridos no proporcionados." }, 400);
+        }
+
+        const userData = await validateUser(nit);
+        if (!userData) {
+            return request.faultRequest(req, res, { message: "Error al validar el usuario." }, 500);
+        }
+
+        const { usuario_id, entidad_id } = userData;
+        if (!usuario_id && !entidad_id) {
+            return request.faultRequest(req, res, { message: "Usuario no encontrado." }, 404);
+        }
+
+        let params;
+        if (selectTable === "entities") {
+          params = `entidad_id = ${entidad_id}`;
+        } else {
+          params = `usuario_id = '${usuario_id}'`;
+        }
+        const executionUpdate = await db.remove(selectTable, params);
+        if (executionUpdate.affectedRows === 0) {
+          return request.faultRequest(req, res, { message: "No se encontró el registro para eliminar." }, 404);
+      }
+        return request.successRequest(req, res, { message: 'Registro eliminado con éxito.' }, 200);
+    } catch (error) {
+        return request.faultRequest(req, res, { message: "Ocurrió un error al eliminar el registro." }, 500);
+    }
+};
+
+async function deletePermits (req, res) {
+  const { consec_permit } = req.body;
+  const { role } = req.auth;
+
+  if (!consec_permit || !role) {
+    return request.faultRequest(req, res, { message: "Campos requeridos no proporcionados." }, 400);
+  }
+
+  if (role !== "Administrador") {
+    return request.faultRequest(req, res, { message: "No autorizado para realizar esta operación." }, 403);
+  }
+
+  try {
+    const table = "authorizations";
+    const params = `consec_permit = ${consec_permit}`;
+    const executionUpdate = await db.remove(table, params);
+    if (executionUpdate.affectedRows === 0) {
+      return request.faultRequest(req, res, { message: "No se encontró el registro para eliminar." }, 404);
+    }
+    return request.successRequest(req, res, { message: "Registro eliminado con éxito." }, 200);
+  } catch (error) {
+    return request.faultRequest(req, res, { message: "Ocurrió un error al eliminar el registro." }, 500);
+  }
+};
+
+  return {
+    addStatusEmails,
+    updateRegister,
+    deleteRegister,
+    deletePermits
+  };
+};

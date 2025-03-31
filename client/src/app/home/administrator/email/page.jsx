@@ -1,17 +1,15 @@
 "use client";
 import { useState, useEffect } from "react";
 import ResultTable from "@/components/common/result_table";
-import { queryEmails } from "@/api/authenticated/adminService";
-import HoraForm from "@/components/layout/formhouremail";
-import { ProtectedRoute } from "../../../../components/middleware";
+import { queryEmails } from "@/api/requestAdmin/querysAdmin";
+import HoraForm from "@/components/layout/form_hour_email";
 
 export default function Emails() {
     const [email, setEmail] = useState([]);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
-            const email = await queryEmails(setError);
+            const email = await queryEmails();
             setEmail(email)
         }
         fetchData();
@@ -30,15 +28,14 @@ export default function Emails() {
         "nit",
         "factura",
         "fecpago",
-        "razonsoc",
+        "nombre",
         "correo"
     ];
 
     return (
         <>
-        <ProtectedRoute allowedRoles={["Administrador"]}/>
-        <ResultTable data={email} title={title} headers={headers} fields={fields} error={error} />
-        <HoraForm />
+        <ResultTable data={email} title={title} headers={headers} fields={fields} keysToSearch={["identificacion", "factura", "nombre"]}/>
+        <HoraForm/>
         </>
     )
 }

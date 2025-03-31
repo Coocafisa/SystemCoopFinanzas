@@ -1,23 +1,15 @@
 "use client";
 import { useState } from "react";
-import "@public/styles/formusers.css";
-import { auth } from "@/api/auth/authService";
-import {Loader} from "@/components/common/preloader";
-import { useRouter } from "next/navigation";
+import "@styles/formusers.css";
+import { auth } from "@/api/requestAuth/authService";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
-    const [type, setType] = useState(false);
-    const [alert, setAlert] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const router = useRouter();
-    const [errores, setErrores] = useState({
-        nit: false,
-        password: false,
-    });
     const [formData, setFormData] = useState({
-        nit: "",
+        user: "",
         password: "",
     });
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -25,14 +17,13 @@ export default function Login() {
     };
 
     const handleSubmit = async (event) => {
-        setLoading(true);
         event.preventDefault();
         let formularioValido = true;
-    let newErrors = { nit: false, password: false };
+    let newErrors = { user: false, password: false };
 
-    if (formData.nit.trim() === "") {
+    if (formData.user.trim() === "") {
         formularioValido = false;
-        newErrors.nit = true;
+        newErrors.user = true;
     }
 
     if (formData.password.trim() === "") {
@@ -40,17 +31,13 @@ export default function Login() {
         newErrors.password = true;
     }
 
-    setErrores(newErrors);
-
     if (!formularioValido) {
         const error = Object.keys(newErrors).find((camp) => newErrors[camp]);
         document.getElementById(error).focus();
     }
 
     if (formularioValido) {
-        await auth(event, setAlert, setLoading, setType, router);
-    } else {
-        setLoading(false);
+        await auth(event);
     }
 };
     return (
@@ -65,36 +52,34 @@ export default function Login() {
             </header>
             <form onSubmit={handleSubmit} className="space-y-4 mt-6" noValidate>
                 <div className="flex flex-col stlvar">
-                    <label htmlFor="nit" className="text-sm font-medium text-gray-700">
-                        Nit
+                    <label htmlFor="user" className="text-sm font-medium text-gray-700">
+                        Usuario
                     </label>
                     <input
-                    
-                        type="number"
-                        id="nit"
-                        name="nit"
-                        value={formData.nit}
+                        type="text"
+                        id="user"
+                        name="user"
+                        value={formData.user}
                         onChange={handleChange}
                         required
                         className="mt-1 p-2 border rounded-md focus:ring-foreground focus:border-foreground"
-                        style={{borderColor: errores.nit ? 'red' : ''}}
                     />
                 </div>
 
-                <div className="flex flex-col stlvar">
+                <div className="relative flex flex-col stlvar">
                     <label htmlFor="password" className="text-sm font-medium text-gray-700">
                         Contraseña
                     </label>
                     <input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         id="password"
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
                         required
                         className="mt-1 p-2 border rounded-md focus:ring-foreground focus:border-foreground"
-                        style={{borderColor: errores.password ? 'red' : ''}}
                     />
+                    {formData.password.length > 0 && <i className="eye-password" onClick={() => setShowPassword(!showPassword)}>{showPassword ? <Eye size={15} cursor={"pointer"}/> : <EyeOff size={15} cursor={"pointer"}/>}</i>}
                 </div>
                 <div className="btn">
                     <button type="submit" className="btn_ingresar w-full">
@@ -103,7 +88,7 @@ export default function Login() {
 
                     <div className="text-center mt-4">
                         <a
-                            href="/users/resetpassword"
+                            href="/resetpassword"
                             className="text-sm text-foreground hover:underline"
                         >
                             ¿Restablecer Contraseña?
@@ -111,7 +96,6 @@ export default function Login() {
                     </div>
                 </div>
                </form>
-               {loading && <Loader alert={alert} type={type}/>}
         </div>
     );
 }

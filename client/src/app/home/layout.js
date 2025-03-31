@@ -1,7 +1,7 @@
 "use client"
 import Navigations from "@/components/layout/optionavigations";
-import InactivityHandler from "@/components/InactivityHandler";
-import { AuthProvider } from "@/api/auth/authContext";
+import AuthProvider from "@/components/middleware/authContext";
+
 export default function IndexLayout({ children }) {
   return (
     <>
@@ -9,9 +9,6 @@ export default function IndexLayout({ children }) {
       <AuthProvider>
       <main>{children}</main>
       </AuthProvider>
-      <InactivityHandler/>
     </>
   );
 }
-
-  

@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {  
+  --background: linear-gradient(135deg, #2c3e50, #bdc3c7);
+  --foreground: #116b33;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+  padding: 20px 80px 20px 80px;
+}
+
+footer {
+  text-align: center; 
+  padding: 10px 0; 
+}
+
+footer h5 {
+  margin: 0;
+  font-size: 14px;
+  text-shadow: 2px 2px 4px white;
+}
+
+.imgautors {
+  width: 20px;
+  vertical-align: middle;
+  margin-right: 5px;
+  box-shadow: 2px 2px 4px white;
+}
+
+button {
+    border-radius: 8px;
+    width: 120px;
+    height: 40px;
+    font-size: large;
+    margin-top: 20px;
+    transition: background 0.3s ease;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.btn_registrar:disabled, .btn_enviar:disabled, .save-button:disabled, .btn-edit:disabled,
+.edit-button.disabled, .btn-submit:disabled, .btn-resend:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.alert-loader.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
+}
+
+.alert-loader.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+}
+
+.alert-loader.info {
+  background-color: #e2e3e5;
+  color: #383d41;
+  border: 1px solid #d6d8db;
+  box-shadow: 0 0 15px rgba(0, 123, 255, 0.4);
+}
+
+.btn_butones {
+  display: flex;
+  justify-content: space-evenly;
+}
